@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/lib/pq"
 )
 
@@ -18,5 +19,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("postgres is working")
 
 }
