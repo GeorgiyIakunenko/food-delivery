@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"food_delivery/handler"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -31,6 +32,6 @@ func Start() {
 
 	fmt.Println("Server is running on port :8080")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 
 }
