@@ -119,6 +119,59 @@ func (ur *UserRepository) Update(user *models.User) error {
 	return nil
 }
 
+/*func (ur *UserRepository) Create(user *request.RegisterRequest) error {
+	// Check if the user already exists
+	exists, err := ur.UserExists(user.Email)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return fmt.Errorf("user with email '%s' already exists", user.Email)
+	}
+
+	query := `INSERT INTO customer (first_name, last_name, username, age, email, phone, password, address_id)
+			  VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+
+	stmt, err := ur.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(user.FirstName, user.LastName, user.Username, user.Age, user.Email, user.Phone, user.Password, user.Address)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("failed to insert user")
+	}
+
+	return nil
+}
+*/
+/*func (ur *UserRepository) CreateAddress(address *request.Address) (int64, error) {
+
+}*/
+
+func (ur *UserRepository) UserExists(email string) (bool, error) {
+	query := "SELECT EXISTS (SELECT 1 FROM customer WHERE email = $1)"
+
+	var exists bool
+	err := ur.db.QueryRow(query, email).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 func scanUser(rows *sql.Rows, user *models.User) error {
 	return rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Age, &user.Email, &user.Phone, &user.Password, &user.AddressID, &user.CreatedAt)
 }

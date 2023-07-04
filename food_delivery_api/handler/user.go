@@ -3,7 +3,7 @@ package handler
 import (
 	"database/sql"
 	"food_delivery/repository/db"
-	response2 "food_delivery/server/response"
+	"food_delivery/server/response"
 	"net/http"
 )
 
@@ -20,9 +20,9 @@ func NewUserHandler(db *sql.DB) *UserHandler {
 func (u *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	users, err := db.NewUserRepository(u.db).GetAll()
 	if err != nil {
-		response2.SendServerError(w, err)
+		response.SendServerError(w, err)
 		return
 	}
 
-	response2.SendOK(w, users)
+	response.SendOK(w, users)
 }

@@ -32,6 +32,10 @@ func Start(cfg *config.Config) {
 
 	r.HandleFunc("/users", userHandler.GetAll).Methods(http.MethodGet)
 
+	addressHandler := handler.NewAddressHandler(db)
+
+	r.HandleFunc("/address", addressHandler.GetAll).Methods(http.MethodGet)
+
 	fmt.Println("Server is running on port :8080")
 
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
