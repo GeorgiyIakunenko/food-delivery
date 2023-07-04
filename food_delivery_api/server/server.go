@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	"food_delivery/config"
 	"food_delivery/handler"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -10,8 +11,9 @@ import (
 	"net/http"
 )
 
-func Start() {
+func Start(cfg *config.Config) {
 
+	//fmt.Println(cfg)
 	connStr := "postgres://postgres:password@localhost:5432/db_fooddelivery?sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
