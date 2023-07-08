@@ -28,9 +28,16 @@ func Start(cfg *config.Config) {
 		panic(err)
 	}
 
-	UserHandler := handler.NewUserHandler(db)
 	r := mux.NewRouter()
+	// user handler
+
+	UserHandler := handler.NewUserHandler(db)
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
+
+	// supplier handler
+
+	SupplierHandler := handler.NewSupplierHandler(db)
+	r.HandleFunc("/suppliers", SupplierHandler.GetAll).Methods("GET")
 
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
