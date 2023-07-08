@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"food_delivery/repository/models"
+	"food_delivery/server/response"
 )
 
 type UserRepository struct {
@@ -16,7 +17,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	}
 }
 
-func (ur *UserRepository) GetAll() ([]*models.User, error) {
+func (ur *UserRepository) GetAll() ([]*response.UserResponse, error) {
 	query := `SELECT * FROM customer`
 
 	stmt, err := ur.db.Prepare(query)
@@ -33,7 +34,7 @@ func (ur *UserRepository) GetAll() ([]*models.User, error) {
 
 	defer rows.Close()
 
-	var users []*models.User
+	var users []*response.UserResponse
 
 	for rows.Next() {
 		user := new(models.User)
@@ -41,7 +42,31 @@ func (ur *UserRepository) GetAll() ([]*models.User, error) {
 		if err != nil {
 			return nil, err
 		}
-		users = append(users, user)
+
+		address, err := NewAddressRepository(ur.db).GetById(user.AddressID)
+		if err != nil {
+			return nil, err
+		}
+
+		userResponse := &response.UserResponse{
+			ID:        user.ID,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Username:  user.Username,
+			Age:       user.Age,
+			Email:     user.Email,
+			Phone:     user.Phone,
+			Address: response.AddressResponse{
+				City:         address.City,
+				PostalCode:   address.PostalCode,
+				AddressLine1: address.AddressLine1,
+				AddressLine2: address.AddressLine2,
+				Country:      address.Country,
+			},
+		}
+
+		users = append(users, userResponse)
+
 	}
 
 	if err := rows.Err(); err != nil {
@@ -119,7 +144,7 @@ func (ur *UserRepository) Update(user *models.User) error {
 	return nil
 }
 
-/*func (ur *UserRepository) Create(user *request.RegisterRequest) error {
+func (ur *UserRepository) Create(user *models.User) error {
 	// Check if the user already exists
 	exists, err := ur.UserExists(user.Email)
 	if err != nil {
@@ -139,7 +164,7 @@ func (ur *UserRepository) Update(user *models.User) error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(user.FirstName, user.LastName, user.Username, user.Age, user.Email, user.Phone, user.Password, user.Address)
+	result, err := stmt.Exec(user.FirstName, user.LastName, user.Username, user.Age, user.Email, user.Phone, user.Password, user.AddressID)
 	if err != nil {
 		return err
 	}
@@ -155,7 +180,7 @@ func (ur *UserRepository) Update(user *models.User) error {
 
 	return nil
 }
-*/
+
 /*func (ur *UserRepository) CreateAddress(address *request.Address) (int64, error) {
 
 }*/

@@ -7,6 +7,7 @@ import (
 	"food_delivery/handler"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 )
@@ -29,12 +30,13 @@ func Start(cfg *config.Config) {
 	r := mux.NewRouter()
 
 	userHandler := handler.NewUserHandler(db)
-
 	r.HandleFunc("/users", userHandler.GetAll).Methods(http.MethodGet)
+	r.HandleFunc("/users", userHandler.Create).Methods(http.MethodPost)
 
 	addressHandler := handler.NewAddressHandler(db)
-
 	r.HandleFunc("/address", addressHandler.GetAll).Methods(http.MethodGet)
+	r.HandleFunc("/address", addressHandler.Create).Methods(http.MethodPost)
+	r.HandleFunc("/address/{id:[0-9]+}", addressHandler.Delete).Methods(http.MethodDelete)
 
 	fmt.Println("Server is running on port :8080")
 
