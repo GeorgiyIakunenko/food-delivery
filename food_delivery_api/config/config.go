@@ -13,6 +13,11 @@ type Config struct {
 	RefreshSecret          string
 	AccessLifetimeMinutes  int
 	RefreshLifetimeMinutes int
+	DbUser                 string
+	DbPassword             string
+	DbPort                 string
+	DbName                 string
+	DbHost                 string
 }
 
 func NewConfig() *Config {
@@ -36,6 +41,11 @@ func NewConfig() *Config {
 		AccessLifetimeMinutes:  accessMin,
 		RefreshSecret:          os.Getenv("REFRESH_SECRET"),
 		RefreshLifetimeMinutes: refreshMin,
+		DbUser:                 os.Getenv("DB_USER"),
+		DbHost:                 os.Getenv("DB_HOST"),
+		DbPassword:             os.Getenv("DB_PASSWORD"),
+		DbPort:                 os.Getenv("DB_PORT"),
+		DbName:                 os.Getenv("DB_NAME"),
 	}
 
 }

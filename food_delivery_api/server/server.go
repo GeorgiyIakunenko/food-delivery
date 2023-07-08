@@ -13,9 +13,10 @@ import (
 )
 
 func Start(cfg *config.Config) {
+	//connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+	//cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName)
 
-	//fmt.Println(cfg)
-	connStr := "postgres://postgres:password@localhost:5432/db_fooddelivery?sslmode=disable"
+	connStr := "postgres://postgres:password@localhost:5432/food_delivery_v2?sslmode=disable"
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -27,19 +28,11 @@ func Start(cfg *config.Config) {
 		panic(err)
 	}
 
+	UserHandler := handler.NewUserHandler(db)
 	r := mux.NewRouter()
+	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
 
-	userHandler := handler.NewUserHandler(db)
-	r.HandleFunc("/users", userHandler.GetAll).Methods(http.MethodGet)
-	r.HandleFunc("/users", userHandler.Create).Methods(http.MethodPost)
-
-	addressHandler := handler.NewAddressHandler(db)
-	r.HandleFunc("/address", addressHandler.GetAll).Methods(http.MethodGet)
-	r.HandleFunc("/address", addressHandler.Create).Methods(http.MethodPost)
-	r.HandleFunc("/address/{id:[0-9]+}", addressHandler.Delete).Methods(http.MethodDelete)
-
-	fmt.Println("Server is running on port :8080")
-
+	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 
 }

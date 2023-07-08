@@ -10,7 +10,5 @@ func main() {
 
 	cfg := config.NewConfig()
 
-	//fmt.Println(cfg)
-
 	server.Start(cfg)
 }
