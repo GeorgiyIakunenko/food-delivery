@@ -59,3 +59,34 @@ func (r *SupplierRepository) GetAll() ([]*response.Supplier, error) {
 
 	return suppliers, nil
 }
+
+func (r *SupplierRepository) GetByID(id int64) (*response.Supplier, error) {
+	query := `
+	SELECT s.id, s.name, c.name, s.image, s.supplier_address, s.open_time, s.close_time
+	FROM supplier s
+	INNER JOIN category c ON s.category_id = c.id 
+	WHERE s.id = $1
+`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	supplier := &response.Supplier{}
+	err = stmt.QueryRow(id).Scan(
+		&supplier.ID,
+		&supplier.Name,
+		&supplier.Category,
+		&supplier.Image,
+		&supplier.Address,
+		&supplier.OpenTime,
+		&supplier.CloseTime,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return supplier, nil
+}

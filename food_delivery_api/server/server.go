@@ -38,6 +38,7 @@ func Start(cfg *config.Config) {
 
 	SupplierHandler := handler.NewSupplierHandler(db)
 	r.HandleFunc("/suppliers", SupplierHandler.GetAll).Methods("GET")
+	r.HandleFunc("/supplier/{id}", SupplierHandler.GetByID).Methods("GET")
 
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
