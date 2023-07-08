@@ -30,15 +30,27 @@ func (h *SupplierHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SupplierHandler) GetByID(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)["id"]
+	varsId := mux.Vars(r)["id"]
 
-	id, err := strconv.ParseInt(vars, 10, 64)
+	id, err := strconv.ParseInt(varsId, 10, 64)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
 	}
 
 	supplier, err := db.NewSupplierRepository(h.db).GetByID(id)
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, supplier)
+}
+
+func (h *SupplierHandler) GetByCategory(w http.ResponseWriter, r *http.Request) {
+	category := mux.Vars(r)["category"]
+
+	supplier, err := db.NewSupplierRepository(h.db).GetByCategory(category)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
