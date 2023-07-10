@@ -1,10 +1,12 @@
 package server
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"food_delivery/config"
 	"food_delivery/handler"
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -13,10 +15,8 @@ import (
 )
 
 func Start(cfg *config.Config) {
-	//connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-	//cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName)
-
-	connStr := "postgres://postgres:password@localhost:5432/food_delivery_v2?sslmode=disable"
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName)
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -27,6 +27,31 @@ func Start(cfg *config.Config) {
 	if err != nil {
 		panic(err)
 	}
+
+	// open redis connection
+
+	redisConnStr := fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
+	redisDb := redis.NewClient(&redis.Options{
+		Addr: redisConnStr,
+	})
+
+	pong, err := redisDb.Ping(redisDb.Context()).Result()
+	fmt.Println(pong, err)
+
+	// redis test
+
+	value, err := redisDb.Get(context.Background(), "user:1:token").Result()
+	if err != nil {
+		if err == redis.Nil {
+			fmt.Println("Key does not exist")
+		} else {
+			fmt.Println("Failed to retrieve data:", err)
+		}
+		return
+	}
+	fmt.Println("Value:", value)
+
+	// create router
 
 	r := mux.NewRouter()
 	// user handler
@@ -42,7 +67,6 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/suppliers/{category}", SupplierHandler.GetByCategory).Methods(http.MethodGet)
 
 	// category handler
-
 	CategoryHandler := handler.NewCategoryHandler(db)
 	r.HandleFunc("/categories", CategoryHandler.GetAll).Methods(http.MethodGet)
 

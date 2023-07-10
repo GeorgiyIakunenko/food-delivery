@@ -18,6 +18,8 @@ type Config struct {
 	DbPort                 string
 	DbName                 string
 	DbHost                 string
+	RedisHost              string
+	RedisPort              string
 }
 
 func NewConfig() *Config {
@@ -46,6 +48,8 @@ func NewConfig() *Config {
 		DbPassword:             os.Getenv("DB_PASSWORD"),
 		DbPort:                 os.Getenv("DB_PORT"),
 		DbName:                 os.Getenv("DB_NAME"),
+		RedisHost:              os.Getenv("REDIS_HOST"),
+		RedisPort:              os.Getenv("REDIS_PORT"),
 	}
 
 }

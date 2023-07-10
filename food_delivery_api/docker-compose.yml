@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  echo_redis:
+    image: redis
+    container_name: my-redis-container
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - echo-demo-stack
+
+networks:
+  echo-demo-stack:
+  # Add any network-specific configuration if needed
