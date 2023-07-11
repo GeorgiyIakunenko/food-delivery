@@ -2,7 +2,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
+	"food_delivery/server/request"
 	"food_delivery/server/response"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepository struct {
@@ -57,15 +60,71 @@ func (r *UserRepository) GetAll() ([]*response.User, error) {
 	return users, nil
 }
 
-/*func (r *UserRepository) GetUser(id int64) (*response.User, error) {
-	row := r.db.QueryRow("SELECT * FROM customer WHERE id = $1", id)
+func (r *UserRepository) RegisterUser(u request.RegisterRequest) (*response.User, error) {
 
-	user := &response.User{}
-	err := row.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Age, &user.Email, &user.Phone, &user.Address)
+	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.MinCost)
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	query := `
+	SELECT EXISTS (
+		SELECT 1
+		FROM customer
+		WHERE email = $1
+	)
+`
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var exists bool
+
+	err = stmt.QueryRow(u.Email).Scan(&exists)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if exists {
+		return nil, fmt.Errorf("user with email %s already exists", u.Email)
+	}
+
+	query = `INSERT INTO customer (first_name, last_name, username, age, email, phone, password, customer_address) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
+
+	stmt, err = r.db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var id int64
+
+	err = stmt.QueryRow(u.FirstName, u.LastName, u.Username, u.Age, u.Email, u.Phone, password, u.Address).Scan(&id)
+	if err != nil {
+		return nil, err
+	}
+
+	var user response.User
+
+	query = `SELECT id, first_name, last_name, username, password, age, email, phone, customer_address FROM customer WHERE id = $1`
+
+	stmt, err = r.db.Prepare(query)
+	if err != nil {
+		return nil, err
+	}
+
+	err = stmt.QueryRow(id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Username, &user.Password, &user.Age, &user.Email, &user.Phone, &user.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+
 }
-*/
+
+/*func (r *UserRepository) GetByID(id int64) (*response.User, error) {
+
+}*/

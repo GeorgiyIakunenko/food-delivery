@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"food_delivery/server/response"
 )
 
 type OrderRepository struct {
@@ -15,6 +14,6 @@ func NewOrderRepository(db *sql.DB) *OrderRepository {
 	}
 }
 
-func (r *OrderRepository) GetAll() ([]*response.Order, error) {
-	return nil, nil
-}
+/*func (r *OrderRepository) GetAll() ([]*response.Order, error) {
+
+}*/

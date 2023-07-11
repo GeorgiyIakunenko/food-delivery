@@ -58,6 +58,7 @@ func Start(cfg *config.Config) {
 
 	UserHandler := handler.NewUserHandler(db)
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
+	r.HandleFunc("/register", UserHandler.Register).Methods("POST")
 
 	// supplier handler
 
@@ -69,6 +70,11 @@ func Start(cfg *config.Config) {
 	// category handler
 	CategoryHandler := handler.NewCategoryHandler(db)
 	r.HandleFunc("/categories", CategoryHandler.GetAll).Methods(http.MethodGet)
+
+	// product handler
+
+	ProductHandler := handler.NewProductHandler(db)
+	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
 
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
