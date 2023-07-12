@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"food_delivery/config"
 	"food_delivery/handler"
+	"food_delivery/repository"
+	"food_delivery/service"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -54,18 +56,24 @@ func Start(cfg *config.Config) {
 	// create router
 
 	r := mux.NewRouter()
+
 	// user handler
 
-	UserHandler := handler.NewUserHandler(db)
+	UserRepository := repository.NewUserRepository(db)
+	UserService := service.NewUserService(UserRepository)
+	UserHandler := handler.NewUserHandler(UserService, cfg)
+
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
-	r.HandleFunc("/register", UserHandler.Register).Methods("POST")
+	r.HandleFunc("/user/profile", UserHandler.GetUserProfile).Methods("GET")
+
+	// auth handler
+	AuthHandler := handler.NewAuthHandler(UserService, cfg)
+
+	r.HandleFunc("/login", AuthHandler.Login).Methods("POST")
+	r.HandleFunc("/register", AuthHandler.Register).Methods("POST")
+	r.HandleFunc("/refresh", AuthHandler.GetTokenPair).Methods("POST")
 
 	// supplier handler
-
-	SupplierHandler := handler.NewSupplierHandler(db)
-	r.HandleFunc("/suppliers", SupplierHandler.GetAll).Methods(http.MethodGet)
-	r.HandleFunc("/supplier/{id}", SupplierHandler.GetByID).Methods(http.MethodGet)
-	r.HandleFunc("/suppliers/{category}", SupplierHandler.GetByCategory).Methods(http.MethodGet)
 
 	// category handler
 	CategoryHandler := handler.NewCategoryHandler(db)

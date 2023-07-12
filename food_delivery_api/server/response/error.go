@@ -15,3 +15,10 @@ func SendBadRequestError(w http.ResponseWriter, err error) {
 		Message: err.Error(),
 	})
 }
+
+func SendInvalidCredentials(w http.ResponseWriter) {
+	SendJson(w, http.StatusUnauthorized, Basic{
+		Status:  http.StatusUnauthorized,
+		Message: "Invalid credentials",
+	})
+}

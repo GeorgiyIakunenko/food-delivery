@@ -1,47 +1,47 @@
 package handler
 
 import (
-	"database/sql"
-	"food_delivery/repository/db"
-	"food_delivery/server/request"
+	"food_delivery/config"
 	"food_delivery/server/response"
+	"food_delivery/service"
 	"net/http"
 )
 
 type UserHandler struct {
-	db *sql.DB
+	UserServiceI service.UserServiceI
+	cfg          *config.Config
 }
 
-func NewUserHandler(db *sql.DB) *UserHandler {
+func NewUserHandler(UserServiceI service.UserServiceI, cfg *config.Config) *UserHandler {
 	return &UserHandler{
-		db: db,
+		UserServiceI: UserServiceI,
+		cfg:          cfg,
 	}
 }
 
 func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	users, err := db.NewUserRepository(h.db).GetAll()
+	users, err := h.UserServiceI.GetAll()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		response.SendServerError(w, err)
 		return
 	}
 
 	response.SendOK(w, users)
 }
 
-func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var user request.RegisterRequest
+func (h *UserHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 
-	err := request.ParseBody(r, &user)
+	claims, err := service.ValidateToken(service.GetTokenFromBearerString(r.Header.Get("Authorization")), h.cfg.AccessSecret)
 	if err != nil {
-		response.SendBadRequestError(w, err)
+		response.SendInvalidCredentials(w)
 		return
 	}
 
-	userResponse, err := db.NewUserRepository(h.db).RegisterUser(user)
+	user, err := h.UserServiceI.GetUserByID(claims.ID)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
 	}
 
-	response.SendOK(w, userResponse)
+	response.SendOK(w, user)
 }
