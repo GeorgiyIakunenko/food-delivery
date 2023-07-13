@@ -58,18 +58,19 @@ func Start(cfg *config.Config) {
 
 	r := mux.NewRouter()
 
-	// auth handler
+	// user handler
+
 	UserRepository := repository.NewUserRepository(db)
 	UserService := service.NewUserService(UserRepository)
-
-	AuthService := service.NewTokenService(cfg)
-	AuthHandler := handler.NewAuthHandler(UserService, AuthService, cfg)
-
-	// user handler
-	UserHandler := handler.NewUserHandler(UserService, AuthService, cfg)
+	UserHandler := handler.NewUserHandler(UserService, cfg)
 
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
-	r.HandleFunc("/user/profile", UserHandler.GetUserProfile).Methods("GET")
+	r.HandleFunc("/profile", UserHandler.GetUserProfile).Methods("GET")
+
+	// auth handler
+
+	AuthService := service.NewAuthService(UserService, cfg)
+	AuthHandler := handler.NewAuthHandler(AuthService, cfg)
 
 	r.HandleFunc("/login", AuthHandler.Login).Methods("POST")
 	r.HandleFunc("/register", AuthHandler.Register).Methods("POST")

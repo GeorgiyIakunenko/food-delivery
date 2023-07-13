@@ -26,6 +26,11 @@ type RefreshRequest struct {
 	Token string `json:"token"`
 }
 
+type ResetPasswordRequest struct {
+	Email       string `json:"email"`
+	NewPassword string `json:"new_password"`
+}
+
 func ParseBody(r *http.Request, data interface{}) error {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

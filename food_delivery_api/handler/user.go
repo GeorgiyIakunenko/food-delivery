@@ -8,16 +8,14 @@ import (
 )
 
 type UserHandler struct {
-	UserServiceI  service.UserServiceI
-	TokenServiceI service.TokenServiceI
-	cfg           *config.Config
+	cfg          *config.Config
+	UserServiceI service.UserServiceI
 }
 
-func NewUserHandler(UserServiceI service.UserServiceI, TokenServiceI service.TokenServiceI, cfg *config.Config) *UserHandler {
+func NewUserHandler(UserServiceI service.UserServiceI, cfg *config.Config) *UserHandler {
 	return &UserHandler{
-		UserServiceI:  UserServiceI,
-		TokenServiceI: TokenServiceI,
-		cfg:           cfg,
+		cfg:          cfg,
+		UserServiceI: UserServiceI,
 	}
 }
 
@@ -33,7 +31,7 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 
-	claims, err := h.TokenServiceI.ValidateToken(h.TokenServiceI.GetTokenFromBearerString(r.Header.Get("Authorization")), h.cfg.AccessSecret)
+	claims, err := service.ValidateToken(service.GetTokenFromBearerString(r.Header.Get("Authorization")), h.cfg.AccessSecret)
 	if err != nil {
 		response.SendInvalidCredentials(w)
 		return
