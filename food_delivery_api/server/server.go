@@ -9,6 +9,7 @@ import (
 	"food_delivery/repository"
 	"food_delivery/service"
 	"github.com/go-redis/redis/v8"
+	_ "github.com/go-redis/redis/v8"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -57,17 +58,18 @@ func Start(cfg *config.Config) {
 
 	r := mux.NewRouter()
 
-	// user handler
-
+	// auth handler
 	UserRepository := repository.NewUserRepository(db)
 	UserService := service.NewUserService(UserRepository)
-	UserHandler := handler.NewUserHandler(UserService, cfg)
+
+	AuthService := service.NewTokenService(cfg)
+	AuthHandler := handler.NewAuthHandler(UserService, AuthService, cfg)
+
+	// user handler
+	UserHandler := handler.NewUserHandler(UserService, AuthService, cfg)
 
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
 	r.HandleFunc("/user/profile", UserHandler.GetUserProfile).Methods("GET")
-
-	// auth handler
-	AuthHandler := handler.NewAuthHandler(UserService, cfg)
 
 	r.HandleFunc("/login", AuthHandler.Login).Methods("POST")
 	r.HandleFunc("/register", AuthHandler.Register).Methods("POST")

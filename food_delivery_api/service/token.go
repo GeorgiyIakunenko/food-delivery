@@ -2,17 +2,34 @@ package service
 
 import (
 	"errors"
+	"food_delivery/config"
 	"github.com/golang-jwt/jwt/v5"
 	"strings"
 	"time"
 )
+
+type TokenService struct {
+	cfg *config.Config
+}
+
+type TokenServiceI interface {
+	GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error)
+	ValidateToken(tokenString, secret string) (*JwtCustomClaims, error)
+	GetTokenFromBearerString(bearerString string) string
+}
+
+func NewTokenService(cfg *config.Config) *TokenService {
+	return &TokenService{
+		cfg: cfg,
+	}
+}
 
 type JwtCustomClaims struct {
 	ID int `json:"id"`
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
+func (t *TokenService) GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
 	claims := &JwtCustomClaims{
 		userID,
 		jwt.RegisteredClaims{
@@ -24,7 +41,7 @@ func GenerateToken(userID, lifeTimeMinutes int, secret string) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
-func ValidateToken(tokenString, secret string) (*JwtCustomClaims, error) {
+func (t *TokenService) ValidateToken(tokenString, secret string) (*JwtCustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &JwtCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
@@ -40,7 +57,7 @@ func ValidateToken(tokenString, secret string) (*JwtCustomClaims, error) {
 	return claims, nil
 }
 
-func GetTokenFromBearerString(bearerString string) string {
+func (t *TokenService) GetTokenFromBearerString(bearerString string) string {
 	if bearerString == "" {
 		return ""
 	}

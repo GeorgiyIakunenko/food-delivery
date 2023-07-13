@@ -11,14 +11,16 @@ import (
 )
 
 type AuthHandler struct {
-	cfg          *config.Config
-	UserServiceI service.UserServiceI
+	cfg           *config.Config
+	UserServiceI  service.UserServiceI
+	TokenServiceI service.TokenServiceI
 }
 
-func NewAuthHandler(UserServiceI service.UserServiceI, cfg *config.Config) *AuthHandler {
+func NewAuthHandler(UserServiceI service.UserServiceI, TokenServiceI service.TokenServiceI, cfg *config.Config) *AuthHandler {
 	return &AuthHandler{
-		cfg:          cfg,
-		UserServiceI: UserServiceI,
+		cfg:           cfg,
+		UserServiceI:  UserServiceI,
+		TokenServiceI: TokenServiceI,
 	}
 }
 
@@ -41,13 +43,13 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessString, err := service.GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
+	accessString, err := h.TokenServiceI.GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
 	}
 
-	refreshString, err := service.GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
+	refreshString, err := h.TokenServiceI.GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
@@ -79,19 +81,19 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 func (h *AuthHandler) GetTokenPair(w http.ResponseWriter, r *http.Request) {
 	UserRefreshToken := r.Header.Get("Authorization")
-	user, err := service.ValidateToken(UserRefreshToken, h.cfg.RefreshSecret)
+	user, err := h.TokenServiceI.ValidateToken(UserRefreshToken, h.cfg.RefreshSecret)
 	if err != nil {
 		response.SendInvalidCredentials(w)
 		return
 	}
 
-	accessToken, err := service.GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
+	accessToken, err := h.TokenServiceI.GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
 	}
 
-	refreshToken, err := service.GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
+	refreshToken, err := h.TokenServiceI.GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
