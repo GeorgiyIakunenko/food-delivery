@@ -36,9 +36,7 @@ type UpdateUserRequest struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Username  string `json:"username"`
-	Password  string `json:"password"`
 	Age       int    `json:"age"`
-	Email     string `json:"email"`
 	Phone     string `json:"phone"`
 	Address   string `json:"address"`
 }

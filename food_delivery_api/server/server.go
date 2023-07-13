@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"food_delivery/config"
 	"food_delivery/handler"
+	"food_delivery/middleware"
 	"food_delivery/repository"
 	"food_delivery/service"
 	"github.com/go-redis/redis/v8"
@@ -64,8 +65,12 @@ func Start(cfg *config.Config) {
 	UserService := service.NewUserService(UserRepository)
 	UserHandler := handler.NewUserHandler(UserService, cfg)
 
+	userRouter := r.PathPrefix("/user").Subrouter()
+	userRouter.Use(middleware.ValidateAccessToken)
+
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
-	r.HandleFunc("/profile", UserHandler.GetUserProfile).Methods("GET")
+	userRouter.HandleFunc("/profile", UserHandler.GetUserProfile).Methods("GET")
+	userRouter.HandleFunc("/profile", UserHandler.UpdateUserProfile).Methods("PUT")
 
 	// auth handler
 
@@ -74,8 +79,9 @@ func Start(cfg *config.Config) {
 
 	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
-	r.HandleFunc("/auth/refresh", AuthHandler.GetTokenPair).Methods(http.MethodPost)
 	r.HandleFunc("/auth/reset-password", AuthHandler.ResetPassword).Methods(http.MethodPost)
+
+	r.HandleFunc("/auth/refresh", AuthHandler.GetTokenPair).Methods(http.MethodPost)
 
 	// supplier handler
 
