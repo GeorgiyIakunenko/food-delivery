@@ -65,13 +65,13 @@ func Start(cfg *config.Config) {
 	UserService := service.NewUserService(UserRepository)
 	UserHandler := handler.NewUserHandler(UserService, cfg)
 
+	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
 	userRouter := r.PathPrefix("/user").Subrouter()
 	userRouter.Use(middleware.ValidateAccessToken)
-
-	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
 	userRouter.HandleFunc("/profile", UserHandler.GetUserProfile).Methods("GET")
 	userRouter.HandleFunc("/profile", UserHandler.UpdateUserProfile).Methods("PUT")
 
+	r.HandleFunc("/user/profile/password", UserHandler.ChangePassword).Methods("POST")
 	// auth handler
 
 	AuthService := service.NewAuthService(UserService, cfg)
@@ -79,9 +79,10 @@ func Start(cfg *config.Config) {
 
 	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
-	r.HandleFunc("/auth/reset-password", AuthHandler.ResetPassword).Methods(http.MethodPost)
 
-	r.HandleFunc("/auth/refresh", AuthHandler.GetTokenPair).Methods(http.MethodPost)
+	refreshRouter := r.PathPrefix("/auth/refresh").Subrouter()
+	refreshRouter.HandleFunc("", AuthHandler.GetTokenPair).Methods(http.MethodPost)
+	refreshRouter.Use(middleware.ValidateRefreshToken)
 
 	// supplier handler
 

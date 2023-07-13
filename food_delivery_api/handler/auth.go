@@ -9,6 +9,12 @@ import (
 	"net/http"
 )
 
+type contextKey string
+
+const (
+	refreshTokenContextKey contextKey = "refreshToken"
+)
+
 type AuthHandler struct {
 	cfg *config.Config
 	//UserServiceI service.UserServiceI
@@ -56,29 +62,13 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) GetTokenPair(w http.ResponseWriter, r *http.Request) {
-	UserRefreshToken := r.Header.Get("Authorization")
+	claims := r.Context().Value(config.NewConfig().RefreshSecret).(*service.JwtCustomClaims)
 
-	refreshResponse, err := h.AuthServiceI.GetTokenPair(UserRefreshToken)
+	refreshResponse, err := h.AuthServiceI.GetTokenPair(claims.ID)
 	if err != nil {
 		response.SendInvalidCredentials(w)
 		return
 	}
 
 	response.SendOK(w, refreshResponse)
-}
-
-func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	req := new(request.ResetPasswordRequest)
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		response.SendBadRequestError(w, err)
-		return
-	}
-
-	tokenPair, err := h.AuthServiceI.ResetPassword(*req)
-	if err != nil {
-		response.SendBadRequestError(w, err)
-		return
-	}
-
-	response.SendOK(w, tokenPair)
 }

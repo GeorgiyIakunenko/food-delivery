@@ -33,11 +33,7 @@ func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 func (h *UserHandler) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 
-	claims, err := service.ValidateToken(service.GetTokenFromBearerString(r.Header.Get("Authorization")), h.cfg.AccessSecret)
-	if err != nil {
-		response.SendInvalidCredentials(w)
-		return
-	}
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
 
 	user, err := h.UserServiceI.GetUserByID(claims.ID)
 	if err != nil {
@@ -55,17 +51,29 @@ func (h *UserHandler) UpdateUserProfile(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	claims, err := service.ValidateToken(service.GetTokenFromBearerString(r.Header.Get("Authorization")), h.cfg.AccessSecret)
-	if err != nil {
-		response.SendInvalidCredentials(w)
-		return
-	}
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
 
-	err = h.UserServiceI.UpdateUserProfile(claims.ID, *req)
+	err := h.UserServiceI.UpdateUserProfile(claims.ID, *req)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
 	}
 
 	response.SendOK(w, "user profile was successfully updated")
+}
+
+func (h *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	req := new(request.ResetPasswordRequest)
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	tokenPair, err := h.UserServiceI.ResetPassword(*req, h.cfg)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	response.SendOK(w, tokenPair)
 }

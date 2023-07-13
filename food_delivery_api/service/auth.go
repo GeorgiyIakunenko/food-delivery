@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"food_delivery/config"
 	"food_delivery/server/request"
 	"food_delivery/server/response"
@@ -16,8 +15,7 @@ type AuthService struct {
 type AuthServiceI interface {
 	Login(req request.LoginRequest) (*response.TokenResponse, error)
 	Register(req request.RegisterRequest) error
-	GetTokenPair(UserRefreshToken string) (*response.TokenResponse, error)
-	ResetPassword(req request.ResetPasswordRequest) (*response.TokenResponse, error)
+	GetTokenPair(userID int) (*response.TokenResponse, error)
 }
 
 func NewAuthService(UserServiceI UserServiceI, cfg *config.Config) AuthServiceI {
@@ -65,18 +63,13 @@ func (h *AuthService) Register(req request.RegisterRequest) error {
 	return nil
 }
 
-func (h *AuthService) GetTokenPair(UserRefreshToken string) (*response.TokenResponse, error) {
-	user, err := ValidateToken(UserRefreshToken, h.cfg.RefreshSecret)
+func (h *AuthService) GetTokenPair(userID int) (*response.TokenResponse, error) {
+	accessToken, err := GenerateToken(userID, h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
-	if err != nil {
-		return nil, err
-	}
-
-	refreshToken, err := GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
+	refreshToken, err := GenerateToken(userID, h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
 	if err != nil {
 		return nil, err
 	}
@@ -87,36 +80,4 @@ func (h *AuthService) GetTokenPair(UserRefreshToken string) (*response.TokenResp
 	}
 
 	return &refreshResponse, nil
-}
-
-func (h *AuthService) ResetPassword(req request.ResetPasswordRequest) (*response.TokenResponse, error) {
-	user, err := h.UserServiceI.GetUserByEmail(req.Email)
-	if err != nil {
-		return nil, errors.New("failed to retrieve user")
-	}
-
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
-		return nil, errors.New("invalid current password")
-	}
-
-	if err = h.UserServiceI.UpdateUserPasswordById(int(user.ID), req.NewPassword); err != nil {
-		return nil, errors.New("failed to update password")
-	}
-
-	accessString, err := GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
-	if err != nil {
-		return nil, errors.New("failed to generate access token")
-	}
-
-	refreshString, err := GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
-	if err != nil {
-		return nil, errors.New("failed to generate refresh token")
-	}
-
-	resp := response.TokenResponse{
-		AccessToken:  accessString,
-		RefreshToken: refreshString,
-	}
-
-	return &resp, nil
 }
