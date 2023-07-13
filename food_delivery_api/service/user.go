@@ -124,8 +124,6 @@ func (r *UserService) UpdateUserPasswordById(id int, password string) error {
 
 func (r *UserService) UpdateUserProfile(userID int, req request.UpdateUserRequest) error {
 
-	// todo check if the user with this username exist and change phone in db (no unique anymore)
-
 	user, err := r.userRepositoryI.GetUserByID(int64(userID))
 	if err != nil {
 		return err

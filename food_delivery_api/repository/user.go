@@ -28,7 +28,7 @@ func NewUserRepository(db *sql.DB) UserRepositoryI {
 	}
 }
 
-func (r *UserRepository) IsUserExists(user request.RegisterRequest) (bool, error) {
+/*func (r *UserRepository) IsUserExists(user request.RegisterRequest) (bool, error) {
 	query := "SELECT id FROM customer WHERE email = $1 OR username = $2 OR phone = $3"
 
 	stmt, err := r.db.Prepare(query)
@@ -38,6 +38,29 @@ func (r *UserRepository) IsUserExists(user request.RegisterRequest) (bool, error
 	defer stmt.Close()
 
 	row := stmt.QueryRow(user.Email, user.Username, user.Phone)
+
+	var id int64
+	err = row.Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
+}*/
+
+func (r *UserRepository) IsUsernameExists(username string) (bool, error) {
+	query := "SELECT id FROM customer WHERE username = $1"
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return false, err
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(username)
 
 	var id int64
 	err = row.Scan(&id)
@@ -218,6 +241,16 @@ func (r *UserRepository) UpdateUserPasswordByID(id int64, password string) error
 }
 
 func (r *UserRepository) UpdateUserProfileByID(req models.User) error {
+
+	IsUsernameExists, err := r.IsUsernameExists(req.Username)
+	if err != nil {
+		return err
+	}
+
+	if IsUsernameExists {
+		return fmt.Errorf("username is already exists")
+	}
+
 	query := `UPDATE customer SET first_name = $1, last_name = $2, username = $3, age = $4, email = $5, phone = $6, customer_address = $7 WHERE id = $8`
 
 	stmt, err := r.db.Prepare(query)

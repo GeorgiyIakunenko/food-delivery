@@ -9,12 +9,6 @@ import (
 	"net/http"
 )
 
-type contextKey string
-
-const (
-	refreshTokenContextKey contextKey = "refreshToken"
-)
-
 type AuthHandler struct {
 	cfg *config.Config
 	//UserServiceI service.UserServiceI
