@@ -15,6 +15,7 @@ type UserServiceI interface {
 	RegisterUser(u request.RegisterRequest) (*response.User, error)
 	GetUserByEmail(email string) (*response.User, error)
 	GetUserByID(id int) (*response.User, error)
+	UpdateUserPasswordById(id int, password string) error
 }
 
 func NewUserService(userRepositoryI repository.UserRepositoryI) UserServiceI {
@@ -103,4 +104,14 @@ func (r *UserService) GetUserByID(id int) (*response.User, error) {
 		Phone:     user.Phone,
 		Address:   user.Address,
 	}, nil
+}
+
+func (r *UserService) UpdateUserPasswordById(id int, password string) error {
+	err := r.userRepositoryI.UpdateUserPasswordByID(int64(id), password)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

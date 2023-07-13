@@ -67,26 +67,18 @@ func (h *AuthHandler) GetTokenPair(w http.ResponseWriter, r *http.Request) {
 	response.SendOK(w, refreshResponse)
 }
 
-/*func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
+func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	req := new(request.ResetPasswordRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		response.SendBadRequestError(w, err)
 		return
 	}
 
-	user, err := h.UserServiceI.GetUserByEmail(req.Email)
+	tokenPair, err := h.AuthServiceI.ResetPassword(*req)
 	if err != nil {
-		response.SendInvalidCredentials(w)
+		response.SendBadRequestError(w, err)
 		return
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
-		response.SendInvalidCredentials(w)
-		return
-	}
-
-	if err = h.UserServiceI.UpdateUserPassword(user.ID, req.NewPassword); err != nil {
-		response.SendServerError(w, err)
-		return
-	}
-}*/
+	response.SendOK(w, tokenPair)
+}

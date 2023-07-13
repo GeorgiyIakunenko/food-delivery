@@ -28,7 +28,19 @@ type RefreshRequest struct {
 
 type ResetPasswordRequest struct {
 	Email       string `json:"email"`
+	OldPassword string `json:"old_password"`
 	NewPassword string `json:"new_password"`
+}
+
+type UpdateUserRequest struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Age       int    `json:"age"`
+	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	Address   string `json:"address"`
 }
 
 func ParseBody(r *http.Request, data interface{}) error {

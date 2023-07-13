@@ -18,7 +18,7 @@ type UserRepositoryI interface {
 	RegisterUser(u request.RegisterRequest) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(id int64) (models.User, error)
-	UpdateUserPassword(id int64, password string) error
+	UpdateUserPasswordByID(id int64, password string) error
 }
 
 func NewUserRepository(db *sql.DB) UserRepositoryI {
@@ -195,7 +195,7 @@ func (r *UserRepository) GetUserByID(id int64) (models.User, error) {
 	return user, nil
 }
 
-func (r *UserRepository) UpdateUserPassword(id int64, password string) error {
+func (r *UserRepository) UpdateUserPasswordByID(id int64, password string) error {
 	query := `UPDATE customer SET password = $1 WHERE id = $2`
 
 	stmt, err := r.db.Prepare(query)

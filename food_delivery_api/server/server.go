@@ -72,9 +72,10 @@ func Start(cfg *config.Config) {
 	AuthService := service.NewAuthService(UserService, cfg)
 	AuthHandler := handler.NewAuthHandler(AuthService, cfg)
 
-	r.HandleFunc("/login", AuthHandler.Login).Methods("POST")
-	r.HandleFunc("/register", AuthHandler.Register).Methods("POST")
-	r.HandleFunc("/refresh", AuthHandler.GetTokenPair).Methods("POST")
+	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
+	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
+	r.HandleFunc("/auth/refresh", AuthHandler.GetTokenPair).Methods(http.MethodPost)
+	r.HandleFunc("/auth/reset-password", AuthHandler.ResetPassword).Methods(http.MethodPost)
 
 	// supplier handler
 
