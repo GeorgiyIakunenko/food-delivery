@@ -22,7 +22,7 @@ func Start(cfg *config.Config) {
 		log.Fatal(err)
 	}
 
-	// todo refactor name db to postgresDB
+	//refactor name db to postgresDB due to conflict
 
 	db, err := db.NewPostgreSQLDB(cfg)
 	if err != nil {
