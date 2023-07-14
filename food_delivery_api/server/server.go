@@ -22,6 +22,8 @@ func Start(cfg *config.Config) {
 		log.Fatal(err)
 	}
 
+	// todo refactor name db to postgresDB
+
 	db, err := db.NewPostgreSQLDB(cfg)
 	if err != nil {
 		log.Fatal(err)
