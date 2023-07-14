@@ -1,24 +1,70 @@
 package handler
 
 import (
-	"database/sql"
-	"food_delivery/repository"
 	"food_delivery/server/response"
+	"food_delivery/service"
+	"food_delivery/utils"
 	"net/http"
 )
 
 type CategoryHandler struct {
-	db *sql.DB
+	CategoryServiceI service.CategoryServiceI
 }
 
-func NewCategoryHandler(db *sql.DB) *CategoryHandler {
+func NewCategoryHandler(CategoryServiceI service.CategoryServiceI) *CategoryHandler {
 	return &CategoryHandler{
-		db: db,
+		CategoryServiceI: CategoryServiceI,
 	}
 }
 
-func (h *CategoryHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	categories, err := repository.NewCategoryRepository(h.db).GetAll()
+func (h *CategoryHandler) GetAllCategories(w http.ResponseWriter, r *http.Request) {
+	categories, err := h.CategoryServiceI.GetAllCategories()
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+	response.SendOK(w, categories)
+}
+
+func (h *CategoryHandler) GetCategoryByID(w http.ResponseWriter, r *http.Request) {
+	id, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, nil)
+		return
+	}
+
+	category, err := h.CategoryServiceI.GetCategoryByID(int64(id))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+	response.SendOK(w, category)
+}
+
+func (h *CategoryHandler) GetCategoriesBySupplierID(w http.ResponseWriter, r *http.Request) {
+	id, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, nil)
+		return
+	}
+
+	categories, err := h.CategoryServiceI.GetCategoriesBySupplierID(int64(id))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, categories)
+}
+
+func (h *CategoryHandler) GetCategoryByProductID(w http.ResponseWriter, r *http.Request) {
+	id, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, nil)
+		return
+	}
+
+	categories, err := h.CategoryServiceI.GetCategoryByProductID(int64(id))
 	if err != nil {
 		response.SendServerError(w, err)
 		return

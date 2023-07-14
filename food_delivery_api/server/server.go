@@ -79,10 +79,14 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/suppliers/category/{id}", SupplierHandler.GetSuppliersByCategoryID).Methods(http.MethodGet)
 
 	// category handler
-	CategoryHandler := handler.NewCategoryHandler(postgresClient)
-	r.HandleFunc("/categories", CategoryHandler.GetAll).Methods(http.MethodGet)
+	CategoryRepository := repository.NewCategoryRepository(postgresClient)
+	CategoryService := service.NewCategoryService(CategoryRepository)
+	CategoryHandler := handler.NewCategoryHandler(CategoryService)
 
-	// product handler
+	r.HandleFunc("/categories", CategoryHandler.GetAllCategories).Methods(http.MethodGet)
+	r.HandleFunc("/category/{id}", CategoryHandler.GetCategoryByID).Methods(http.MethodGet)
+	r.HandleFunc("/supplier/{id}/categories", CategoryHandler.GetCategoriesBySupplierID).Methods(http.MethodGet)
+	r.HandleFunc("/product/{id}/category", CategoryHandler.GetCategoryByProductID).Methods(http.MethodGet)
 
 	ProductHandler := handler.NewProductHandler(postgresClient)
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
