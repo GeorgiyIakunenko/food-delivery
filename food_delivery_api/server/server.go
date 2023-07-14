@@ -24,7 +24,7 @@ func Start(cfg *config.Config) {
 
 	//refactor name db to postgresDB due to conflict
 
-	db, err := db.NewPostgreSQLDB(cfg)
+	postgresClient, err := db.NewPostgreSQLDB(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -35,21 +35,24 @@ func Start(cfg *config.Config) {
 
 	// user handler
 
-	UserRepository := repository.NewUserRepository(db)
+	UserRepository := repository.NewUserRepository(postgresClient)
 	UserService := service.NewUserService(UserRepository)
 	UserHandler := handler.NewUserHandler(UserService, cfg)
 
+	AuthMiddleware := middleware.NewAuthMiddleware(redisClient, cfg)
+
 	r.HandleFunc("/users", UserHandler.GetAll).Methods("GET")
+
 	userRouter := r.PathPrefix("/user").Subrouter()
-	userRouter.Use(middleware.ValidateAccessToken)
+	userRouter.Use(AuthMiddleware.ValidateAccessToken)
 	userRouter.HandleFunc("/profile", UserHandler.GetUserProfile).Methods("GET")
 	userRouter.HandleFunc("/profile", UserHandler.UpdateUserProfile).Methods("PUT")
 
-	r.HandleFunc("/user/profile/password", UserHandler.ChangePassword).Methods("POST")
 	// auth handler
-
 	AuthService := service.NewAuthService(UserService, redisClient, cfg)
 	AuthHandler := handler.NewAuthHandler(AuthService, cfg)
+
+	r.HandleFunc("/user/profile/password", AuthHandler.ChangePassword).Methods("POST")
 
 	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
@@ -58,17 +61,21 @@ func Start(cfg *config.Config) {
 
 	refreshRouter := r.PathPrefix("/auth/refresh").Subrouter()
 	refreshRouter.HandleFunc("", AuthHandler.GetTokenPair).Methods(http.MethodPost)
-	refreshRouter.Use(middleware.ValidateRefreshToken)
+	refreshRouter.Use(AuthMiddleware.ValidateRefreshToken)
+
+	logoutRouter := r.PathPrefix("/auth/logout").Subrouter()
+	logoutRouter.HandleFunc("", AuthHandler.Logout).Methods(http.MethodPost)
+	logoutRouter.Use(AuthMiddleware.ValidateAccessToken)
 
 	// supplier handler
 
 	// category handler
-	CategoryHandler := handler.NewCategoryHandler(db)
+	CategoryHandler := handler.NewCategoryHandler(postgresClient)
 	r.HandleFunc("/categories", CategoryHandler.GetAll).Methods(http.MethodGet)
 
 	// product handler
 
-	ProductHandler := handler.NewProductHandler(db)
+	ProductHandler := handler.NewProductHandler(postgresClient)
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
 
 	fmt.Println("Server started at port", cfg.Port)

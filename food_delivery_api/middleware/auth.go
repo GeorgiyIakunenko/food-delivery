@@ -2,45 +2,84 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"food_delivery/config"
 	"food_delivery/server/response"
 	"food_delivery/service"
+	"github.com/go-redis/redis/v8"
 	"net/http"
 )
 
-func ValidateAccessToken(next http.Handler) http.Handler {
+type AuthMiddleware struct {
+	RedisClient *redis.Client
+	cfg         *config.Config
+}
+
+func NewAuthMiddleware(redisClient *redis.Client, cfg *config.Config) *AuthMiddleware {
+	return &AuthMiddleware{
+		RedisClient: redisClient,
+		cfg:         cfg,
+	}
+}
+
+func (am *AuthMiddleware) ValidateAccessToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		token := service.GetTokenFromBearerString(authHeader)
 
-		claims, err := service.ValidateToken(token, config.NewConfig().AccessSecret)
+		claims, err := service.ValidateToken(token, am.cfg.AccessSecret)
 		if err != nil {
 			response.SendInvalidCredentials(w)
 			return
 		}
 
-		// Pass the claims to the next handler
-		ctx := context.WithValue(r.Context(), config.NewConfig().AccessSecret, claims)
+		userID := claims.ID
 
+		accessTokenKey := fmt.Sprintf("access_token:%d", userID)
+		ctx := context.Background()
+		storedToken, err := am.RedisClient.Get(ctx, accessTokenKey).Result()
+		if err != nil {
+			response.SendInvalidCredentials(w)
+			return
+		}
+
+		if token != storedToken {
+			response.SendInvalidCredentials(w)
+			return
+		}
+
+		ctx = context.WithValue(r.Context(), am.cfg.AccessSecret, claims)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)
 	})
 }
 
-func ValidateRefreshToken(next http.Handler) http.Handler {
+func (am *AuthMiddleware) ValidateRefreshToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		token := service.GetTokenFromBearerString(authHeader)
 
-		claims, err := service.ValidateToken(token, config.NewConfig().RefreshSecret)
+		claims, err := service.ValidateToken(token, am.cfg.RefreshSecret)
 		if err != nil {
 			response.SendInvalidCredentials(w)
 			return
 		}
 
-		// Pass the claims to the next handler
-		ctx := context.WithValue(r.Context(), config.NewConfig().RefreshSecret, claims)
+		refreshTokenKey := fmt.Sprintf("refresh_token:%d", claims.ID)
+		ctx := context.Background()
+		storedToken, err := am.RedisClient.Get(ctx, refreshTokenKey).Result()
+		if err != nil {
+			response.SendInvalidCredentials(w)
+			return
+		}
+
+		if token != storedToken {
+			response.SendInvalidCredentials(w)
+			return
+		}
+
+		ctx = context.WithValue(r.Context(), am.cfg.RefreshSecret, claims)
 		r = r.WithContext(ctx)
 
 		next.ServeHTTP(w, r)

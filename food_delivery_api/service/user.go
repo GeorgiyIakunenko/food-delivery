@@ -1,12 +1,9 @@
 package service
 
 import (
-	"errors"
-	"food_delivery/config"
 	"food_delivery/repository"
 	"food_delivery/server/request"
 	"food_delivery/server/response"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
@@ -20,7 +17,7 @@ type UserServiceI interface {
 	GetUserByID(id int) (*response.User, error)
 	UpdateUserPasswordById(id int, password string) error
 	UpdateUserProfile(ID int, req request.UpdateUserRequest) error
-	ResetPassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error)
+	//ChangePassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error)
 }
 
 func NewUserService(userRepositoryI repository.UserRepositoryI) UserServiceI {
@@ -154,36 +151,4 @@ func (r *UserService) UpdateUserProfile(userID int, req request.UpdateUserReques
 	}
 
 	return nil
-}
-
-func (r *UserService) ResetPassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error) {
-	user, err := r.GetUserByEmail(req.Email)
-	if err != nil {
-		return nil, errors.New("failed to retrieve user")
-	}
-
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
-		return nil, errors.New("invalid current password")
-	}
-
-	if err = r.UpdateUserPasswordById(int(user.ID), req.NewPassword); err != nil {
-		return nil, errors.New("failed to update password")
-	}
-
-	accessString, err := GenerateToken(int(user.ID), cfg.AccessLifetimeMinutes, cfg.AccessSecret)
-	if err != nil {
-		return nil, errors.New("failed to generate access token")
-	}
-
-	refreshString, err := GenerateToken(int(user.ID), cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
-	if err != nil {
-		return nil, errors.New("failed to generate refresh token")
-	}
-
-	resp := response.TokenResponse{
-		AccessToken:  accessString,
-		RefreshToken: refreshString,
-	}
-
-	return &resp, nil
 }

@@ -99,3 +99,31 @@ func (h *AuthHandler) SubmitResetCode(w http.ResponseWriter, r *http.Request) {
 
 	response.SendOK(w, "Password reset successful")
 }
+
+func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
+
+	err := h.AuthServiceI.Logout(claims.ID)
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, "Logout successful")
+}
+
+func (h *AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	req := new(request.ChangePasswordRequest)
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	tokenPair, err := h.AuthServiceI.ChangePassword(*req, h.cfg)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	response.SendOK(w, tokenPair)
+}

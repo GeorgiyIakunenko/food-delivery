@@ -61,19 +61,3 @@ func (h *UserHandler) UpdateUserProfile(w http.ResponseWriter, r *http.Request) 
 
 	response.SendOK(w, "user profile was successfully updated")
 }
-
-func (h *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	req := new(request.ChangePasswordRequest)
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		response.SendBadRequestError(w, err)
-		return
-	}
-
-	tokenPair, err := h.UserServiceI.ResetPassword(*req, h.cfg)
-	if err != nil {
-		response.SendBadRequestError(w, err)
-		return
-	}
-
-	response.SendOK(w, tokenPair)
-}
