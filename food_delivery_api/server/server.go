@@ -1,15 +1,13 @@
 package server
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"food_delivery/config"
 	"food_delivery/handler"
 	"food_delivery/middleware"
 	"food_delivery/repository"
+	"food_delivery/repository/db"
 	"food_delivery/service"
-	"github.com/go-redis/redis/v8"
 	_ "github.com/go-redis/redis/v8"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -19,41 +17,15 @@ import (
 )
 
 func Start(cfg *config.Config) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName)
-
-	db, err := sql.Open("postgres", connStr)
+	redisClient, err := db.NewRedisClient(cfg)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
-	err = db.Ping()
+	db, err := db.NewPostgreSQLDB(cfg)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-
-	// open redis connection
-
-	redisConnStr := fmt.Sprintf("%s:%s", cfg.RedisHost, cfg.RedisPort)
-	redisDb := redis.NewClient(&redis.Options{
-		Addr: redisConnStr,
-	})
-
-	pong, err := redisDb.Ping(redisDb.Context()).Result()
-	fmt.Println(pong, err)
-
-	// redis test
-
-	value, err := redisDb.Get(context.Background(), "user:1:token").Result()
-	if err != nil {
-		if err == redis.Nil {
-			fmt.Println("Key does not exist")
-		} else {
-			fmt.Println("Failed to retrieve data:", err)
-		}
-		return
-	}
-	fmt.Println("Value:", value)
 
 	// create router
 
@@ -74,11 +46,13 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/user/profile/password", UserHandler.ChangePassword).Methods("POST")
 	// auth handler
 
-	AuthService := service.NewAuthService(UserService, cfg)
+	AuthService := service.NewAuthService(UserService, redisClient, cfg)
 	AuthHandler := handler.NewAuthHandler(AuthService, cfg)
 
 	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
+	r.HandleFunc("/auth/reset-password", AuthHandler.InitiatePasswordReset).Methods(http.MethodPost)
+	r.HandleFunc("/auth/submit-code", AuthHandler.SubmitResetCode).Methods(http.MethodPost)
 
 	refreshRouter := r.PathPrefix("/auth/refresh").Subrouter()
 	refreshRouter.HandleFunc("", AuthHandler.GetTokenPair).Methods(http.MethodPost)

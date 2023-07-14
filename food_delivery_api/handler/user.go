@@ -63,7 +63,7 @@ func (h *UserHandler) UpdateUserProfile(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *UserHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	req := new(request.ResetPasswordRequest)
+	req := new(request.ChangePasswordRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		response.SendBadRequestError(w, err)
 		return

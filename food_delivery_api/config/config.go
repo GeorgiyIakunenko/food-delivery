@@ -20,6 +20,8 @@ type Config struct {
 	DbHost                 string
 	RedisHost              string
 	RedisPort              string
+	Email                  string
+	EmailPassword          string
 }
 
 func NewConfig() *Config {
@@ -50,6 +52,8 @@ func NewConfig() *Config {
 		DbName:                 os.Getenv("DB_NAME"),
 		RedisHost:              os.Getenv("REDIS_HOST"),
 		RedisPort:              os.Getenv("REDIS_PORT"),
+		Email:                  os.Getenv("EMAIL"),
+		EmailPassword:          os.Getenv("EMAIL_PASSWORD"),
 	}
 
 }

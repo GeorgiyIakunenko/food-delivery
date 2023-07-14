@@ -66,3 +66,36 @@ func (h *AuthHandler) GetTokenPair(w http.ResponseWriter, r *http.Request) {
 
 	response.SendOK(w, refreshResponse)
 }
+
+func (h *AuthHandler) InitiatePasswordReset(w http.ResponseWriter, r *http.Request) {
+	req := new(request.PasswordResetRequest)
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	err := h.AuthServiceI.InitiatePasswordReset(*req)
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, "Password reset code sent")
+}
+
+func (h *AuthHandler) SubmitResetCode(w http.ResponseWriter, r *http.Request) {
+
+	req := new(request.PasswordResetRequest)
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	err := h.AuthServiceI.SubmitResetCode(*req)
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, "Password reset successful")
+}

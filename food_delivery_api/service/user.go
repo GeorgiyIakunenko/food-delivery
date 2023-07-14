@@ -20,7 +20,7 @@ type UserServiceI interface {
 	GetUserByID(id int) (*response.User, error)
 	UpdateUserPasswordById(id int, password string) error
 	UpdateUserProfile(ID int, req request.UpdateUserRequest) error
-	ResetPassword(req request.ResetPasswordRequest, cfg *config.Config) (*response.TokenResponse, error)
+	ResetPassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error)
 }
 
 func NewUserService(userRepositoryI repository.UserRepositoryI) UserServiceI {
@@ -156,7 +156,7 @@ func (r *UserService) UpdateUserProfile(userID int, req request.UpdateUserReques
 	return nil
 }
 
-func (r *UserService) ResetPassword(req request.ResetPasswordRequest, cfg *config.Config) (*response.TokenResponse, error) {
+func (r *UserService) ResetPassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error) {
 	user, err := r.GetUserByEmail(req.Email)
 	if err != nil {
 		return nil, errors.New("failed to retrieve user")
