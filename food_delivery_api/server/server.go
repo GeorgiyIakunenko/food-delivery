@@ -69,6 +69,15 @@ func Start(cfg *config.Config) {
 
 	// supplier handler
 
+	SupplierRepository := repository.NewSupplierRepository(postgresClient)
+	SupplierService := service.NewSupplierService(SupplierRepository)
+	SupplierHandler := handler.NewSupplierHandler(SupplierService)
+
+	r.HandleFunc("/suppliers", SupplierHandler.GetAllSuppliers).Methods(http.MethodGet)
+	r.HandleFunc("/supplier/{id}", SupplierHandler.GetSupplierByID).Methods(http.MethodGet)
+	r.HandleFunc("/suppliers/{type}", SupplierHandler.GetSupplierByType).Methods(http.MethodGet)
+	r.HandleFunc("/suppliers/category/{id}", SupplierHandler.GetSuppliersByCategoryID).Methods(http.MethodGet)
+
 	// category handler
 	CategoryHandler := handler.NewCategoryHandler(postgresClient)
 	r.HandleFunc("/categories", CategoryHandler.GetAll).Methods(http.MethodGet)
