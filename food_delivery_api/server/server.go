@@ -88,7 +88,11 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/supplier/{id}/categories", CategoryHandler.GetCategoriesBySupplierID).Methods(http.MethodGet)
 	r.HandleFunc("/product/{id}/category", CategoryHandler.GetCategoryByProductID).Methods(http.MethodGet)
 
-	ProductHandler := handler.NewProductHandler(postgresClient)
+	// product handler
+
+	ProductRepository := repository.NewProductRepository(postgresClient)
+	ProductService := service.NewProductService(ProductRepository)
+	ProductHandler := handler.NewProductHandler(ProductService)
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
 
 	fmt.Println("Server started at port", cfg.Port)

@@ -1,24 +1,23 @@
 package handler
 
 import (
-	"database/sql"
-	"food_delivery/repository"
 	"food_delivery/server/response"
+	"food_delivery/service"
 	"net/http"
 )
 
 type ProductHandler struct {
-	db *sql.DB
+	ProductServiceI service.ProductServiceI
 }
 
-func NewProductHandler(db *sql.DB) *ProductHandler {
+func NewProductHandler(ProductServiceI service.ProductServiceI) *ProductHandler {
 	return &ProductHandler{
-		db: db,
+		ProductServiceI: ProductServiceI,
 	}
 }
 
 func (h *ProductHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	products, err := repository.NewProductRepository(h.db).GetAll()
+	products, err := h.ProductServiceI.GetAllProducts()
 	if err != nil {
 		response.SendServerError(w, err)
 		return
