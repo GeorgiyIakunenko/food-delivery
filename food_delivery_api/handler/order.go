@@ -8,7 +8,6 @@ import (
 	"food_delivery/server/response"
 	"food_delivery/service"
 	"food_delivery/utils"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -63,8 +62,7 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validate := validator.New()
-	err = validate.Struct(orderRequest)
+	err = request.ValidateRequest(orderRequest)
 	if err != nil {
 		response.SendBadRequestError(w, err)
 		return

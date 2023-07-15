@@ -30,6 +30,12 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err := request.ValidateRequest(req)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
 	resp, err := h.AuthServiceI.Login(*req)
 	if err != nil {
 		response.SendInvalidCredentials(w)
@@ -46,7 +52,13 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.AuthServiceI.Register(*req)
+	err := request.ValidateRequest(req)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	err = h.AuthServiceI.Register(*req)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
@@ -68,13 +80,19 @@ func (h *AuthHandler) GetTokenPair(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) InitiatePasswordReset(w http.ResponseWriter, r *http.Request) {
-	req := new(request.PasswordResetRequest)
+	req := new(request.PasswordResetEmailRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		response.SendBadRequestError(w, err)
 		return
 	}
 
-	err := h.AuthServiceI.InitiatePasswordReset(*req)
+	err := request.ValidateRequest(req)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	err = h.AuthServiceI.InitiatePasswordReset(*req)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
@@ -91,7 +109,13 @@ func (h *AuthHandler) SubmitResetCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := h.AuthServiceI.SubmitResetCode(*req)
+	err := request.ValidateRequest(req)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	err = h.AuthServiceI.SubmitResetCode(*req)
 	if err != nil {
 		response.SendServerError(w, err)
 		return
@@ -113,13 +137,22 @@ func (h *AuthHandler) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AuthHandler) ChangePassword(w http.ResponseWriter, r *http.Request) {
+
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
+
 	req := new(request.ChangePasswordRequest)
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 		response.SendBadRequestError(w, err)
 		return
 	}
 
-	tokenPair, err := h.AuthServiceI.ChangePassword(*req, h.cfg)
+	err := request.ValidateRequest(req)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	tokenPair, err := h.AuthServiceI.ChangePassword(*req, h.cfg, claims.ID)
 	if err != nil {
 		response.SendBadRequestError(w, err)
 		return

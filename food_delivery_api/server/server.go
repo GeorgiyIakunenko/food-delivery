@@ -52,8 +52,7 @@ func Start(cfg *config.Config) {
 	AuthService := service.NewAuthService(UserService, redisClient, cfg)
 	AuthHandler := handler.NewAuthHandler(AuthService, cfg)
 
-	r.HandleFunc("/user/profile/password", AuthHandler.ChangePassword).Methods("POST")
-
+	userRouter.HandleFunc("/profile/password", AuthHandler.ChangePassword).Methods("POST")
 	r.HandleFunc("/auth/login", AuthHandler.Login).Methods(http.MethodPost)
 	r.HandleFunc("/auth/register", AuthHandler.Register).Methods(http.MethodPost)
 	r.HandleFunc("/auth/reset-password", AuthHandler.InitiatePasswordReset).Methods(http.MethodPost)

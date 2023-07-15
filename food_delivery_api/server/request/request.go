@@ -2,6 +2,7 @@ package request
 
 import (
 	"encoding/json"
+	"github.com/go-playground/validator/v10"
 	"io/ioutil"
 	"net/http"
 )
@@ -18,18 +19,18 @@ type RegisterRequest struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
 }
 
-type RefreshRequest struct {
+/*type RefreshRequest struct {
 	Token string `json:"token"`
-}
+}*/
 
 type ChangePasswordRequest struct {
-	Email       string `json:"email"`
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
+	//Email       string `json:"email" validate:"required,email"`
+	OldPassword string `json:"old_password" validate:"required,min=6"`
+	NewPassword string `json:"new_password" validate:"required,min=6"`
 }
 
 type UpdateUserRequest struct {
@@ -41,10 +42,14 @@ type UpdateUserRequest struct {
 	Address   string `json:"address"`
 }
 
+type PasswordResetEmailRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
 type PasswordResetRequest struct {
-	Email       string `json:"email"`
-	ResetCode   string `json:"reset_code"`
-	NewPassword string `json:"new_password"`
+	Email       string `json:"email" validate:"required,email"`
+	ResetCode   string `json:"reset_code" validate:"required"`
+	NewPassword string `json:"new_password" validate:"required,min=6"`
 }
 
 type OrderProductRequest struct {
@@ -57,6 +62,15 @@ type OrderRequest struct {
 	PaymentMethod string                `json:"payment_method" validate:"required"`
 	Address       string                `json:"address" validate:"required"`
 	Products      []OrderProductRequest `json:"product" validate:"required"`
+}
+
+func ValidateRequest(req interface{}) error {
+	validate := validator.New()
+	err := validate.Struct(req)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func ParseBody(r *http.Request, data interface{}) error {

@@ -26,13 +26,13 @@ type AuthServiceI interface {
 	GetTokenPair(userID int) (*response.TokenResponse, error)
 	StoreResetCode(email string, resetCode string) error
 	GetResetCodeByUserEmail(email string) (string, error)
-	InitiatePasswordReset(req request.PasswordResetRequest) error
+	InitiatePasswordReset(req request.PasswordResetEmailRequest) error
 	SubmitResetCode(req request.PasswordResetRequest) error
 	StoreTokensByUserID(userID int, tokens *response.TokenResponse) error
 	GetTokensByUserID(userID int) (*response.TokenResponse, error)
 	DeleteTokensByUserID(userID int) error
 	Logout(userID int) error
-	ChangePassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error)
+	ChangePassword(req request.ChangePasswordRequest, cfg *config.Config, userID int) (*response.TokenResponse, error)
 }
 
 func NewAuthService(UserServiceI UserServiceI, redisClient *redis.Client, cfg *config.Config) AuthServiceI {
@@ -138,7 +138,7 @@ func (h *AuthService) GetResetCodeByUserEmail(email string) (string, error) {
 	resetCode, err := h.redisClient.Get(context.Background(), key).Result()
 	if err != nil {
 		if err == redis.Nil {
-			return "", errors.New("Invalid or expired reset code")
+			return "", errors.New("invalid or expired reset code")
 		}
 		return "", err
 	}
@@ -146,7 +146,7 @@ func (h *AuthService) GetResetCodeByUserEmail(email string) (string, error) {
 	return resetCode, nil
 }
 
-func (h *AuthService) InitiatePasswordReset(req request.PasswordResetRequest) error {
+func (h *AuthService) InitiatePasswordReset(req request.PasswordResetEmailRequest) error {
 
 	user, err := h.UserServiceI.GetUserByEmail(req.Email)
 	if err != nil {
@@ -265,8 +265,8 @@ func (h *AuthService) Logout(userID int) error {
 	return nil
 }
 
-func (h *AuthService) ChangePassword(req request.ChangePasswordRequest, cfg *config.Config) (*response.TokenResponse, error) {
-	user, err := h.UserServiceI.GetUserByEmail(req.Email)
+func (h *AuthService) ChangePassword(req request.ChangePasswordRequest, cfg *config.Config, userID int) (*response.TokenResponse, error) {
+	user, err := h.UserServiceI.GetUserByID(userID)
 	if err != nil {
 		return nil, errors.New("failed to retrieve user")
 	}
