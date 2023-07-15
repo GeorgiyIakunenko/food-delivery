@@ -109,6 +109,7 @@ func Start(cfg *config.Config) {
 	orderRouter.Use(AuthMiddleware.ValidateAccessToken)
 	orderRouter.HandleFunc("", OrderHandler.GetAllUserOrdersByID).Methods(http.MethodGet)
 	orderRouter.HandleFunc("/{id}/products", OrderHandler.GetOrderProductsByID).Methods(http.MethodGet)
+	orderRouter.HandleFunc("/create", OrderHandler.CreateOrder).Methods(http.MethodPost)
 
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))

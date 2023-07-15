@@ -3,6 +3,8 @@ package service
 import (
 	"errors"
 	"food_delivery/repository"
+	"food_delivery/repository/models"
+	"food_delivery/server/request"
 	"food_delivery/server/response"
 )
 
@@ -15,6 +17,7 @@ type OrderServiceI interface {
 	GetAllUserOrdersByID(ID int64) ([]*response.Order, error)
 	GetOrderProductsByID(orderID int64, userID int64) ([]*response.OrderProduct, error)
 	HasAccessToOrder(userID int64, orderID int64) bool
+	CreateOrder(order *request.OrderRequest, userID int64) error
 }
 
 func NewOrderService(OrderRepositoryI repository.OrderRepositoryI, ProductRepositoryI repository.ProductRepositoryI) OrderServiceI {
@@ -118,4 +121,39 @@ func (s *OrderService) HasAccessToOrder(userID int64, orderID int64) bool {
 	}
 
 	return false
+}
+
+func (s *OrderService) CreateOrder(order *request.OrderRequest, userID int64) error {
+
+	newOrder := &models.Order{
+		CustomerID:    userID,
+		TotalPrice:    order.TotalPrice,
+		OrderStatus:   "PENDING",
+		PaymentMethod: order.PaymentMethod,
+		Address:       order.Address,
+	}
+
+	orderID, err := s.OrderRepositoryI.CreateOrder(newOrder)
+	if err != nil {
+		return err
+	}
+
+	var orderProducts []*models.OrderProduct
+
+	for _, orderProduct := range order.Products {
+		newOrderProduct := &models.OrderProduct{
+			OrderID:   orderID,
+			ProductID: orderProduct.ProductID,
+			Quantity:  orderProduct.Quantity,
+		}
+
+		orderProducts = append(orderProducts, newOrderProduct)
+	}
+
+	err = s.OrderRepositoryI.InsertProductsIntoOrder(orderProducts)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

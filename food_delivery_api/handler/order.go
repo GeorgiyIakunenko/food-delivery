@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"food_delivery/config"
+	"food_delivery/server/request"
 	"food_delivery/server/response"
 	"food_delivery/service"
 	"food_delivery/utils"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -47,4 +50,33 @@ func (h *OrderHandler) GetOrderProductsByID(w http.ResponseWriter, r *http.Reque
 	}
 
 	response.SendOK(w, orderProducts)
+}
+
+func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
+
+	var orderRequest request.OrderRequest
+
+	err := json.NewDecoder(r.Body).Decode(&orderRequest)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	validate := validator.New()
+	err = validate.Struct(orderRequest)
+	if err != nil {
+		response.SendBadRequestError(w, err)
+		return
+	}
+
+	//fmt.Printf("orderRequest: %+v\n", orderRequest)
+
+	err = h.OrderServiceI.CreateOrder(&orderRequest, int64(claims.ID))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, "Order created successfully")
 }
