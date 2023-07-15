@@ -2,6 +2,7 @@ package service
 
 import (
 	"food_delivery/repository"
+	"food_delivery/repository/models"
 	"food_delivery/server/response"
 )
 
@@ -15,6 +16,7 @@ type ProductServiceI interface {
 	GetProductsBySupplierID(ID int64) ([]*response.Product, error)
 	GetProductsByCategoryID(ID int64) ([]*response.Product, error)
 	GetProductByID(ID int64) (*response.Product, error)
+	GetFilteredProducts(supplierTypes []string, IsOpenNow bool, categoryIDs []int64) ([]*models.Product, error)
 }
 
 func NewProductService(ProductRepositoryI repository.ProductRepositoryI) ProductServiceI {
@@ -215,4 +217,14 @@ func (s *ProductService) GetProductByID(ID int64) (*response.Product, error) {
 	}
 
 	return responseProduct, nil
+}
+
+func (s *ProductService) GetFilteredProducts(supplierTypes []string, IsOpenNow bool, categoryIDs []int64) ([]*models.Product, error) {
+
+	products, err := s.ProductRepositoryI.GetFilteredProducts(supplierTypes, IsOpenNow, categoryIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	return products, nil
 }

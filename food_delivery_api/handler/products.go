@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"food_delivery/server/response"
 	"food_delivery/service"
 	"food_delivery/utils"
@@ -98,4 +99,25 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.SendOK(w, product)
+}
+
+func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+	supplierTypes := queryParams["supplier_type"]
+	openNowStr := queryParams.Get("open_now")
+	categoryIDs, _ := utils.ParseCategoryIDs(queryParams.Get("category_ids"))
+
+	openNow, err := strconv.ParseBool(openNowStr)
+	if err != nil {
+		response.SendBadRequestError(w, errors.New("invalid boolean value for 'open_now"))
+		return
+	}
+
+	products, err := h.ProductServiceI.GetFilteredProducts(supplierTypes, openNow, categoryIDs)
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, products)
 }

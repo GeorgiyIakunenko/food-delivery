@@ -92,7 +92,14 @@ func Start(cfg *config.Config) {
 	ProductRepository := repository.NewProductRepository(postgresClient)
 	ProductService := service.NewProductService(ProductRepository)
 	ProductHandler := handler.NewProductHandler(ProductService)
+	r.HandleFunc("/products/filter", ProductHandler.GetFilteredProducts).Queries(
+		"supplier_type", "{supplier_type}",
+		"open_now", "{open_now}",
+		"category_ids", "{category_ids}",
+	).Methods(http.MethodGet)
+
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
+
 	r.HandleFunc("/categories/{categoryId}/suppliers/{supplierId}/products", ProductHandler.GetByCategoryIDAndSupplierID).Methods(http.MethodGet)
 	r.HandleFunc("/supplier/{id}/products", ProductHandler.GetBySupplierID).Methods(http.MethodGet)
 	r.HandleFunc("/category/{id}/products", ProductHandler.GetByCategoryID).Methods(http.MethodGet)
