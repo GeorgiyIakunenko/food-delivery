@@ -103,9 +103,9 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
-	supplierTypes := queryParams["supplier_type"]
+	supplierType := queryParams.Get("supplier_type")
 	openNowStr := queryParams.Get("open_now")
-	categoryIDs, _ := utils.ParseCategoryIDs(queryParams.Get("category_ids"))
+	categoryID, _ := utils.ParseCategoryID(queryParams.Get("category_id"))
 
 	openNow, err := strconv.ParseBool(openNowStr)
 	if err != nil {
@@ -113,7 +113,7 @@ func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	products, err := h.ProductServiceI.GetFilteredProducts(supplierTypes, openNow, categoryIDs)
+	products, err := h.ProductServiceI.GetFilteredProducts(supplierType, openNow, categoryID)
 	if err != nil {
 		response.SendServerError(w, err)
 		return

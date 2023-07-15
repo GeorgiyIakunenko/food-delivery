@@ -95,7 +95,7 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/products/filter", ProductHandler.GetFilteredProducts).Queries(
 		"supplier_type", "{supplier_type}",
 		"open_now", "{open_now}",
-		"category_ids", "{category_ids}",
+		"category_id", "{category_id}",
 	).Methods(http.MethodGet)
 
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)

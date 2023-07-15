@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"food_delivery/repository/models"
 	"strconv"
 	"time"
@@ -18,7 +17,7 @@ type ProductRepositoryI interface {
 	GetBySupplierID(ID int64) ([]*models.Product, error)
 	GetByCategoryID(ID int64) ([]*models.Product, error)
 	GetByID(ID int64) (*models.Product, error)
-	GetFilteredProducts(supplierTypes []string, IsOpenNow bool, categoryIDs []int64) ([]*models.Product, error)
+	GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error)
 }
 
 func NewProductRepository(db *sql.DB) *ProductRepository {
@@ -439,7 +438,7 @@ func (r *ProductRepository) GetByID(ID int64) (*models.Product, error) {
 	return product, nil
 }
 
-func (r *ProductRepository) GetFilteredProducts(supplierTypes []string, IsOpenNow bool, categoryIDs []int64) ([]*models.Product, error) {
+func (r *ProductRepository) GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error) {
 	query := `
 		SELECT
 			p.id,
@@ -467,13 +466,9 @@ func (r *ProductRepository) GetFilteredProducts(supplierTypes []string, IsOpenNo
 	`
 	var params []interface{}
 
-	if len(supplierTypes) > 0 && supplierTypes[0] != "" {
-		query += " AND s.type IN ("
-		for i, st := range supplierTypes {
-			query += fmt.Sprintf("$%d,", i+1)
-			params = append(params, st)
-		}
-		query = query[:len(query)-1] + ")"
+	if supplierType != "" {
+		query += " AND s.type = $1"
+		params = append(params, supplierType)
 	}
 
 	if IsOpenNow {
@@ -483,13 +478,10 @@ func (r *ProductRepository) GetFilteredProducts(supplierTypes []string, IsOpenNo
 		params = append(params, currentTime, currentTime)
 	}
 
-	if len(categoryIDs) > 0 {
-		query += " AND p.category_id IN ("
-		for i := range categoryIDs {
-			query += fmt.Sprintf("$%d,", len(params)+i+1)
-			params = append(params, categoryIDs[i])
-		}
-		query = query[:len(query)-1] + ")"
+	if categoryID > 0 {
+		query += " AND p.category_id = $"
+		query += strconv.Itoa(len(params) + 1)
+		params = append(params, categoryID)
 	}
 
 	stmt, err := r.db.Prepare(query)
