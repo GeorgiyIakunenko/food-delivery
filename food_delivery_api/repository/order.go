@@ -16,6 +16,7 @@ type OrderRepositoryI interface {
 	GetOrderByID(ID int64) (*models.Order, error)
 	CreateOrder(order *models.Order) (int64, error)
 	InsertProductsIntoOrder(orderProducts []*models.OrderProduct) error
+	CancelOrderByID(ID int64) error
 }
 
 func NewOrderRepository(db *sql.DB) *OrderRepository {
@@ -150,6 +151,24 @@ func (r *OrderRepository) InsertProductsIntoOrder(orderProducts []*models.OrderP
 	}
 
 	_, err := r.db.Exec(query, pq.Array(orderIDs), pq.Array(productIDs), pq.Array(quantities))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *OrderRepository) CancelOrderByID(ID int64) error {
+	query := `UPDATE "order" SET order_status = 'cancelled' WHERE id = $1`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(ID)
 	if err != nil {
 		return err
 	}

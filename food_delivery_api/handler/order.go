@@ -78,3 +78,21 @@ func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 
 	response.SendOK(w, "Order created successfully")
 }
+
+func (h *OrderHandler) CancelOrderByID(w http.ResponseWriter, r *http.Request) {
+	claims := r.Context().Value(config.NewConfig().AccessSecret).(*service.JwtCustomClaims)
+
+	orderID, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, errors.New("invalid order id"))
+		return
+	}
+
+	err := h.OrderServiceI.CancelOrderByID(int64(orderID), int64(claims.ID))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, "Order canceled successfully")
+}

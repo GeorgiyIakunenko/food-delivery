@@ -18,6 +18,7 @@ type OrderServiceI interface {
 	GetOrderProductsByID(orderID int64, userID int64) ([]*response.OrderProduct, error)
 	HasAccessToOrder(userID int64, orderID int64) bool
 	CreateOrder(order *request.OrderRequest, userID int64) error
+	CancelOrderByID(orderID int64, userID int64) error
 }
 
 func NewOrderService(OrderRepositoryI repository.OrderRepositoryI, ProductRepositoryI repository.ProductRepositoryI) OrderServiceI {
@@ -151,6 +152,19 @@ func (s *OrderService) CreateOrder(order *request.OrderRequest, userID int64) er
 	}
 
 	err = s.OrderRepositoryI.InsertProductsIntoOrder(orderProducts)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *OrderService) CancelOrderByID(orderID int64, userID int64) error {
+	if !s.HasAccessToOrder(userID, orderID) {
+		return errors.New("unauthorized access to order")
+	}
+
+	err := s.OrderRepositoryI.CancelOrderByID(orderID)
 	if err != nil {
 		return err
 	}
