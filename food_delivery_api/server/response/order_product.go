@@ -1,4 +1,4 @@
-package models
+package response
 
 type OrderProduct struct {
 	OrderID   int64    `json:"order_id"`
