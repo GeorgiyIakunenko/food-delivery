@@ -96,6 +96,8 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
 	r.HandleFunc("/categories/{categoryId}/suppliers/{supplierId}/products", ProductHandler.GetByCategoryIDAndSupplierID).Methods(http.MethodGet)
 	r.HandleFunc("/supplier/{id}/products", ProductHandler.GetBySupplierID).Methods(http.MethodGet)
+	r.HandleFunc("/category/{id}/products", ProductHandler.GetByCategoryID).Methods(http.MethodGet)
+	r.HandleFunc("/product/{id}", ProductHandler.GetByID).Methods(http.MethodGet)
 
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))

@@ -67,3 +67,35 @@ func (h *ProductHandler) GetBySupplierID(w http.ResponseWriter, r *http.Request)
 
 	response.SendOK(w, products)
 }
+
+func (h *ProductHandler) GetByCategoryID(w http.ResponseWriter, r *http.Request) {
+	id, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, nil)
+		return
+	}
+
+	products, err := h.ProductServiceI.GetProductsByCategoryID(int64(id))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, products)
+}
+
+func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	id, ok := utils.MustGetIDFromVars(r)
+	if !ok {
+		response.SendBadRequestError(w, nil)
+		return
+	}
+
+	product, err := h.ProductServiceI.GetProductByID(int64(id))
+	if err != nil {
+		response.SendServerError(w, err)
+		return
+	}
+
+	response.SendOK(w, product)
+}
