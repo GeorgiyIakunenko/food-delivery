@@ -99,6 +99,16 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/category/{id}/products", ProductHandler.GetByCategoryID).Methods(http.MethodGet)
 	r.HandleFunc("/product/{id}", ProductHandler.GetByID).Methods(http.MethodGet)
 
+	// order handler
+
+	OrderRepository := repository.NewOrderRepository(postgresClient)
+	OrderService := service.NewOrderService(OrderRepository)
+	OrderHandler := handler.NewOrderHandler(OrderService)
+
+	orderRouter := r.PathPrefix("/order").Subrouter()
+	orderRouter.Use(AuthMiddleware.ValidateAccessToken)
+	orderRouter.HandleFunc("", OrderHandler.GetAllUserOrdersByID).Methods(http.MethodGet)
+
 	fmt.Println("Server started at port", cfg.Port)
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 

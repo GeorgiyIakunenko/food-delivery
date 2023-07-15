@@ -8,6 +8,6 @@ type Order struct {
 	TotalPrice    float64   `json:"total_price"`
 	OrderStatus   string    `json:"order_status"`
 	PaymentMethod string    `json:"payment_method"`
-	OrderDatetime time.Time `json:"order_datetime"`
+	CreatedAt     time.Time `json:"created_at"`
 	Address       string    `json:"address"`
 }
