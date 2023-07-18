@@ -2,24 +2,18 @@ import {computed, ref} from "vue";
 import {defineStore} from "pinia";
 
 export const useUserStore = defineStore('user', () => {
-    const user = ref(null)
+    const id = ref(1)
+    const email = ref('')
+    const first_name = ref('')
+    const last_name = ref('')
+    const username = ref('')
+    const address = ref('')
+    const phone = ref('')
+    const age = ref(0)
 
-    const userCount = ref(0)
+    const isUserLogged = computed(() => {
+        return email.value !== ''
+    })
 
-    function AgeUser() {
-        user.value.age++
-    }
-
-    const isLoggedIn = computed(() => user.value !== null)
-
-    function IncrementUserCount() {
-        userCount.value++
-        console.log(userCount.value)
-    }
-
-    function setUser(newUser) {
-        user.value = newUser
-    }
-
-    return {user, userCount, IncrementUserCount, setUser, isLoggedIn, AgeUser}
+    return {id, email, first_name, last_name, username, address, phone, age, isUserLogged}
 })
