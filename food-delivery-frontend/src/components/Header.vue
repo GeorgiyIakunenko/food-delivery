@@ -35,7 +35,7 @@ const toggleMenu = () => {
           </ul>
         </nav>
         <div class="button-box">
-          <router-link style="z-index: 101" to="/cart">
+          <router-link style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
           </router-link>
           <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">

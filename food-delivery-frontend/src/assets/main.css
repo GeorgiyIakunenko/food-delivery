@@ -63,7 +63,6 @@ body {
     line-height: 1.6;
     font-family: Roboto, sans-serif;
     font-size: 16px;
-
 }
 
 .container {
@@ -75,5 +74,18 @@ body {
 :root {
     --primary-color: #11AB69;
 }
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1;
+    padding-top: 75px;
+}
+
+
 
 
