@@ -1,11 +1,19 @@
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import Button from "./Button.vue";
+import logoIcon from "../assets/images/logo/logo.png";
 
 const menuActive = ref(false)
 
 const toggleMenu = () => {
   menuActive.value = !menuActive.value
 }
+
+onMounted(() => {
+  console.log('mounted')
+  console.log(logoIcon)
+})
 
 
 </script>
@@ -32,7 +40,10 @@ const toggleMenu = () => {
           </ul>
         </nav>
         <div class="button-box">
-          <button class="btn-contact btn-style">Login</button>
+<!--          <button class="btn-contact btn-style">Login</button>-->
+          <router-link to="/cart">
+            <Button >Cart</Button>
+          </router-link>
           <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">
             <span class="menu-btn__span menu-btn__span--1"></span>
             <span class="menu-btn__span menu-btn__span--2"></span>
@@ -42,31 +53,6 @@ const toggleMenu = () => {
       </div>
     </div>
   </header>
-<!--  <header>
-      <div class="logo">
-&lt;!&ndash;        <img src="/logo.png" alt="Vue Mastery Logo" />&ndash;&gt;
-        logo
-      </div>
-      <nav>
-        <router-link to="/">Home</router-link>
-        <router-link to="/suppliers">Suppliers</router-link>
-        <router-link to="/user">User</router-link>
-      </nav>
-    <div>
-      <button>
-        <router-link to="/cart">
-          &lt;!&ndash;          <img src="/cart.png" alt="Cart" />&ndash;&gt;
-          <button class="mr-5 " >Cart</button>
-        </router-link>
-      </button>
-      <button>
-        <router-link to="/login">
-          &lt;!&ndash;          <img src="/login.png" alt="Login" />&ndash;&gt;
-          login
-        </router-link>
-      </button>
-    </div>
-  </header>-->
 </template>
 
 <style scoped>
