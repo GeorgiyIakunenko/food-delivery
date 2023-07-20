@@ -5,7 +5,7 @@
 </script>
 
 <script setup>
-import { defineProps, computed } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   leftIconUrl: String,
@@ -33,7 +33,6 @@ const buttonClass = computed(() => {
 //const name = 'Button';
 
 </script>
-
 <template>
   <button :class="['button', buttonClass]">
     <img v-if="props.leftIconUrl" :src="props.leftIconUrl" :alt="leftIconAlt" class="left-icon" />

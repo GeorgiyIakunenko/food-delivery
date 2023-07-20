@@ -2,24 +2,18 @@
   import { RouterLink, RouterView, useRoute } from 'vue-router'
   import {useSupplierStore} from "../stores/supplier";
   import Supplier from "./Supplier.vue";
-
-  const route = useRoute()
-
-  const SupplierID = route.params.id
+  const router = useRoute()
 
   const supplierStore = useSupplierStore()
-  console.log(supplierStore.suppliers)
-  console.log(SupplierID)
-  //const supplier = supplierStore.suppliers($route.params.id - 1)
+  console.log(router.params)
 
 </script>
 
 <template>
   <div class="supplier">
     <h1>  {{$route.params.id}}</h1>
-<!--    <h1>{{supplier.name}}</h1>
-    <p>{{supplier.description}}</p>
-    <div>{{supplier.type}}</div>-->
+ <h2> {{ $route.params.name}}</h2>
+
   </div>
 </template>
 

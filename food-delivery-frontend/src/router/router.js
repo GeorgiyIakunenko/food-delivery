@@ -16,6 +16,7 @@ const router = createRouter({
     },{
         path: '/suppliers/:id',
         name: 'supplier',
+        props: true,
         component: () => import('../views/Supplier.vue')
     },
     {
@@ -27,7 +28,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/Login.vue')
-    },
+    },{
+        path: '/test',
+        name: 'test',
+        component: () => import('../components/Auth/LoginForm.vue')
+    }
 
   ]
 })

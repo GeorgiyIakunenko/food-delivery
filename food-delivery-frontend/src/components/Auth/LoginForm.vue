@@ -9,12 +9,16 @@ const props = defineProps({
   },
 });
 
+const LoginForm = reactive({
+  email: '',
+  password: ''
+})
+
 const activeInputs = reactive({});
 
 const toggleFocus = (inputKey) => {
   activeInputs[inputKey] = !activeInputs[inputKey];
 };
-
 const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
@@ -26,15 +30,15 @@ const isActive = (inputKey) => {
     <div class="heading">
       <h2>Welcome Back</h2>
       <h6>Not registered yet?</h6>
-      <a href="#" @click="toggleSingIn"  class="toggle"   >Sign up</a>
+      <a href="#" @click="$emit('changeMode')" class="toggle">Sign up</a>
     </div>
-
     <div class="actual-form">
       <div  class="input-wrap">
         <input
             @focus="toggleFocus('loginName')"
             @blur="toggleFocus('loginName')"
             :class="{'active': isActive('loginName')}"
+            v-model="LoginForm.email"
             type="text"
             minlength="4"
             class="input-field"
@@ -43,12 +47,12 @@ const isActive = (inputKey) => {
         />
         <label>Name</label>
       </div>
-
       <div class="input-wrap">
         <input
             @focus="toggleFocus('loginPassword')"
             @blur="toggleFocus('loginPassword')"
             :class="{'active': isActive('loginPassword')}"
+            v-model="LoginForm.password"
             type="password"
             minlength="4"
             class="input-field"
@@ -57,9 +61,7 @@ const isActive = (inputKey) => {
         />
         <label>Password</label>
       </div>
-
       <input type="submit" value="Sign In" class="sign-btn" />
-
       <p class="text">
         Forgotten your password or you login details?
         <a class="reset-password-btn" href="#">Reset Password</a>
@@ -67,10 +69,10 @@ const isActive = (inputKey) => {
     </div>
   </form>
 </template>
-
 <style scoped>
+
 form {
-  max-width: 260px;
+  max-width: 320px;
   width: 100%;
   margin: 0 auto;
   height: 100%;
@@ -80,11 +82,6 @@ form {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
   transition: opacity 0.02s 0.4s;
-}
-
-form.sign-up-form {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .heading h2 {
@@ -106,6 +103,7 @@ form.sign-up-form {
   font-size: 0.75rem;
   font-weight: 500;
   transition: 0.3s;
+  padding: 0 15px;
 }
 
 .toggle:hover {
@@ -195,4 +193,30 @@ label {
 .reset-password-btn:hover {
   color: #8371fd!important;
 }
+
+main.sign-up-mode form.sign-in-form {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 850px) {
+
+  form {
+    max-width: revert;
+    padding: 1.5rem 2.5rem 2rem;
+    transition: transform 0.8s ease-in-out, opacity 0.45s linear;
+  }
+
+  .heading {
+    margin: 2rem 0;
+  }
+}
+
+@media (max-width: 530px) {
+  main {
+    padding: 1rem;
+  }
+
+}
+
 </style>

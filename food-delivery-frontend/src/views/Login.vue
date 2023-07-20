@@ -3,21 +3,22 @@
   import {useUserStore} from "../stores/user";
   import Header from "@/components/Header.vue";
   import Footer from "@/components/Footer.vue";
-
+  import LoginForm from "@/components/Auth/LoginForm.vue";
+  import RegisterForm from "@/components/Auth/RegisterForm.vue";
   import {ref, reactive} from "vue";
-  const singIn = ref(true)
 
+
+
+
+  const singIn = ref(true)
   const toggleSingIn = () => {
     singIn.value = !singIn.value
   }
   const userStore = useUserStore()
-
   const activeInputs = reactive({});
-
   const toggleFocus = (inputKey) => {
     activeInputs[inputKey] = !activeInputs[inputKey];
   };
-
   const isActive = (inputKey) => {
     return activeInputs[inputKey] || false;
   }
@@ -29,116 +30,13 @@
     <div class="box">
       <div class="inner-box">
         <div class="forms-wrap">
-          <form action="#" autocomplete="off" class="sign-in-form">
-            <div class="heading">
-              <h2>Welcome Back</h2>
-              <h6>Not registered yet?</h6>
-              <a href="#" @click="toggleSingIn"  class="toggle"   >Sign up</a>
-            </div>
-
-            <div class="actual-form">
-              <div  class="input-wrap">
-                <input
-                    @focus="toggleFocus('loginName')"
-                    @blur="toggleFocus('loginName')"
-                    :class="{'active': isActive('loginName')}"
-                    type="text"
-                    minlength="4"
-                    class="input-field"
-                    autocomplete="off"
-                    required
-                />
-                <label>Name</label>
-              </div>
-
-              <div class="input-wrap">
-                <input
-                    @focus="toggleFocus('loginPassword')"
-                    @blur="toggleFocus('loginPassword')"
-                    :class="{'active': isActive('loginPassword')}"
-                    type="password"
-                    minlength="4"
-                    class="input-field"
-                    autocomplete="off"
-                    required
-                />
-                <label>Password</label>
-              </div>
-
-              <input type="submit" value="Sign In" class="sign-btn" />
-
-              <p class="text">
-                Forgotten your password or you login details?
-                <a class="reset-password-btn" href="#">Reset Password</a>
-              </p>
-            </div>
-          </form>
-          <form action="#" autocomplete="off" class="sign-up-form">
-
-
-            <div class="heading">
-              <h2>Get Started</h2>
-              <h6>Already have an account?</h6>
-              <a href="#" @click="toggleSingIn" class="toggle">Sign in</a>
-            </div>
-
-            <div class="actual-form">
-              <div class="input-wrap">
-                <input
-                    @focus="toggleFocus('registerName')"
-                    @blur="toggleFocus('registerName')"
-                    :class="{'active': isActive('registerName')}"
-                    type="text"
-                    minlength="4"
-                    class="input-field"
-                    autocomplete="off"
-                    required
-                />
-                <label>Name</label>
-              </div>
-
-              <div class="input-wrap">
-                <input
-                    @focus="toggleFocus('registerEmail')"
-                    @blur="toggleFocus('registerEmail')"
-                    :class="{'active': isActive('registerEmail')}"
-                    type="email"
-                    class="input-field"
-                    autocomplete="off"
-                    required
-                />
-                <label>Email</label>
-              </div>
-
-              <div class="input-wrap">
-                <input
-                    @focus="toggleFocus('registerPassword')"
-                    @blur="toggleFocus('registerPassword')"
-                    :class="{'active': isActive('registerPassword')}"
-                    type="password"
-                    minlength="4"
-                    class="input-field"
-                    autocomplete="off"
-                    required
-                />
-                <label>Password</label>
-              </div>
-
-              <input type="submit" value="Sign Up" class="sign-btn" />
-
-              <p class="text">
-                By signing up, I agree to the
-                <a href="#">Terms of Services</a> and
-                <a href="#">Privacy Policy</a>
-              </p>
-            </div>
-          </form>
+          <LoginForm toggle-sing-in="toggleSingIn" @changeMode="toggleSingIn" ></LoginForm>
+          <RegisterForm @changeMode="toggleSingIn" ></RegisterForm>
         </div>
-
         <div class="carousel">
           <div class="images-wrapper">
-            <img src="@/assets/images/icons/login.png" class="image img-1" :class="{show : singIn}" alt="" />
-            <img src="@/assets/images/icons/register.png" class="image img-2" :class="{show : !singIn}" alt="" />
+            <img src="@/assets/images/icons/login.png" class="image img-login" :class="{show : singIn}" alt="" />
+            <img src="@/assets/images/icons/register.png" class="image img-register" :class="{show : !singIn}" alt="" />
           </div>
         </div>
       </div>
@@ -166,10 +64,6 @@ main {
   box-shadow: 0 60px 40px -30px rgba(0, 0, 0, 0.27);
 }
 
-.toggle {
-  padding: 0 15px;
-}
-
 .inner-box {
   position: absolute;
   width: calc(100% - 2rem);
@@ -189,143 +83,6 @@ main {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   transition: 0.8s ease-in-out;
-}
-
-form {
-  max-width: 260px;
-  width: 100%;
-  margin: 0 auto;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
-  transition: opacity 0.02s 0.4s;
-}
-
-form.sign-up-form {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.heading h2 {
-  font-size: 2.1rem;
-  font-weight: 600;
-  color: #151111;
-}
-
-.heading h6 {
-  color: #bababa;
-  font-weight: 400;
-  font-size: 0.75rem;
-  display: inline;
-}
-
-.toggle {
-  color: #151111;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.toggle:hover {
-  color: #8371fd;
-}
-
-.input-wrap {
-  position: relative;
-  height: 37px;
-  margin-bottom: 2rem;
-}
-
-.input-field {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: none;
-  border: none;
-  outline: none;
-  border-bottom: 1px solid #bbb;
-  padding: 0;
-  font-size: 0.95rem;
-  color: #151111;
-  transition: 0.4s;
-}
-
-label {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.95rem;
-  color: #bbb;
-  pointer-events: none;
-  transition: 0.4s;
-}
-
-.input-field.active {
-  border-bottom-color: #151111;
-}
-
-.input-field.active + label {
-  font-size: 0.75rem;
-  top: -2px;
-}
-.sign-btn {
-  display: inline-block;
-  width: 100%;
-  height: 43px;
-  background-color: #151111;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  border-radius: 0.8rem;
-  font-size: 0.8rem;
-  margin-bottom: 2rem;
-  transition: 0.3s;
-}
-
-.sign-btn:hover {
-  background-color: #8371fd;
-}
-
-.text {
-  color: #bbb;
-  font-size: 0.7rem;
-}
-
-.text a {
-  color: #bbb;
-  transition: 0.3s;
-}
-
-.text a:hover {
-  color: #8371fd;
-}
-
-.reset-password-btn {
-  display: inline-block;
-  color: #151111!important;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.reset-password-btn:hover {
-  color: #8371fd!important;
-}
-
-main.sign-up-mode form.sign-in-form {
-  opacity: 0;
-  pointer-events: none;
-}
-
-main.sign-up-mode form.sign-up-form {
-  opacity: 1;
-  pointer-events: all;
 }
 
 main.sign-up-mode .forms-wrap {
@@ -365,11 +122,11 @@ main.sign-up-mode .carousel {
   transition: opacity 0.3s, transform 0.5s;
 }
 
-.img-1 {
+.img-login {
   transform: translate(0, -50px);
 }
 
-.img-2 {
+.img-register {
   transform: scale(0.4, 0.5);
 }
 
@@ -399,28 +156,6 @@ main.sign-up-mode .carousel {
     height: auto;
   }
 
-  form {
-    max-width: revert;
-    padding: 1.5rem 2.5rem 2rem;
-    transition: transform 0.8s ease-in-out, opacity 0.45s linear;
-  }
-
-  .heading {
-    margin: 2rem 0;
-  }
-
-  form.sign-up-form {
-    transform: translateX(100%);
-  }
-
-  main.sign-up-mode form.sign-in-form {
-    transform: translateX(-100%);
-  }
-
-  main.sign-up-mode form.sign-up-form {
-    transform: translateX(0%);
-  }
-
   .carousel {
     display: none;
   }
@@ -436,6 +171,7 @@ main.sign-up-mode .carousel {
   }
 
   .box {
+    margin-top: 70px;
     border-radius: 2rem;
   }
 
@@ -448,8 +184,5 @@ main.sign-up-mode .carousel {
     border-radius: 1.6rem;
   }
 
-  form {
-    padding: 1rem 2rem 1.5rem;
-  }
 }
 </style>
