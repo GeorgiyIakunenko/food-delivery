@@ -6,42 +6,54 @@
   import LoginForm from "@/components/Auth/LoginForm.vue";
   import RegisterForm from "@/components/Auth/RegisterForm.vue";
   import {ref, reactive} from "vue";
+  import Dialog from "@/components/UI/Dialog.vue";
+  import ResetForm from "@/components/Auth/ResetForm.vue";
+  import ResetRequestForm from "@/components/Auth/ResetRequestForm.vue";
 
+  
+  const changeMode = ref(true)
+  const showDialog = ref(false)
 
+  const resetMode = ref(false)
 
-
-  const singIn = ref(true)
-  const toggleSingIn = () => {
-    singIn.value = !singIn.value
+  const toggleDialog = () => {
+    showDialog.value = !showDialog.value
   }
-  const userStore = useUserStore()
-  const activeInputs = reactive({});
-  const toggleFocus = (inputKey) => {
-    activeInputs[inputKey] = !activeInputs[inputKey];
-  };
-  const isActive = (inputKey) => {
-    return activeInputs[inputKey] || false;
+  const toggleChangeMode = () => {
+    changeMode.value = !changeMode.value
+  }
+  const toggleReset = () => {
+    resetMode.value = !resetMode.value
   }
 </script>
 
 <template>
   <Header></Header>
-  <main :class="{'sign-up-mode': !singIn}">
+  <main :class="{'form-2-mode': !changeMode, 'reset-mode' : resetMode }">
     <div class="box">
       <div class="inner-box">
-        <div class="forms-wrap">
-          <LoginForm toggle-sing-in="toggleSingIn" @changeMode="toggleSingIn" ></LoginForm>
-          <RegisterForm @changeMode="toggleSingIn" ></RegisterForm>
+        <div v-if="!resetMode" class="forms-wrap">
+          <LoginForm @reset-password="toggleReset"  @changeMode="toggleChangeMode"></LoginForm>
+          <RegisterForm @changeMode="toggleChangeMode" ></RegisterForm>
+        </div>
+        <div v-else class="forms-wrap">
+          <ResetRequestForm  @change-reset-mode="toggleReset"  @changeMode="toggleChangeMode"></ResetRequestForm>
+          <ResetForm  @changeMode="toggleChangeMode"></ResetForm>
         </div>
         <div class="carousel">
-          <div class="images-wrapper">
-            <img src="@/assets/images/icons/login.png" class="image img-login" :class="{show : singIn}" alt="" />
-            <img src="@/assets/images/icons/register.png" class="image img-register" :class="{show : !singIn}" alt="" />
+          <div v-if="!resetMode" class="images-wrapper">
+            <img src="@/assets/images/icons/login.png" class="image img-login" :class="{show : changeMode}" alt="" />
+            <img src="@/assets/images/icons/register.png" class="image img-register" :class="{show : !changeMode}" alt="" />
+          </div>
+          <div v-else class="images-wrapper">
+            <img src="@/assets/images/auth/reset-request.png" class="image img-login" :class="{show : changeMode}" alt="" />
+            <img src="@/assets/images/auth/reset-submit.png" class="image img-register" :class="{show : !changeMode}" alt="" />
           </div>
         </div>
       </div>
     </div>
   </main>
+  <Dialog v-if="showDialog" :show="showDialog"> <ResetForm></ResetForm> </Dialog>
   <Footer></Footer>
 </template>
 
@@ -85,11 +97,11 @@ main {
   transition: 0.8s ease-in-out;
 }
 
-main.sign-up-mode .forms-wrap {
+main.form-2-mode .forms-wrap {
   left: 55%;
 }
 
-main.sign-up-mode .carousel {
+main.form-2-mode .carousel {
   left: 0;
 }
 

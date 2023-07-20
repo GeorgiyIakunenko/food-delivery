@@ -3,9 +3,8 @@ import { RouterLink, RouterView } from 'vue-router'
 import {defineProps, computed, reactive} from 'vue';
 
 
-const LoginForm = reactive({
+const ResetRequestForm = reactive({
   email: '',
-  password: ''
 })
 
 const activeInputs = reactive({});
@@ -20,46 +19,28 @@ const isActive = (inputKey) => {
 </script>
 
 <template>
-  <form action="#" autocomplete="off" class="sign-in-form form-1">
+  <form @submit="" action="#" autocomplete="off" class="reset-password-request form-1">
     <div class="heading">
-      <h2>Welcome Back</h2>
-      <h6>Not registered yet?</h6>
-      <a href="#" @click="$emit('changeMode')" class="toggle">Sign up</a>
+      <button  @click="$emit('change-reset-mode')" class="toggle auth-btn">Go back</button>
+      <h2>Forgot your password? <br> No problem.</h2>
+      <h6>We'll send a verification code to your email address, allowing you to reset your password.</h6>
     </div>
     <div class="actual-form">
       <div  class="input-wrap">
         <input
-            @focus="toggleFocus('loginName')"
-            @blur="toggleFocus('loginName')"
-            :class="{'active': isActive('loginName')}"
-            v-model="LoginForm.email"
-            type="text"
-            minlength="4"
+            @focus="toggleFocus('resetEmail')"
+            @blur="toggleFocus('resetEmail')"
+            :class="{'active': isActive('resetEmail')}"
+            v-model="ResetRequestForm.email"
+            type="email"
+            minlength="6"
             class="input-field"
             autocomplete="off"
             required
         />
-        <label>Name</label>
+        <label>Email</label>
       </div>
-      <div class="input-wrap">
-        <input
-            @focus="toggleFocus('loginPassword')"
-            @blur="toggleFocus('loginPassword')"
-            :class="{'active': isActive('loginPassword')}"
-            v-model="LoginForm.password"
-            type="password"
-            minlength="4"
-            class="input-field"
-            autocomplete="off"
-            required
-        />
-        <label>Password</label>
-      </div>
-      <input type="submit" value="Sign In" class="sign-btn" />
-      <p class="text">
-        Forgotten your password or you login details?
-        <a @click="$emit('reset-password')" class="reset-password-btn" href="#">Reset Password</a>
-      </p>
+      <input type="submit" @click="$emit('changeMode')" value="Send Code" class="auth-btn" />
     </div>
   </form>
 </template>
@@ -79,7 +60,7 @@ form {
 }
 
 .heading h2 {
-  font-size: 2.1rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: #151111;
 }
@@ -143,7 +124,7 @@ label {
   font-size: 0.75rem;
   top: -2px;
 }
-.sign-btn {
+.auth-btn {
   display: inline-block;
   width: 100%;
   height: 43px;
@@ -157,8 +138,9 @@ label {
   transition: 0.3s;
 }
 
-.sign-btn:hover {
+.auth-btn:hover {
   background-color: #8371fd;
+  color: white;
 }
 
 .text {
@@ -173,19 +155,6 @@ label {
 
 .text a:hover {
   color: #8371fd;
-}
-
-.reset-password-btn {
-  display: inline-block;
-  color: #151111!important;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.reset-password-btn:hover {
-  color: #8371fd!important;
 }
 
 main.form-2-mode form.form-1 {

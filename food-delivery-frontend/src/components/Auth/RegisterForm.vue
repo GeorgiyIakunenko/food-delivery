@@ -5,13 +5,25 @@
 
   const toggleFocus = (inputKey) => {
     activeInputs[inputKey] = !activeInputs[inputKey];
-  };
+  }
+
   const isActive = (inputKey) => {
     return activeInputs[inputKey] || false;
   }
+
+  const RegisterForm = reactive({
+    FirstName: '',
+    LastName: '',
+    Email: '',
+    Username: '',
+    Age: '',
+    Address: '',
+    Password: ''
+  })
+
 </script>
 <template>
-  <form action="#" autocomplete="off" class="sign-up-form">
+  <form action="#" autocomplete="off" class="sign-up-form form-2">
     <div class="heading">
       <h2>Get Started</h2>
       <h6>Already have an account?</h6>
@@ -23,9 +35,9 @@
           <input
               @focus="toggleFocus('registerFirstName')"
               @blur="toggleFocus('registerFirstName')"
-              :class="{'active': isActive('registerFirstName')}"
+              v-model="RegisterForm.FirstName"
+              :class="{'active': isActive('registerFirstName') || RegisterForm.FirstName.length > 0}"
               type="text"
-              minlength="4"
               class="input-field"
               autocomplete="off"
               required
@@ -36,9 +48,9 @@
           <input
               @focus="toggleFocus('registerLastName')"
               @blur="toggleFocus('registerLastName')"
-              :class="{'active': isActive('registerLastName')}"
+              :class="{'active': isActive('registerLastName') || RegisterForm.LastName.length > 0}"
+              v-model="RegisterForm.LastName"
               type="text"
-              minlength="4"
               class="input-field"
               autocomplete="off"
               required
@@ -49,7 +61,9 @@
           <input
               @focus="toggleFocus('registerEmail')"
               @blur="toggleFocus('registerEmail')"
-              :class="{'active': isActive('registerEmail')}"
+              :class="{'active': isActive('registerEmail') || RegisterForm.Email.length > 0}"
+              v-model="RegisterForm.Email"
+              minlength="6"
               type="email"
               class="input-field"
               autocomplete="off"
@@ -61,8 +75,9 @@
           <input
               @focus="toggleFocus('registerUsername')"
               @blur="toggleFocus('registerUsername')"
-              :class="{'active': isActive('registerUsername')}"
-              type="password"
+              :class="{'active': isActive('registerUsername') || RegisterForm.Username.length > 0}"
+              v-model="RegisterForm.Username"
+              type="text"
               minlength="4"
               class="input-field"
               autocomplete="off"
@@ -74,9 +89,9 @@
           <input
               @focus="toggleFocus('registerAge')"
               @blur="toggleFocus('registerAge')"
-              :class="{'active': isActive('registerAge')}"
-              type="password"
-              minlength="4"
+              :class="{'active': isActive('registerAge') || RegisterForm.Age.length > 0}"
+              v-model="RegisterForm.Age"
+              type="number"
               class="input-field"
               autocomplete="off"
               required
@@ -87,8 +102,9 @@
           <input
               @focus="toggleFocus('registerAddress')"
               @blur="toggleFocus('registerAddress')"
-              :class="{'active': isActive('registerAddress')}"
-              type="password"
+              :class="{'active': isActive('registerAddress') || RegisterForm.Address.length > 0}"
+              v-model="RegisterForm.Address"
+              type="text"
               minlength="4"
               class="input-field"
               autocomplete="off"
@@ -100,9 +116,10 @@
           <input
               @focus="toggleFocus('registerPassword')"
               @blur="toggleFocus('registerPassword')"
-              :class="{'active': isActive('registerPassword')}"
+              :class="{'active': isActive('registerPassword') || RegisterForm.Password.length > 0}"
+              v-model="RegisterForm.Password"
               type="password"
-              minlength="4"
+              minlength="6"
               class="input-field"
               autocomplete="off"
               required
@@ -138,7 +155,7 @@ form {
   transition: opacity 0.02s 0.4s;
 }
 
-form.sign-up-form {
+form.form-2 {
   opacity: 0;
   pointer-events: none;
 }
@@ -262,7 +279,7 @@ label {
 }
 
 
-main.sign-up-mode form.sign-up-form {
+main.form-2-mode form.form-2 {
   opacity: 1;
   pointer-events: all;
 }
@@ -279,7 +296,7 @@ main.sign-up-mode form.sign-up-form {
     margin: 2rem 0;
   }
 
-  main.sign-up-mode form {
+  main.form-2-mode form {
     transform: translateX(0%);
   }
 }

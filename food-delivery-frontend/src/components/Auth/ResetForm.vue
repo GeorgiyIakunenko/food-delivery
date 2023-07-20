@@ -1,69 +1,69 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import {defineProps, computed, reactive} from 'vue';
-
-
-const LoginForm = reactive({
-  email: '',
-  password: ''
-})
+import {reactive} from "vue";
 
 const activeInputs = reactive({});
 
 const toggleFocus = (inputKey) => {
   activeInputs[inputKey] = !activeInputs[inputKey];
-};
+}
+
 const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
 
-</script>
+const ResetForm = reactive({
+  Email: '',
+  resetCode: '',
+  newPassword: '',
+})
 
+</script>
 <template>
-  <form action="#" autocomplete="off" class="sign-in-form form-1">
+  <form action="#" autocomplete="off" class="sign-up-form form-2">
     <div class="heading">
-      <h2>Welcome Back</h2>
-      <h6>Not registered yet?</h6>
-      <a href="#" @click="$emit('changeMode')" class="toggle">Sign up</a>
+      <button @click="$emit('changeMode')" class="toggle auth-btn">Go back</button>
+      <h2>Create a New Password</h2>
+      <h6>Enter the verification code and set your new password</h6>
     </div>
     <div class="actual-form">
-      <div  class="input-wrap">
-        <input
-            @focus="toggleFocus('loginName')"
-            @blur="toggleFocus('loginName')"
-            :class="{'active': isActive('loginName')}"
-            v-model="LoginForm.email"
-            type="text"
-            minlength="4"
-            class="input-field"
-            autocomplete="off"
-            required
-        />
-        <label>Name</label>
+      <div class="actual-form_content">
+        <div class="input-wrap">
+          <input
+              @focus="toggleFocus('resetCode')"
+              @blur="toggleFocus('resetCode')"
+              v-model="ResetForm.resetCode"
+              :class="{'active': isActive('resetCode') || ResetForm.resetCode.length > 0}"
+              type="number"
+              class="input-field"
+              autocomplete="off"
+              required
+          />
+          <label>Code from email</label>
+        </div>
+         <div class="input-wrap">
+          <input
+              @focus="toggleFocus('resetPassword')"
+              @blur="toggleFocus('resetPassword')"
+              :class="{'active': isActive('resetPassword') || ResetForm.newPassword.length > 0}"
+              v-model="ResetForm.newPassword"
+              type="password"
+              minlength="6"
+              class="input-field"
+              autocomplete="off"
+              required
+          />
+          <label>New password</label>
+        </div>
       </div>
-      <div class="input-wrap">
-        <input
-            @focus="toggleFocus('loginPassword')"
-            @blur="toggleFocus('loginPassword')"
-            :class="{'active': isActive('loginPassword')}"
-            v-model="LoginForm.password"
-            type="password"
-            minlength="4"
-            class="input-field"
-            autocomplete="off"
-            required
-        />
-        <label>Password</label>
-      </div>
-      <input type="submit" value="Sign In" class="sign-btn" />
-      <p class="text">
-        Forgotten your password or you login details?
-        <a @click="$emit('reset-password')" class="reset-password-btn" href="#">Reset Password</a>
-      </p>
+      <input type="submit" value="Reset Password" class="auth-btn" />
     </div>
   </form>
 </template>
+
 <style scoped>
+.toggle {
+  padding: 0 15px;
+}
 
 form {
   max-width: 320px;
@@ -76,6 +76,11 @@ form {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
   transition: opacity 0.02s 0.4s;
+}
+
+form.form-2 {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .heading h2 {
@@ -97,7 +102,6 @@ form {
   font-size: 0.75rem;
   font-weight: 500;
   transition: 0.3s;
-  padding: 0 15px;
 }
 
 .toggle:hover {
@@ -143,7 +147,7 @@ label {
   font-size: 0.75rem;
   top: -2px;
 }
-.sign-btn {
+.auth-btn {
   display: inline-block;
   width: 100%;
   height: 43px;
@@ -157,8 +161,9 @@ label {
   transition: 0.3s;
 }
 
-.sign-btn:hover {
+.auth-btn:hover {
   background-color: #8371fd;
+  color: white;
 }
 
 .text {
@@ -175,34 +180,48 @@ label {
   color: #8371fd;
 }
 
-.reset-password-btn {
-  display: inline-block;
-  color: #151111!important;
-  text-decoration: none;
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition: 0.3s;
+.actual-form_content {
+  padding: 15px;
+  max-height: 400px;
+  overflow: auto;
 }
 
-.reset-password-btn:hover {
-  color: #8371fd!important;
+.actual-form_content::-webkit-scrollbar {
+  width: 8px;
 }
 
-main.form-2-mode form.form-1 {
-  opacity: 0;
-  pointer-events: none;
+.actual-form_content::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.actual-form_content::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+
+.actual-form_content::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+
+main.form-2-mode form.form-2 {
+  opacity: 1;
+  pointer-events: all;
 }
 
 @media (max-width: 850px) {
 
   form {
     max-width: revert;
-    padding: 1.5rem 2.5rem 2rem;
     transition: transform 0.8s ease-in-out, opacity 0.45s linear;
+    transform: translateX(100%);
   }
 
   .heading {
     margin: 2rem 0;
+  }
+
+  main.form-2-mode form {
+    transform: translateX(0%);
   }
 }
 
@@ -212,5 +231,4 @@ main.form-2-mode form.form-1 {
   }
 
 }
-
 </style>
