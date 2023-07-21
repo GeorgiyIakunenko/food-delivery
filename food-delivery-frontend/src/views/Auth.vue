@@ -1,6 +1,5 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
-  import {useUserStore} from "../stores/user";
   import Header from "@/components/Header.vue";
   import Footer from "@/components/Footer.vue";
   import LoginForm from "@/components/Auth/LoginForm.vue";
@@ -10,7 +9,6 @@
   import ResetForm from "@/components/Auth/ResetForm.vue";
   import ResetRequestForm from "@/components/Auth/ResetRequestForm.vue";
 
-  
   const changeMode = ref(true)
   const showDialog = ref(false)
 

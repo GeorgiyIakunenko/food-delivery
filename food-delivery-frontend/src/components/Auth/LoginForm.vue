@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import {defineProps, computed, reactive} from 'vue';
-
+import {login} from "@/api/api.js";
 
 const LoginForm = reactive({
   email: '',
@@ -29,9 +29,9 @@ const isActive = (inputKey) => {
     <div class="actual-form">
       <div  class="input-wrap">
         <input
-            @focus="toggleFocus('loginName')"
-            @blur="toggleFocus('loginName')"
-            :class="{'active': isActive('loginName')}"
+            @focus="toggleFocus('loginEmail')"
+            @blur="toggleFocus('loginEmail')"
+            :class="{'active': isActive('loginEmail') || LoginForm.email.length > 0}"
             v-model="LoginForm.email"
             type="text"
             minlength="4"
@@ -39,23 +39,23 @@ const isActive = (inputKey) => {
             autocomplete="off"
             required
         />
-        <label>Name</label>
+        <label>Email</label>
       </div>
       <div class="input-wrap">
         <input
             @focus="toggleFocus('loginPassword')"
             @blur="toggleFocus('loginPassword')"
-            :class="{'active': isActive('loginPassword')}"
+            :class="{'active': isActive('loginPassword') || LoginForm.password.length > 0}"
             v-model="LoginForm.password"
             type="password"
-            minlength="4"
+            minlength="6"
             class="input-field"
             autocomplete="off"
             required
         />
         <label>Password</label>
       </div>
-      <input type="submit" value="Sign In" class="sign-btn" />
+      <input type="submit" @click.prevent.stop="login(LoginForm.email,LoginForm.password)" value="Sign In" class="sign-btn" />
       <p class="text">
         Forgotten your password or you login details?
         <a @click="$emit('reset-password')" class="reset-password-btn" href="#">Reset Password</a>

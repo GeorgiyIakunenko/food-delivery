@@ -32,7 +32,7 @@ const ResetForm = reactive({
               @focus="toggleFocus('resetCode')"
               @blur="toggleFocus('resetCode')"
               v-model="ResetForm.resetCode"
-              :class="{'active': isActive('resetCode') || ResetForm.resetCode.length > 0}"
+              :class="{'active': isActive('resetCode') || ResetForm.resetCode !== ''}"
               type="number"
               class="input-field"
               autocomplete="off"

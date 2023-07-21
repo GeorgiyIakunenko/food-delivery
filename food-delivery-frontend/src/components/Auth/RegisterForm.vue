@@ -1,6 +1,6 @@
 <script setup>
   import {reactive} from "vue";
-
+  import {register} from "@/api/api.js";
   const activeInputs = reactive({});
 
   const toggleFocus = (inputKey) => {
@@ -12,13 +12,14 @@
   }
 
   const RegisterForm = reactive({
-    FirstName: '',
-    LastName: '',
-    Email: '',
-    Username: '',
-    Age: '',
-    Address: '',
-    Password: ''
+    first_name: "",
+    last_name: "",
+    username: "",
+    age: "",
+    email: "",
+    phone: "",
+    password: "",
+    address: ""
   })
 
 </script>
@@ -35,8 +36,8 @@
           <input
               @focus="toggleFocus('registerFirstName')"
               @blur="toggleFocus('registerFirstName')"
-              v-model="RegisterForm.FirstName"
-              :class="{'active': isActive('registerFirstName') || RegisterForm.FirstName.length > 0}"
+              v-model="RegisterForm.first_name"
+              :class="{'active': isActive('registerFirstName') || RegisterForm.first_name.length > 0}"
               type="text"
               class="input-field"
               autocomplete="off"
@@ -48,8 +49,8 @@
           <input
               @focus="toggleFocus('registerLastName')"
               @blur="toggleFocus('registerLastName')"
-              :class="{'active': isActive('registerLastName') || RegisterForm.LastName.length > 0}"
-              v-model="RegisterForm.LastName"
+              :class="{'active': isActive('registerLastName') || RegisterForm.last_name.length > 0}"
+              v-model="RegisterForm.last_name"
               type="text"
               class="input-field"
               autocomplete="off"
@@ -61,8 +62,8 @@
           <input
               @focus="toggleFocus('registerEmail')"
               @blur="toggleFocus('registerEmail')"
-              :class="{'active': isActive('registerEmail') || RegisterForm.Email.length > 0}"
-              v-model="RegisterForm.Email"
+              :class="{'active': isActive('registerEmail') || RegisterForm.email.length > 0}"
+              v-model="RegisterForm.email"
               minlength="6"
               type="email"
               class="input-field"
@@ -73,10 +74,24 @@
         </div>
         <div class="input-wrap">
           <input
+              @focus="toggleFocus('registerPhone')"
+              @blur="toggleFocus('registerPhone')"
+              :class="{'active': isActive('registerPhone') || RegisterForm.phone !== ''}"
+              v-model="RegisterForm.phone"
+              minlength="6"
+              type="tel"
+              class="input-field"
+              autocomplete="off"
+              required
+          />
+          <label>Phone</label>
+        </div>
+        <div class="input-wrap">
+          <input
               @focus="toggleFocus('registerUsername')"
               @blur="toggleFocus('registerUsername')"
-              :class="{'active': isActive('registerUsername') || RegisterForm.Username.length > 0}"
-              v-model="RegisterForm.Username"
+              :class="{'active': isActive('registerUsername') || RegisterForm.username.length > 0}"
+              v-model="RegisterForm.username"
               type="text"
               minlength="4"
               class="input-field"
@@ -89,8 +104,8 @@
           <input
               @focus="toggleFocus('registerAge')"
               @blur="toggleFocus('registerAge')"
-              :class="{'active': isActive('registerAge') || RegisterForm.Age.length > 0}"
-              v-model="RegisterForm.Age"
+              :class="{'active': isActive('registerAge') || RegisterForm.age !== ''}"
+              v-model="RegisterForm.age"
               type="number"
               class="input-field"
               autocomplete="off"
@@ -102,8 +117,8 @@
           <input
               @focus="toggleFocus('registerAddress')"
               @blur="toggleFocus('registerAddress')"
-              :class="{'active': isActive('registerAddress') || RegisterForm.Address.length > 0}"
-              v-model="RegisterForm.Address"
+              :class="{'active': isActive('registerAddress') || RegisterForm.address.length > 0}"
+              v-model="RegisterForm.address"
               type="text"
               minlength="4"
               class="input-field"
@@ -116,8 +131,8 @@
           <input
               @focus="toggleFocus('registerPassword')"
               @blur="toggleFocus('registerPassword')"
-              :class="{'active': isActive('registerPassword') || RegisterForm.Password.length > 0}"
-              v-model="RegisterForm.Password"
+              :class="{'active': isActive('registerPassword') || RegisterForm.password.length > 0}"
+              v-model="RegisterForm.password"
               type="password"
               minlength="6"
               class="input-field"
@@ -127,7 +142,7 @@
           <label>Password</label>
         </div>
       </div>
-      <input type="submit" value="Sign Up" class="sign-btn" />
+      <input @click.stop.prevent="register(RegisterForm)" type="submit" value="Sign Up" class="sign-btn" />
       <p class="text">
         By signing up, I agree to the
         <a href="#">Terms of Services</a> and
