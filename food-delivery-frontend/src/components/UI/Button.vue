@@ -52,16 +52,27 @@ const buttonClass = computed(() => {
   text-align: center;
   text-decoration: none;
   font-size: 16px;
+  transition: all 0.3s ease-in-out;
 }
+
 
 .primary {
-  background-color: var(--primary-color);
-  color : #fff;
+  background-color: #4CAF50;
+  color: #fff;
 }
 
+.primary:hover {
+  background-color: rgba(0, 0, 255, 0.5);
+}
+
+
 .secondary {
-  background-color: orange;
-  color: black;
+  background-color: #FF5722;
+  color: #fff;
+}
+
+.secondary:hover {
+  background-color: #E64A19;
 }
 
 .danger {
@@ -69,9 +80,17 @@ const buttonClass = computed(() => {
   color: #fff;
 }
 
+.danger:hover {
+  background-color: #CC0000;
+}
+
 .text {
   background-color: rgba(92,90,87,0.1);
   color: #21201F;
+}
+
+.text:hover {
+  background-color: rgba(92, 90, 87, 0.3);
 }
 
 .left-icon {

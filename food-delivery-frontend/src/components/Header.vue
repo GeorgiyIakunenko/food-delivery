@@ -44,7 +44,7 @@ const toggleMenu = () => {
           <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
           </router-link>
-          <Button v-else @click="logout" intent="text">Logout</Button>
+          <Button  v-else @click="logout" intent="text">Logout</Button>
           <router-link style="z-index: 101" to="/profile">
             <Button intent="primary">Profile</Button>
           </router-link>
@@ -65,7 +65,7 @@ const toggleMenu = () => {
   top: 0;
   width: 100%;
   background-color: #fff;
-  z-index: 999;
+  z-index: 110;
 }
 
 .header +.main {
