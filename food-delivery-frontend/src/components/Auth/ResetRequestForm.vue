@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import {defineProps, computed, reactive} from 'vue';
+import {defineProps, computed, reactive, ref} from 'vue';
 
 
 const ResetRequestForm = reactive({
@@ -15,6 +15,25 @@ const toggleFocus = (inputKey) => {
 const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
+
+/*const emit = defineEmits(['changeMode', 'change-reset-mode'])
+
+const dialogMessage = ref('We send you a verification code to your email address')
+const dialogType = ref('success')
+
+
+const showDialog = () => {
+  emit('showModal', {
+    type: dialogType.value,
+    message: dialogMessage.value
+  })
+}
+
+const submitForm = async () => {
+  dialogType.value = 'success';
+  dialogMessage.value = 'We send you a verification code to your email address'
+  showDialog()
+}*/
 
 </script>
 

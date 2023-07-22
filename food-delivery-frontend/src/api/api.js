@@ -26,12 +26,15 @@ async function login(email, password) {
             const data = await response.json();
             useUserStore().setTokens(data.access_token, data.refresh_token);
             await getUserData();
+            return true;
         } else {
             const errorData = await response.json();
             console.log('Login Failed:', errorData);
+            return false;
         }
     } catch (error) {
         console.error('Error during login:', error);
+        return false;
     }
 }
 

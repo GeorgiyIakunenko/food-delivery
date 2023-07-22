@@ -13,19 +13,29 @@
   const userStore = useUserStore()
 
   const changeMode = ref(true)
-  const showDialog = ref(false)
-
   const resetMode = ref(false)
 
-  const toggleDialog = () => {
-    showDialog.value = !showDialog.value
-  }
   const toggleChangeMode = () => {
     changeMode.value = !changeMode.value
   }
   const toggleReset = () => {
     resetMode.value = !resetMode.value
   }
+
+  const dialogMessage = ref('You successfully login')
+  const dialogVisible = ref(false)
+  const dialogType = ref('error')
+
+  const toggleDialog = () => {
+    dialogVisible.value = !dialogVisible.value
+  }
+
+  const showModal = (data) => {
+    dialogType.value = data.type;
+    dialogMessage.value = data.message;
+    toggleDialog()
+  }
+
 </script>
 
 <template>
@@ -34,7 +44,7 @@
     <div class="box">
       <div class="inner-box">
         <div v-if="!resetMode" class="forms-wrap">
-          <LoginForm @reset-password="toggleReset"  @changeMode="toggleChangeMode"></LoginForm>
+          <LoginForm @reset-password="toggleReset" @show-modal="showModal"  @changeMode="toggleChangeMode"></LoginForm>
           <RegisterForm @changeMode="toggleChangeMode" ></RegisterForm>
         </div>
         <div v-else class="forms-wrap">
@@ -54,7 +64,7 @@
       </div>
     </div>
   </main>
-  <Dialog v-if="showDialog" :show="showDialog"> <ResetForm></ResetForm> </Dialog>
+  <Dialog @update:show="toggleDialog" v-model:type="dialogType" v-model:show="dialogVisible">{{ dialogMessage}}</Dialog>
   <Footer></Footer>
 </template>
 

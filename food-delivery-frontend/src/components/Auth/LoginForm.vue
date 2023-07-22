@@ -1,7 +1,11 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import {defineProps, computed, reactive} from 'vue';
+import {RouterLink, RouterView, useRouter} from 'vue-router'
+import {defineProps, computed, reactive, ref} from 'vue';
 import {login} from "@/api/api.js";
+import Dialog from "@/components/UI/Dialog.vue";
+
+
+const router = useRouter()
 
 const LoginForm = reactive({
   email: 'g10072004@gmail.com',
@@ -16,7 +20,29 @@ const toggleFocus = (inputKey) => {
 const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
+const dialogMessage = ref('You successfully login')
+const dialogType = ref('error')
 
+const emit = defineEmits(['showModal', 'changeMode', 'reset-password'])
+
+const showDialog = () => {
+  emit('showModal', {
+    type: dialogType.value,
+    message: dialogMessage.value
+  })
+}
+
+
+const submitForm = async () => {
+  const loginResult = await login(LoginForm.email,LoginForm.password)
+  if (loginResult) {
+    await router.push('/profile')
+  } else {
+    dialogType.value = 'error';
+    dialogMessage.value = 'You enter wrong email or password'
+    showDialog()
+  }
+}
 </script>
 
 <template>
@@ -55,7 +81,7 @@ const isActive = (inputKey) => {
         />
         <label>Password</label>
       </div>
-      <input type="submit" @click.prevent.stop="login(LoginForm.email,LoginForm.password)" value="Sign In" class="sign-btn" />
+      <input type="submit" @click.prevent.stop="submitForm" value="Sign In" class="sign-btn" />
       <p class="text">
         Forgotten your password or you login details?
         <a @click="$emit('reset-password')" class="reset-password-btn" href="#">Reset Password</a>
