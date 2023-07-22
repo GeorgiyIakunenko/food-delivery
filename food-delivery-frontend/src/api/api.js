@@ -1,5 +1,6 @@
 import {useUserStore} from "@/stores/user";
 import {getLocalStorageItem} from "@/healpers/localstorage";
+import {useProductStore} from "@/stores/product";
 
 
 const root = 'http://localhost:8080';
@@ -52,15 +53,17 @@ async function register(userData) {
         const response = await apiFetch(url, options);
         if (response.ok) {
             const data = await response.json();
+            return true;
         } else {
             const errorData = await response.json();
             console.log('Registration Failed:', errorData);
+            return false;
         }
     } catch (error) {
         console.error('Error during registration:', error);
+        return false;
     }
 }
-
 
 async function getUserData() {
     const url = '/user/profile';
@@ -69,7 +72,7 @@ async function getUserData() {
     console.log(accessToken)
     if (!accessToken) {
         console.error('Access token not found in localStorage.');
-        return;
+        return false;
     }
 
     const options = {
@@ -85,12 +88,15 @@ async function getUserData() {
         if (response.ok) {
             const data = await response.json();
             useUserStore().setUser(data);
+            return true;
         } else {
             const errorData = await response.json();
             console.log('User Data Failed:', errorData);
+            return false;
         }
     } catch (error) {
         console.error('Error during User Data:', error);
+        return false;
     }
 }
 
@@ -101,7 +107,7 @@ async function logout() {
     console.log(accessToken)
     if (!accessToken) {
         console.error('Access token not found in localStorage.');
-        return;
+        return false
     }
 
     const options = {
@@ -116,16 +122,43 @@ async function logout() {
         const response = await apiFetch(url, options);
         if (response.ok) {
             useUserStore().logout();
+            return true;
         } else {
             const errorData = await response.json();
             console.log('Logout Failed:', errorData);
+            return false;
         }
     } catch (error) {
         console.error('Error during logout:', error);
+        return false;
+    }
+}
+
+async function getAllProducts() {
+    const url = '/products';
+    const options = {
+        method: 'GET',
+    }
+
+    try {
+        const response = await apiFetch(url, options);
+        if (response.ok) {
+            const products = await response.json();
+            console.log(products)
+            useProductStore().setProducts(products)
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.log('Get Products Failed:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error during getting products:', error);
+        return false;
     }
 }
 
 
-export { login, register, getUserData, logout }
+export { login, register, getUserData, logout, getAllProducts }
 
 

@@ -36,7 +36,7 @@ const toggleMenu = () => {
               <a class="menu-list__link">Categories</a>
             </li>
             <li class="menu-list__item">
-              <a class="menu-list__link">Products</a>
+              <router-link class="menu-list__link" to="/products" >Products</router-link>
             </li>
           </ul>
         </nav>
