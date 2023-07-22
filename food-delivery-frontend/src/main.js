@@ -8,6 +8,7 @@ import router from './router/router'
 import components from '@/components/UI/index'
 
 const app = createApp(App)
+const pinia = createPinia()
 
 components.forEach(component => {
     app.component(component.name, component)
@@ -15,8 +16,9 @@ components.forEach(component => {
 
 //app.component('Button', Button)
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
+
 
 
 

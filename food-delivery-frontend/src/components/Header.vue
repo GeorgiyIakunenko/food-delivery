@@ -1,12 +1,18 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+import {logout} from "@/api/api";
 //import Button from "@/components/UI/Button.vue";
-import CartIcon from '@/assets/images/icons/cart-active.png';
-
 import {useUserStore} from "@/stores/user";
+import Button from "@/components/UI/Button.vue";
+import {getLocalStorageItem} from "@/healpers/localstorage";
+
+
+
 
 const userStore = useUserStore()
+
+
 
 const menuActive = ref(false)
 
@@ -35,8 +41,12 @@ const toggleMenu = () => {
           </ul>
         </nav>
         <div class="button-box">
-          <router-link style="z-index: 101" to="/login">
+          <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
+          </router-link>
+          <Button v-else @click="logout" intent="text">Logout</Button>
+          <router-link style="z-index: 101" to="/profile">
+            <Button intent="primary">Profile</Button>
           </router-link>
           <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">
             <span class="menu-btn__span menu-btn__span--1"></span>

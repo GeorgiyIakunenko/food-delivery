@@ -1,5 +1,6 @@
 import {computed, reactive, ref} from "vue";
 import {defineStore} from "pinia";
+import {getLocalStorageItem, setLocalStorageItem} from "@/healpers/localstorage";
 
 export const useUserStore = defineStore('user', () => {
 
@@ -16,14 +17,14 @@ export const useUserStore = defineStore('user', () => {
     })
 
 
-    const accessToken = ref("")
-    const refreshToken = ref("")
+    const access_token = ref(getLocalStorageItem('access_token') || '');
+    const refresh_token = ref(getLocalStorageItem('refresh_token') || '');
 
-    const setTokens = (accessTokenNew, refreshTokenNew ) => {
-
-        accessToken.value = accessTokenNew;
-        refreshToken.value = refreshTokenNew;
-        console.log(accessToken, refreshToken)
+    const setTokens = (accessTokenNew, refreshTokenNew) => {
+        access_token.value = accessTokenNew;
+        refresh_token.value = refreshTokenNew;
+        setLocalStorageItem('access_token', accessTokenNew);
+        setLocalStorageItem('refresh_token', refreshTokenNew);
     };
 
     const setUser = (userData) => {
@@ -37,6 +38,23 @@ export const useUserStore = defineStore('user', () => {
         user.age = userData.age;
     }
 
-    return { user, accessToken, refreshToken, setTokens, setUser}
+    const logout = () => {
+        access_token.value = '';
+        refresh_token.value = '';
+        setLocalStorageItem('access_token', '');
+        setLocalStorageItem('refresh_token', '');
+        setUser({
+            id: 0,
+            email: '',
+            first_name: '',
+            last_name: '',
+            username: '',
+            address: '',
+            phone: '',
+            age: 0,
+        })
+    }
+
+    return { user, access_token, refresh_token, setTokens, setUser, logout}
 
 })

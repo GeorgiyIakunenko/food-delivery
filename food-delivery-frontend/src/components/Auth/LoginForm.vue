@@ -4,8 +4,8 @@ import {defineProps, computed, reactive} from 'vue';
 import {login} from "@/api/api.js";
 
 const LoginForm = reactive({
-  email: '',
-  password: ''
+  email: 'g10072004@gmail.com',
+  password: '506021'
 })
 
 const activeInputs = reactive({});

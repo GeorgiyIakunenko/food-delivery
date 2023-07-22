@@ -8,6 +8,9 @@
   import Dialog from "@/components/UI/Dialog.vue";
   import ResetForm from "@/components/Auth/ResetForm.vue";
   import ResetRequestForm from "@/components/Auth/ResetRequestForm.vue";
+  import {useUserStore} from "@/stores/user";
+
+  const userStore = useUserStore()
 
   const changeMode = ref(true)
   const showDialog = ref(false)

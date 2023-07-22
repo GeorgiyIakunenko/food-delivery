@@ -1,10 +1,12 @@
 import {useUserStore} from "@/stores/user";
+import {getLocalStorageItem} from "@/healpers/localstorage";
 
 
 const root = 'http://localhost:8080';
+//const userStore = useUserStore();  getting an error if define store locally
 
 async function apiFetch(url, options) {
-    return await fetch(root + url, options);
+    return fetch(root + url, options);
 }
 
 async function login(email, password) {
@@ -22,10 +24,8 @@ async function login(email, password) {
         const response = await apiFetch(url, options);
         if (response.ok) {
             const data = await response.json();
-            const userStore = useUserStore();
-            console.log(data.access_token, data.refresh_token, "json tokens")
-            userStore.setTokens(data.access_token, data.refresh_token);
-            console.log('Login Successful:', data);
+            useUserStore().setTokens(data.access_token, data.refresh_token);
+            await getUserData();
         } else {
             const errorData = await response.json();
             console.log('Login Failed:', errorData);
@@ -49,7 +49,6 @@ async function register(userData) {
         const response = await apiFetch(url, options);
         if (response.ok) {
             const data = await response.json();
-            console.log('Registration Successful:', data);
         } else {
             const errorData = await response.json();
             console.log('Registration Failed:', errorData);
@@ -61,11 +60,20 @@ async function register(userData) {
 
 
 async function getUserData() {
-    const url = '/auth/profile';
+    const url = '/user/profile';
+
+    const accessToken = useUserStore().access_token;
+    console.log(accessToken)
+    if (!accessToken) {
+        console.error('Access token not found in localStorage.');
+        return;
+    }
+
     const options = {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
         },
     };
 
@@ -73,7 +81,7 @@ async function getUserData() {
         const response = await apiFetch(url, options);
         if (response.ok) {
             const data = await response.json();
-            console.log('User Data:', data);
+            useUserStore().setUser(data);
         } else {
             const errorData = await response.json();
             console.log('User Data Failed:', errorData);
@@ -83,7 +91,38 @@ async function getUserData() {
     }
 }
 
+async function logout() {
+    const url = '/auth/logout';
 
-export { login, register };
+    const accessToken = getLocalStorageItem('access_token');
+    console.log(accessToken)
+    if (!accessToken) {
+        console.error('Access token not found in localStorage.');
+        return;
+    }
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
+        },
+    };
+
+    try {
+        const response = await apiFetch(url, options);
+        if (response.ok) {
+            useUserStore().logout();
+        } else {
+            const errorData = await response.json();
+            console.log('Logout Failed:', errorData);
+        }
+    } catch (error) {
+        console.error('Error during logout:', error);
+    }
+}
+
+
+export { login, register, getUserData, logout }
 
 
