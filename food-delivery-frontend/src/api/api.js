@@ -3,8 +3,10 @@ import {getLocalStorageItem} from "@/healpers/localstorage";
 import {useProductStore} from "@/stores/product";
 
 
-const root = 'http://localhost:8080';
-//const userStore = useUserStore();  getting an error if define store locally
+
+const root = 'http://localhost:8080'
+
+//console.log(root)
 
 async function apiFetch(url, options) {
     return fetch(root + url, options);

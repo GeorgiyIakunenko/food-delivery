@@ -1,10 +1,23 @@
 <script setup>
+  import {useCartStore} from "@/stores/cart";
+
   const props = defineProps({
     product: {
       type: Object,
       required: true
     }
   })
+
+  const cartStore = useCartStore()
+
+  const addToCart = (product) => {
+    cartStore.addToCart(product)
+  }
+
+  const removeFromCart = (product) => {
+    cartStore.removeFromCart(product)
+  }
+
 </script>
 
 <template>
@@ -32,7 +45,7 @@
     </div>
     <div class="product-card__bottom">
       <p> HUF {{ product.price }}</p>
-      <button class="btn"><img src="@/assets/images/icons/plus.svg" alt=""></button>
+      <button @click="addToCart(props.product)" class="btn"><img src="@/assets/images/icons/plus.svg" alt=""></button>
     </div>
   </div>
 </template>
