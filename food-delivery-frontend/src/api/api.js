@@ -27,6 +27,7 @@ async function login(email, password) {
             const data = await response.json();
             useUserStore().setTokens(data.access_token, data.refresh_token);
             await getUserData();
+            useUserStore().startLogoutTimer();
             return true;
         } else {
             const errorData = await response.json();

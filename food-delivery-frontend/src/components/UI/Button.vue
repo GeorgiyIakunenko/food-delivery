@@ -8,10 +8,6 @@
 import { computed } from 'vue';
 
 const props = defineProps({
-  leftIconUrl: String,
-  leftIconAlt: String,
-  rightIconUrl: String,
-  rightIconAlt: String,
   intent: {
     type: String,
     validator: (value) => {
@@ -35,9 +31,7 @@ const buttonClass = computed(() => {
 </script>
 <template>
   <button :class="['button', buttonClass]">
-    <img v-if="props.leftIconUrl" :src="props.leftIconUrl" :alt="leftIconAlt" class="left-icon" />
     <slot></slot>
-    <img v-if="props.rightIconUrl" :src="props.rightIconUrl" :alt="rightIconAlt" class="right-icon" />
   </button>
 </template>
 
@@ -93,11 +87,4 @@ const buttonClass = computed(() => {
   background-color: rgba(92, 90, 87, 0.3);
 }
 
-.left-icon {
-  margin-right: 10px;
-}
-
-.right-icon {
-  margin-left: 10px;
-}
 </style>

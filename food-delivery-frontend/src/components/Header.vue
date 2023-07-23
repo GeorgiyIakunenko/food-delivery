@@ -8,12 +8,7 @@ import Button from "@/components/UI/Button.vue";
 import {getLocalStorageItem} from "@/healpers/localstorage";
 
 
-
-
 const userStore = useUserStore()
-
-
-
 const menuActive = ref(false)
 
 const toggleMenu = () => {
@@ -41,11 +36,14 @@ const toggleMenu = () => {
           </ul>
         </nav>
         <div class="button-box">
+          <router-link style="z-index: 101" to="/cart">
+            <button class="cart-btn" >Cart <img class="cart-img" alt="cart" src="@/assets/images/icons/grocery-cart.png"><span class="cart-products">1</span> </button>
+          </router-link>
           <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
           </router-link>
           <Button  v-else @click="logout" intent="text">Logout</Button>
-          <router-link style="z-index: 101" to="/profile">
+          <router-link v-if="userStore.access_token !== ''" style="z-index: 101" to="/profile">
             <Button intent="primary">Profile</Button>
           </router-link>
           <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">
@@ -99,6 +97,41 @@ const toggleMenu = () => {
 
 .menu-list__item+.menu-list__item {
   margin-left: 35px;
+}
+
+.cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  margin-right: 15px;
+  position : relative;
+}
+
+.cart-img {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
+}
+
+.cart-products {
+  background-color: #654040;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -2px;
 }
 
 /* menu burger */
