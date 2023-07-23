@@ -3,6 +3,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import {useCartStore} from "@/stores/cart";
+import CartProduct from "@/components/CartProduct.vue";
 
 const cartStore = useCartStore()
 
@@ -20,11 +21,8 @@ const removeFromCart = (item) => {
     <main>
         <div class="container">
             <h1>Cart</h1>
-            <div v-for="item in cartStore.items">
-              <h1>{{item.name}}</h1>
-              <h2>{{item.price}}</h2>
-              <p>{{item.quantity}}</p>
-              <button @click="removeFromCart(item)">Remove</button>
+            <div class="cart-products">
+              <CartProduct :product="item"  v-for="item in cartStore.items" :key="item.id" />
             </div>
         </div>
     </main>
@@ -32,4 +30,10 @@ const removeFromCart = (item) => {
 </template>
 
 <style scoped>
+  .cart-products {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 </style>

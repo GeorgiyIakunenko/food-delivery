@@ -45,7 +45,25 @@
     </div>
     <div class="product-card__bottom">
       <p> HUF {{ product.price }}</p>
-      <button @click="addToCart(props.product)" class="btn"><img src="@/assets/images/icons/plus.svg" alt=""></button>
+      <button @click="addToCart(props.product)" class="btn"><svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <g filter="url(#filter0_d_2_1270)">
+          <circle cx="26" cy="26" r="16" fill="#FF9431"/>
+        </g>
+        <line x1="18.9988" y1="25.8571" x2="33.0013" y2="25.8571" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="25.7144" y1="33" x2="25.7144" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <defs>
+          <filter id="filter0_d_2_1270" x="0" y="0" width="52" height="52" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+            <feOffset/>
+            <feGaussianBlur stdDeviation="5"/>
+            <feComposite in2="hardAlpha" operator="out"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 0.94902 0 0 0 0 0.6 0 0 0 0 0.290196 0 0 0 0.15 0"/>
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_1270"/>
+            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_1270" result="shape"/>
+          </filter>
+        </defs>
+      </svg></button>
     </div>
   </div>
 </template>
@@ -60,7 +78,7 @@
     align-items: center;
     justify-content: center;
     width: 250px;
-    height: 400px;
+    height: 420px;
     box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
     border-radius: 10px;
     padding: 1.75rem;

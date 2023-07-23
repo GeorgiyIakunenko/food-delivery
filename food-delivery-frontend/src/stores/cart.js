@@ -10,8 +10,9 @@ export const useCartStore = defineStore('cart', () => {
 
         if (existingProduct) {
             existingProduct.quantity++;
+            existingProduct.itemTotal = existingProduct.quantity * existingProduct.price;
         } else {
-            items.value.push({ ...product, quantity: 1 });
+            items.value.push({ ...product, quantity: 1, itemTotal: product.price });
         }
 
         updateLocalStorage();
@@ -19,6 +20,22 @@ export const useCartStore = defineStore('cart', () => {
 
     function removeFromCart(product) {
         items.value = items.value.filter((item) => item.id !== product.id);
+        updateLocalStorage();
+    }
+
+    function decreaseQuantity(product) {
+        const existingProduct = items.value.find((item) => item.id === product.id);
+
+        if (existingProduct) {
+            if (existingProduct.quantity === 1) {
+                removeFromCart(product);
+                return;
+            }
+            existingProduct.quantity--;
+        } else {
+            console.log("Error in DecreaseQuantity")
+        }
+
         updateLocalStorage();
     }
 
@@ -53,5 +70,6 @@ export const useCartStore = defineStore('cart', () => {
         clearCart,
         cartTotal,
         initializeCartFromLocalStorage,
+        decreaseQuantity,
     };
 });
