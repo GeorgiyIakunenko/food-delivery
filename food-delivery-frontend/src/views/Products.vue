@@ -31,9 +31,11 @@ async function fetchProducts() {
 <template>
   <Header />
   <main>
-      <h1>Products</h1>
-      <div class="products">
-        <Product :product="product" v-for="product in productStore.products"  :key="product.id"></Product>
+      <div class="container">
+        <h1>Products</h1>
+        <div class="products">
+          <Product :product="product" v-for="product in productStore.products"  :key="product.id"></Product>
+        </div>
       </div>
   </main>
   <Footer />
@@ -44,5 +46,9 @@ async function fetchProducts() {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+    }
+
+    main {
+      background: #FFF1E5;
     }
 </style>

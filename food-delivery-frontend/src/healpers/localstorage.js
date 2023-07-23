@@ -15,3 +15,4 @@ export function getLocalStorageItem(key) {
 export function removeLocalStorageItem(key) {
     localStorage.removeItem(key);
 }
+

@@ -20,7 +20,7 @@ const toggleDialog = () => {
   <main>
     HomePage
     <button @click="toggleDialog">Show Dialog</button>
-    <Dialog @update:show="toggleDialog" type="error" v-model:show="dialogVisible"> gsdgadsfds afdasfasdf asdfasdfas dfasfsda fsdfasd fasdfasfasfssdf </Dialog>
+    <Dialog @update:show="toggleDialog" type="info" v-model:show="dialogVisible"> gsdgadsfds afdasfasdf asdfasdfas dfasfsda fsdfasd fasdfasfasfssdf </Dialog>
   </main>
 
   <Footer />
