@@ -1,20 +1,22 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
-import Button from "./Button.vue";
-import logoIcon from "../assets/images/logo/logo.png";
+import {RouterLink, RouterView} from 'vue-router'
+import {logout} from "@/api/api";
+//import Button from "@/components/UI/Button.vue";
+import {useUserStore} from "@/stores/user";
+import Button from "@/components/UI/Button.vue";
+import {getLocalStorageItem} from "@/healpers/localstorage";
+import {useCartStore} from "@/stores/cart";
 
+
+const cartStore = useCartStore()
+
+const userStore = useUserStore()
 const menuActive = ref(false)
 
 const toggleMenu = () => {
   menuActive.value = !menuActive.value
 }
-
-onMounted(() => {
-  console.log('mounted')
-  console.log(logoIcon)
-})
-
 
 </script>
 
@@ -22,29 +24,37 @@ onMounted(() => {
   <header class="header">
     <div class="container">
       <div class="header__wrapper">
-        <router-link to="/"><img class="logo" src="../assets/images/logo/logo.png" alt="logo life upgrade" /></router-link>
+        <router-link to="/"><img width=45 class="logo" src="../assets/images/logo/logo.png" alt="logo life upgrade"/>
+        </router-link>
         <nav class="menu" :class="{active : menuActive}">
           <ul class="menu-list">
-            <li class="menu-list__item">
-              <router-link class="menu-list__link" to="/">Home</router-link>
-            </li>
             <li class="menu-list__item">
               <router-link class="menu-list__link" to="/suppliers">Suppliers</router-link>
             </li>
             <li class="menu-list__item">
-              <a class="menu-list__link">Nutrition&WorkOut</a>
+              <router-link class="menu-list__link" to="/categories">Categories</router-link>
             </li>
             <li class="menu-list__item">
-              <a class="menu-list__link" >MindSet</a>
+              <router-link class="menu-list__link" to="/products">Products</router-link>
             </li>
           </ul>
         </nav>
         <div class="button-box">
-<!--          <button class="btn-contact btn-style">Login</button>-->
-          <router-link to="/cart">
-            <Button >Cart</Button>
+          <router-link style="z-index: 101" to="/cart">
+            <button class="cart-btn">Cart <img class="cart-img" alt="cart" src="@/assets/images/icons/grocery-cart.png">
+              <span class="cart-products" :key="cartStore.items.length">
+                  {{ cartStore.items.length }}
+              </span>
+            </button>
           </router-link>
-          <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">
+          <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
+            <Button intent="text">Login</Button>
+          </router-link>
+          <Button v-else @click="logout" intent="text">Logout</Button>
+          <router-link v-if="userStore.access_token !== ''" style="z-index: 101" to="/profile">
+            <Button intent="primary">Profile</Button>
+          </router-link>
+          <div @click="toggleMenu" class="menu-btn" :class="{active : menuActive}">
             <span class="menu-btn__span menu-btn__span--1"></span>
             <span class="menu-btn__span menu-btn__span--2"></span>
             <span class="menu-btn__span menu-btn__span--3"></span>
@@ -56,15 +66,16 @@ onMounted(() => {
 </template>
 
 <style scoped>
+
 .header {
   position: fixed;
   top: 0;
   width: 100%;
   background-color: #fff;
-  z-index: 999;
+  z-index: 110;
 }
 
-.header+.main {
+.header + .main {
   padding-top: 101px;
 }
 
@@ -82,6 +93,7 @@ onMounted(() => {
 
 .menu-list__link {
   color: #000;
+  font-family: 'Popins', sans-serif;
   text-decoration: none;
 }
 
@@ -92,29 +104,43 @@ onMounted(() => {
 
 }
 
-.menu-list__item+.menu-list__item {
+.menu-list__item + .menu-list__item {
   margin-left: 35px;
 }
 
-.btn-style {
+.cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
   border: none;
-  background: #25AB75;
-  border-radius: 10px;
+  font-size: 1rem;
   font-weight: 600;
-  color: #fff;
-  padding: 10px 30px;
+  color: #000;
   cursor: pointer;
-  box-shadow: 0 3px #999;
+  margin-right: 15px;
+  position: relative;
 }
 
-.btn-style:hover {
-  background-color: #3e8e41
+.cart-img {
+  width: 30px;
+  height: 30px;
+  margin-left: 5px;
 }
 
-.btn-style:active {
-  background-color: #3e8e41;
-  box-shadow: 0 3px #666;
-  transform: translateY(3px);
+.cart-products {
+  background-color: #654040;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  position: absolute;
+  top: -5px;
+  right: -2px;
 }
 
 /* menu burger */
@@ -126,7 +152,7 @@ onMounted(() => {
 
 .menu-btn {
   margin-left: 15px;
-  z-index: 999;
+  z-index: 101;
   flex-direction: column;
   justify-content: space-between;
   height: 28px;
@@ -134,8 +160,6 @@ onMounted(() => {
   cursor: pointer;
   display: none;
 }
-
-
 
 .menu-btn__span {
   height: 3px;
@@ -145,25 +169,20 @@ onMounted(() => {
   transition: all 0.2s ease-in-out;
 }
 
-
 @media screen and (max-width: 768px) {
-
   .menu {
     display: block;
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     height: 100vh;
     width: auto;
-    padding: 15px;
+    padding: 45px;
     background-color: #f9f9f9;
-    z-index: 998;
-    transform: translateX(-110%);
+    z-index: 99;
+    transform: translateX(110%);
     transition: transform 0.3s ease-in-out;
-    box-shadow: 5px 0 10px 0 #aaa;
   }
-
-
 
   .menu-btn {
     display: flex;
@@ -173,10 +192,10 @@ onMounted(() => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 3rem;
+    margin-top: 10rem;
   }
 
-  .menu-list__item+.menu-list__item {
+  .menu-list__item + .menu-list__item {
     margin-left: 0;
   }
 
@@ -210,18 +229,9 @@ onMounted(() => {
 }
 
 @media (max-width: 500px) {
-  .btn-contact {
-    padding: 7px 15px;
-  }
-
-  .logo {
-    max-width: 130px;
-  }
-
   .menu-btn {
     margin-left: 10px;
   }
-
 }
 
 </style>

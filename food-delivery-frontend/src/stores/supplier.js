@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {ref, reactive} from "vue";
 import axios from "axios";
 
 export const useSupplierStore = defineStore('supplier', () => {
@@ -7,17 +7,15 @@ export const useSupplierStore = defineStore('supplier', () => {
     const suppliers = ref(null)
 
 
-    async function getSuppliers() {
-        try {
-            const response = await axios.get('http://localhost:8080/suppliers');
-            suppliers.value = response.data
-            console.log(suppliers.value)
-        } catch (error) {
-            console.error(error);
-        }
+    const CurrentSupplier = reactive({})
 
+    function setCurrentSupplier(supplier) {
+        CurrentSupplier.value = supplier
     }
 
+    function setSuppliers(newSuppliers) {
+        suppliers.value = newSuppliers
+    }
 
-    return {suppliers, getSuppliers}
+    return {suppliers, setCurrentSupplier, CurrentSupplier, setSuppliers }
 })

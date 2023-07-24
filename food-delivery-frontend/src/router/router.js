@@ -16,6 +16,7 @@ const router = createRouter({
     },{
         path: '/suppliers/:id',
         name: 'supplier',
+        props: true,
         component: () => import('../views/Supplier.vue')
     },
     {
@@ -23,6 +24,34 @@ const router = createRouter({
       name: 'user',
       component: () => import('../views/User.vue')
     },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Auth.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/Profile.vue')
+    },
+    {
+      path: '/products',
+      name: 'products',
+      component: () => import('../views/Products.vue')
+    },
+    {
+        path: '/cart',
+        name: 'cart',
+        component: () => import('../views/Cart.vue')
+    },
+    {
+        path: '/categories',
+        name: 'categories',
+        component: () => import('../views/Categories.vue')
+    }
+
+
+
 
   ]
 })
