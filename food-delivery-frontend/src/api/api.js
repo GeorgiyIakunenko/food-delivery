@@ -143,6 +143,42 @@ async function register(userData) {
     }
 }
 
+async function updateProfile(userData) {
+    const url = '/user/profile';
+    const accessToken = getLocalStorageItem('access_token');
+
+    if (!accessToken) {
+        console.error('Access token not found in localStorage.');
+        return false;
+    }
+
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
+        },
+        body : JSON.stringify(userData)
+    }
+
+    try {
+        const response = await fetchApi(url, options, true);
+        if (response.ok) {
+            const data = await response.json();
+            useUserStore().setUser(userData);
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.log('User Update Failed:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error during User Update:', error);
+        return false;
+    }
+
+}
+
 async function getUserData() {
     const url = '/user/profile';
 
@@ -285,6 +321,5 @@ async function getAllSuppliers() {
 }
 
 
-export { login, register, getUserData, logout, getAllProducts, getAllCategories, getAllSuppliers }
 
-
+export { login, register, getUserData, logout, getAllProducts, getAllCategories, getAllSuppliers, updateProfile }
