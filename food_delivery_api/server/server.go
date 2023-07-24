@@ -118,7 +118,13 @@ func Start(cfg *config.Config) {
 	orderRouter.HandleFunc("/create", OrderHandler.CreateOrder).Methods(http.MethodPost)
 	orderRouter.HandleFunc("/{id}/cancel", OrderHandler.CancelOrderByID).Methods(http.MethodPut)
 
+	corsMiddleware := handlers.CORS(
+		handlers.AllowedOrigins([]string{"http://localhost:5173"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
+		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
+	)
+
 	fmt.Println("Server started at port", cfg.Port)
-	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
+	log.Fatal(http.ListenAndServe(":8080", corsMiddleware(r)))
 
 }

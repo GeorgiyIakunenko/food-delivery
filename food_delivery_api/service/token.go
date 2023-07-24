@@ -37,6 +37,10 @@ func ValidateToken(tokenString, secret string) (*JwtCustomClaims, error) {
 		return nil, errors.New("failed to parse token claims")
 	}
 
+	if claims.ExpiresAt.Time.Before(time.Now()) {
+		return nil, errors.New("token is expired")
+	}
+
 	return claims, nil
 }
 
