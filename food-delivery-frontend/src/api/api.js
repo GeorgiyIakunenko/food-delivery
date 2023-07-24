@@ -15,9 +15,9 @@ async function apiFetch(url, options) {
 
 async function fetchApi(url, options, isProtected = false) {
     if (isProtected) {
-        return await refreshTokenMiddleware(url, options);
+        return await refreshTokenMiddleware(url, options)
     } else {
-        return apiFetch(url, options);
+        return apiFetch(url, options)
     }
 }
 
@@ -31,44 +31,61 @@ async function refreshTokenMiddleware(url, options) {
         return null;
     }
 
-    const response = await apiFetch(url, options);
+    let response;
 
-    if (response.status === 401) {
-        try {
-            const refreshTokenUrl = '/auth/refresh';
-            const refreshTokenOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${refreshToken}`,
-                },
-            };
-
-            const refreshResponse = await fetch(root + refreshTokenUrl, refreshTokenOptions);
-
-            console.log("refreshResponse", refreshResponse)
-
-            if (refreshResponse.ok) {
-                const data = await refreshResponse.json();
-                userStore.setTokens(data.access_token, data.refresh_token);
-
-                const newOptions = { ...options, headers: { ...options.headers, 'Authorization': `Bearer ${data.access_token}` } };
-                return await apiFetch(url, newOptions);
-            } else {
-                console.error('Token refresh failed.');
-                userStore.logout();
-                return response;
+    try {
+        response = await apiFetch(url, options);
+        if (!response.ok) {
+            console.log('Going to request new access token');
+            const refreshSuccess = await refreshTokenRequest();
+            if (refreshSuccess) {
+                console.log('New access token received, retrying original request');
+                const newOptions = { ...options, headers: { ...options.headers, 'Authorization': `Bearer ${useUserStore().access_token}` } };
+                response = await apiFetch(url, newOptions);
             }
-        } catch (error) {
-            console.error('Error during token refresh:', error);
-            userStore.logout();
-            return response;
+
         }
+    } catch (error) {
+        console.error('Error during request:', error);
+        return null;
     }
 
     return response;
 }
 
+async function refreshTokenRequest() {
+    const url = '/auth/refresh';
+    const refreshToken = getLocalStorageItem('refresh_token');
+    console.log(refreshToken)
+    if (!refreshToken) {
+        console.error('Refresh token not found in localStorage.');
+        return false;
+    }
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${refreshToken}`,
+        }
+    }
+
+    try {
+        const response = await apiFetch(url, options);
+        if (response.ok) {
+            const data = await response.json();
+            useUserStore().setTokens(data.access_token, data.refresh_token);
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.log('Token refresh Failed:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error during token refresh:', error);
+        return false;
+    }
+}
 
 
 
@@ -147,9 +164,6 @@ async function getUserData() {
 
     try {
         const response = await fetchApi(url, options, true);
-        //const response = await apiFetch(url, options);
-
-        console.log("response", response)
         if (response.ok) {
             const data = await response.json();
             useUserStore().setUser(data);

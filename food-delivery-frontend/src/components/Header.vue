@@ -43,9 +43,7 @@ const toggleMenu = () => {
           <router-link style="z-index: 101" to="/cart">
             <button class="cart-btn">Cart <img class="cart-img" alt="cart" src="@/assets/images/icons/grocery-cart.png">
               <span class="cart-products" :key="cartStore.items.length">
-                <transition-group name="cart-counter">
                   {{ cartStore.items.length }}
-                </transition-group>
               </span>
             </button>
           </router-link>

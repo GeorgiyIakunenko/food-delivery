@@ -18,8 +18,6 @@ const toggleEditMode = () => {
 };
 
 const updateUserProfile = () => {
-  // Implement the logic to update the user profile data
-  // For this example, let's just show an alert to indicate success
   alert("Profile updated successfully!");
 };
 </script>
