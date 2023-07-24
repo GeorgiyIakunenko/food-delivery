@@ -1,13 +1,23 @@
 <script setup>
 
   import Button from "@/components/UI/Button.vue";
+  import {useSupplierStore} from "@/stores/supplier";
+  import {useCategoryStore} from "@/stores/category";
 
   const props = defineProps({
     category: {
       type: Object,
       required: true
+    },
+    to: {
+      type: String,
+      required: true
     }
   })
+
+  const supplierStore = useSupplierStore()
+  const categoryStore = useCategoryStore()
+
 </script>
 
 <template>
@@ -16,7 +26,8 @@
     <p> {{category.description}} </p>
     <div class="category__bottom-box">
       <h2>{{ category.name }}</h2>
-      <Button intent="secondary">Open</Button>
+      <router-link v-if="to === 'suppliers'" :to="`/suppliers/${supplierStore.CurrentSupplier.id}/products`"><Button intent="secondary">Open</Button></router-link>
+      <router-link v-if="to === 'products'" :to="`/suppliers/${supplierStore.CurrentSupplier.value.id}/category/${category.id}/products`"><Button intent="secondary">Open</Button></router-link>
     </div>
   </div>
 </template>

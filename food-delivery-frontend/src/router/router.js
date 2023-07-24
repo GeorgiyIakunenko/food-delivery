@@ -53,11 +53,12 @@ const router = createRouter({
           path: '/suppliers/:id/categories',
           name: 'supplier',
           component: () => import('../views/SuppliersCategories.vue')
+      },
+      {
+          path: '/suppliers/:supplierId/category/:categoryId/products',
+          name: 'supplier-product',
+          component: () => import('../views/SupplierAndCategoryProducts.vue')
       }
-
-
-
-
   ]
 })
 

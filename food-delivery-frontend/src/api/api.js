@@ -150,8 +150,20 @@ async function getAllSuppliers() {
 async function getSupplierCategoriesById(id) {
     try {
         const response = await api.get(`/supplier/${id}/categories`);
+        console.log(response.data)
         useCategoryStore().setCategories(response.data);
-        return true;
+        return response.data;
+    } catch (error) {
+        console.error('Get Supplier Categories Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function getSuppliersByCategoryId(id) {
+    try {
+        const response = await api.get(`/suppliers/category/${id}`);
+        useSupplierStore().setSuppliers(response.data);
+        return response.data;
     } catch (error) {
         console.error('Get Supplier Categories Failed:', error.response.data);
         return false;
@@ -162,11 +174,35 @@ async function getSupplierById(id) {
     try {
         const response = await api.get(`/supplier/${id}`);
         useSupplierStore().setCurrentSupplier(response.data);
-        return true;
+        return response.data;
     } catch (error) {
         console.error('Get Supplier Failed:', error.response.data);
         return false;
     }
 }
 
-export { login, register, getUserData, logout, getAllProducts, getAllCategories, getAllSuppliers, updateProfile,getSupplierCategoriesById, getSupplierById };
+async function getProductsBySupplierAndCategoryIDs(CategoryId, SupplierId) {
+    try {
+        const response = await api.get(`/categories/${CategoryId}/suppliers/${SupplierId}/products`);
+        useProductStore().setProducts(response.data);
+        return true;
+    } catch (error) {
+        console.error('Get Supplier Categories Failed:', error.response.data);
+        return false;
+    }
+}
+
+export {
+    login,
+    register,
+    getUserData,
+    logout,
+    getAllProducts,
+    getAllCategories,
+    getAllSuppliers,
+    updateProfile,
+    getSupplierCategoriesById,
+    getSupplierById,
+    getProductsBySupplierAndCategoryIDs,
+    getSuppliersByCategoryId
+};
