@@ -63,7 +63,7 @@ export const useUserStore = defineStore('user', () => {
 
     function startLogoutTimer() {
         const expirationTime = 3600; // 1 hour
-        logoutTimer = setTimeout(logout, expirationTime * 3 );
+        logoutTimer = setTimeout(logout, expirationTime * 1000);
     }
 
     function clearLogoutTimer() {

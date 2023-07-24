@@ -1,25 +1,25 @@
 <script setup>
   import { RouterLink, RouterView } from 'vue-router'
   import {useSupplierStore} from "../stores/supplier";
-  import Supplier from "./Supplier.vue";
+  import Supplier from "@/components/Supplier.vue";
   import Header from "@/components/Header.vue";
   import Footer from "@/components/Footer.vue";
 
   const supplierStore = useSupplierStore()
 
   supplierStore.getSuppliers()
+
 </script>
 <template>
   <Header />
   <main>
-    <div v-for="supplier in supplierStore.suppliers">
-      <h1>{{ supplier.name }}</h1>
-      <p>{{ supplier.description }}</p>
-      <p>{{supplier.type}}</p>
-      <button @click="$router.push({
-        name: 'supplier',
-        params: { id: supplier.id, name : 'aldi' }
-      })" >Open</button>
+    <div class="container">
+      <div class="box">
+        <h1>Suppliers</h1>
+        <div class="suppliers">
+          <Supplier :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
+        </div>
+      </div>
     </div>
   </main>
   <Footer />
@@ -27,4 +27,29 @@
 
 <style scoped>
 
+    .box {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .suppliers {
+      display: flex;
+      grid-gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 6rem;
+      color: #897ec7;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
+
+    main {
+      background: #FFF1E5;
+    }
 </style>
