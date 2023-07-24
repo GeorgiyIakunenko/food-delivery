@@ -8,7 +8,6 @@ import (
 	"food_delivery/service"
 	"github.com/go-redis/redis/v8"
 	"net/http"
-	"strings"
 )
 
 type AuthMiddleware struct {
@@ -30,13 +29,8 @@ func (am *AuthMiddleware) ValidateAccessToken(next http.Handler) http.Handler {
 
 		claims, err := service.ValidateToken(token, am.cfg.AccessSecret)
 		if err != nil {
-			if strings.Contains(err.Error(), "token is expired") {
-				response.SendTokenExpired(w)
-				return
-			} else {
-				response.SendInvalidCredentials(w)
-				return
-			}
+			response.SendTokenExpired(w)
+			return
 		}
 
 		userID := claims.ID
@@ -68,13 +62,8 @@ func (am *AuthMiddleware) ValidateRefreshToken(next http.Handler) http.Handler {
 
 		claims, err := service.ValidateToken(token, am.cfg.RefreshSecret)
 		if err != nil {
-			if strings.Contains(err.Error(), "token is expired") {
-				response.SendTokenExpired(w)
-				return
-			} else {
-				response.SendInvalidCredentials(w)
-				return
-			}
+			response.SendTokenExpired(w)
+			return
 		}
 
 		refreshTokenKey := fmt.Sprintf("refresh_token:%d", claims.ID)
