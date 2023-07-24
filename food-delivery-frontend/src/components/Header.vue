@@ -31,7 +31,7 @@ const toggleMenu = () => {
               <router-link class="menu-list__link" to="/suppliers">Suppliers</router-link>
             </li>
             <li class="menu-list__item">
-              <a class="menu-list__link">Categories</a>
+              <router-link class="menu-list__link" to="/categories">Categories</router-link>
             </li>
             <li class="menu-list__item">
               <router-link class="menu-list__link" to="/products" >Products</router-link>

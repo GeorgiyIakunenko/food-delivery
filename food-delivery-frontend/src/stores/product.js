@@ -16,8 +16,6 @@ export const useProductStore = defineStore('product', () => {
         products.value = newProducts
     }
 
-
-
     return {products, setProducts}
 })
 

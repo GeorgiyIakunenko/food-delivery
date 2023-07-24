@@ -83,6 +83,11 @@
     border-radius: 10px;
     padding: 1.75rem;
     margin: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .product-card:hover {
+    transform: scale(1.05);
   }
 
   .product-card__top {

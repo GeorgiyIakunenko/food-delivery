@@ -34,7 +34,7 @@ async function fetchProducts() {
       <div class="container">
         <h1>Products</h1>
         <div class="products">
-          <Product :product="product" v-for="product in productStore.products"  :key="product.id"></Product>
+          <Product  v-for="product in productStore.products" :product="product"  :key="product.id"></Product>
         </div>
       </div>
   </main>

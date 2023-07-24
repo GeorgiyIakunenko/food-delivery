@@ -1,6 +1,7 @@
 import {useUserStore} from "@/stores/user";
 import {getLocalStorageItem} from "@/healpers/localstorage";
 import {useProductStore} from "@/stores/product";
+import {useCategoryStore} from "@/stores/category";
 
 
 
@@ -161,7 +162,31 @@ async function getAllProducts() {
     }
 }
 
+async function getAllCategories() {
+    const url = '/categories';
+    const options = {
+        method: 'GET',
+    }
 
-export { login, register, getUserData, logout, getAllProducts }
+    try {
+        const response = await apiFetch(url, options);
+        if (response.ok) {
+            const categories = await response.json();
+            console.log(categories)
+            useCategoryStore().setCategories(categories)
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.log('Get Categories Failed:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error during getting categories:', error);
+        return false;
+    }
+}
+
+
+export { login, register, getUserData, logout, getAllProducts, getAllCategories }
 
 
