@@ -19,7 +19,7 @@ type UserRepositoryI interface {
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(id int64) (models.User, error)
 	UpdateUserPasswordByID(id int64, password string) error
-	UpdateUserProfileByID(req models.User) error
+	UpdateUserProfileByID(req models.User, isUserNameChanged bool) error
 }
 
 func NewUserRepository(db *sql.DB) UserRepositoryI {
@@ -240,15 +240,16 @@ func (r *UserRepository) UpdateUserPasswordByID(id int64, password string) error
 	return nil
 }
 
-func (r *UserRepository) UpdateUserProfileByID(req models.User) error {
+func (r *UserRepository) UpdateUserProfileByID(req models.User, isUserNameChanged bool) error {
+	if isUserNameChanged {
+		IsUsernameExists, err := r.IsUsernameExists(req.Username)
+		if err != nil {
+			return err
+		}
 
-	IsUsernameExists, err := r.IsUsernameExists(req.Username)
-	if err != nil {
-		return err
-	}
-
-	if IsUsernameExists {
-		return fmt.Errorf("username is already exists")
+		if IsUsernameExists {
+			return fmt.Errorf("username is already exists")
+		}
 	}
 
 	query := `UPDATE customer SET first_name = $1, last_name = $2, username = $3, age = $4, email = $5, phone = $6, customer_address = $7 WHERE id = $8`

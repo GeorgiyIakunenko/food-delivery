@@ -145,7 +145,12 @@ func (r *UserService) UpdateUserProfile(userID int, req request.UpdateUserReques
 		user.Address = req.Address
 	}
 
-	err = r.userRepositoryI.UpdateUserProfileByID(user)
+	isUserNameChanged := false
+	if req.Username != "" {
+		isUserNameChanged = true
+	}
+
+	err = r.userRepositoryI.UpdateUserProfileByID(user, isUserNameChanged)
 	if err != nil {
 		return err
 	}
