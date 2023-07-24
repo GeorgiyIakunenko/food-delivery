@@ -21,7 +21,7 @@
       <div class="box">
         <h1>Suppliers</h1>
         <div class="suppliers">
-          <Supplier @click="supplierStore.se" :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
+          <Supplier @click="supplierStore.setCurrentSupplier(supplier)" :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
         </div>
       </div>
     </div>
