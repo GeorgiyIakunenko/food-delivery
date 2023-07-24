@@ -2,6 +2,7 @@ import {useUserStore} from "@/stores/user";
 import {getLocalStorageItem} from "@/healpers/localstorage";
 import {useProductStore} from "@/stores/product";
 import {useCategoryStore} from "@/stores/category";
+import {useSupplierStore} from "@/stores/supplier";
 
 
 
@@ -86,8 +87,6 @@ async function refreshTokenRequest() {
         return false;
     }
 }
-
-
 
 async function login(email, password) {
     const url = '/auth/login';
@@ -261,7 +260,31 @@ async function getAllCategories() {
     }
 }
 
+async function getAllSuppliers() {
+    const url = '/suppliers';
+    const options = {
+        method: 'GET',
+    }
 
-export { login, register, getUserData, logout, getAllProducts, getAllCategories }
+    try {
+        const response = await fetchApi(url, options);
+        if (response.ok) {
+            const suppliers = await response.json();
+            console.log(suppliers)
+            useSupplierStore().setSuppliers(suppliers)
+            return true;
+        } else {
+            const errorData = await response.json();
+            console.log('Get Suppliers Failed:', errorData);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error during getting suppliers:', error);
+        return false;
+    }
+}
+
+
+export { login, register, getUserData, logout, getAllProducts, getAllCategories, getAllSuppliers }
 
 

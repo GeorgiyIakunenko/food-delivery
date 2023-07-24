@@ -4,10 +4,14 @@
   import Supplier from "@/components/Supplier.vue";
   import Header from "@/components/Header.vue";
   import Footer from "@/components/Footer.vue";
+  import {onMounted} from "vue";
+  import {getAllSuppliers} from "@/api/api";
 
   const supplierStore = useSupplierStore()
 
-  supplierStore.getSuppliers()
+  onMounted(() => {
+    getAllSuppliers()
+  })
 
 </script>
 <template>
@@ -17,7 +21,7 @@
       <div class="box">
         <h1>Suppliers</h1>
         <div class="suppliers">
-          <Supplier :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
+          <Supplier @click="supplierStore.se" :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
         </div>
       </div>
     </div>

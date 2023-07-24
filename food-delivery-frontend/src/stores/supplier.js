@@ -13,27 +13,9 @@ export const useSupplierStore = defineStore('supplier', () => {
         CurrentSupplier.value = supplier
     }
 
-    async function getSupplier(id) {
-        try {
-            const response = await axios.get('http://localhost:8080/supplier/' + id);
-            CurrentSupplier.value = response.data
-        } catch (error) {
-            console.error(error);
-        }
+    function setSuppliers(newSuppliers) {
+        suppliers.value = newSuppliers
     }
 
-    async function getSuppliers() {
-        try {
-            const response = await axios.get('http://localhost:8080/suppliers');
-            suppliers.value = response.data
-        } catch (error) {
-            console.error(error);
-        }
-
-    }
-
-
-
-
-    return {suppliers, getSuppliers}
+    return {suppliers, setCurrentSupplier, CurrentSupplier, setSuppliers }
 })
