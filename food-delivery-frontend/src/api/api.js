@@ -13,6 +13,65 @@ async function apiFetch(url, options) {
     return fetch(root + url, options);
 }
 
+async function fetchApi(url, options, isProtected = false) {
+    if (isProtected) {
+        return await refreshTokenMiddleware(url, options);
+    } else {
+        return apiFetch(url, options);
+    }
+}
+
+async function refreshTokenMiddleware(url, options) {
+    const userStore = useUserStore();
+    const accessToken = getLocalStorageItem('access_token');
+    const refreshToken = getLocalStorageItem('refresh_token');
+
+    if (!accessToken || !refreshToken) {
+        console.error('Access token or refresh token not found in localStorage.');
+        return null;
+    }
+
+    const response = await apiFetch(url, options);
+
+    if (response.status === 401) {
+        try {
+            const refreshTokenUrl = '/auth/refresh';
+            const refreshTokenOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${refreshToken}`,
+                },
+            };
+
+            const refreshResponse = await fetch(root + refreshTokenUrl, refreshTokenOptions);
+
+            console.log("refreshResponse", refreshResponse)
+
+            if (refreshResponse.ok) {
+                const data = await refreshResponse.json();
+                userStore.setTokens(data.access_token, data.refresh_token);
+
+                const newOptions = { ...options, headers: { ...options.headers, 'Authorization': `Bearer ${data.access_token}` } };
+                return await apiFetch(url, newOptions);
+            } else {
+                console.error('Token refresh failed.');
+                userStore.logout();
+                return response;
+            }
+        } catch (error) {
+            console.error('Error during token refresh:', error);
+            userStore.logout();
+            return response;
+        }
+    }
+
+    return response;
+}
+
+
+
+
 async function login(email, password) {
     const url = '/auth/login';
     const options = {
@@ -30,7 +89,6 @@ async function login(email, password) {
             const data = await response.json();
             useUserStore().setTokens(data.access_token, data.refresh_token);
             await getUserData();
-            useUserStore().startLogoutTimer();
             return true;
         } else {
             const errorData = await response.json();
@@ -88,7 +146,10 @@ async function getUserData() {
     };
 
     try {
-        const response = await apiFetch(url, options);
+        const response = await fetchApi(url, options, true);
+        //const response = await apiFetch(url, options);
+
+        console.log("response", response)
         if (response.ok) {
             const data = await response.json();
             useUserStore().setUser(data);
@@ -123,7 +184,7 @@ async function logout() {
     };
 
     try {
-        const response = await apiFetch(url, options);
+        const response = await fetchApi(url, options, true);
         if (response.ok) {
             useUserStore().logout();
             return true;
@@ -145,7 +206,7 @@ async function getAllProducts() {
     }
 
     try {
-        const response = await apiFetch(url, options);
+        const response = await fetchApi(url, options);
         if (response.ok) {
             const products = await response.json();
             console.log(products)
@@ -169,7 +230,7 @@ async function getAllCategories() {
     }
 
     try {
-        const response = await apiFetch(url, options);
+        const response = await fetchApi(url, options);
         if (response.ok) {
             const categories = await response.json();
             console.log(categories)

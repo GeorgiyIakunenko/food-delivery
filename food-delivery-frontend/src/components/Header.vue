@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import {RouterLink, RouterView} from 'vue-router'
 import {logout} from "@/api/api";
 //import Button from "@/components/UI/Button.vue";
 import {useUserStore} from "@/stores/user";
@@ -24,7 +24,8 @@ const toggleMenu = () => {
   <header class="header">
     <div class="container">
       <div class="header__wrapper">
-        <router-link to="/"><img width=45 class="logo" src="../assets/images/logo/logo.png" alt="logo life upgrade" /></router-link>
+        <router-link to="/"><img width=45 class="logo" src="../assets/images/logo/logo.png" alt="logo life upgrade"/>
+        </router-link>
         <nav class="menu" :class="{active : menuActive}">
           <ul class="menu-list">
             <li class="menu-list__item">
@@ -34,28 +35,28 @@ const toggleMenu = () => {
               <router-link class="menu-list__link" to="/categories">Categories</router-link>
             </li>
             <li class="menu-list__item">
-              <router-link class="menu-list__link" to="/products" >Products</router-link>
+              <router-link class="menu-list__link" to="/products">Products</router-link>
             </li>
           </ul>
         </nav>
         <div class="button-box">
           <router-link style="z-index: 101" to="/cart">
-            <button class="cart-btn" >Cart <img class="cart-img" alt="cart" src="@/assets/images/icons/grocery-cart.png">
+            <button class="cart-btn">Cart <img class="cart-img" alt="cart" src="@/assets/images/icons/grocery-cart.png">
               <span class="cart-products" :key="cartStore.items.length">
-  <transition-group name="cart-counter">
-    {{ cartStore.items.length }}
-  </transition-group>
-</span>
+                <transition-group name="cart-counter">
+                  {{ cartStore.items.length }}
+                </transition-group>
+              </span>
             </button>
           </router-link>
           <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
           </router-link>
-          <Button  v-else @click="logout" intent="text">Logout</Button>
+          <Button v-else @click="logout" intent="text">Logout</Button>
           <router-link v-if="userStore.access_token !== ''" style="z-index: 101" to="/profile">
             <Button intent="primary">Profile</Button>
           </router-link>
-          <div @click="toggleMenu"  class="menu-btn" :class="{active : menuActive}">
+          <div @click="toggleMenu" class="menu-btn" :class="{active : menuActive}">
             <span class="menu-btn__span menu-btn__span--1"></span>
             <span class="menu-btn__span menu-btn__span--2"></span>
             <span class="menu-btn__span menu-btn__span--3"></span>
@@ -76,7 +77,7 @@ const toggleMenu = () => {
   z-index: 110;
 }
 
-.header +.main {
+.header + .main {
   padding-top: 101px;
 }
 
@@ -105,7 +106,7 @@ const toggleMenu = () => {
 
 }
 
-.menu-list__item+.menu-list__item {
+.menu-list__item + .menu-list__item {
   margin-left: 35px;
 }
 
@@ -120,7 +121,7 @@ const toggleMenu = () => {
   color: #000;
   cursor: pointer;
   margin-right: 15px;
-  position : relative;
+  position: relative;
 }
 
 .cart-img {
@@ -196,7 +197,7 @@ const toggleMenu = () => {
     margin-top: 10rem;
   }
 
-  .menu-list__item+.menu-list__item {
+  .menu-list__item + .menu-list__item {
     margin-left: 0;
   }
 

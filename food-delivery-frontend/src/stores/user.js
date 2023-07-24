@@ -16,8 +16,6 @@ export const useUserStore = defineStore('user', () => {
         age: 0,
     })
 
-    let logoutTimer;
-
 
     const access_token = ref(getLocalStorageItem('access_token') || '');
     const refresh_token = ref(getLocalStorageItem('refresh_token') || '');
@@ -56,23 +54,9 @@ export const useUserStore = defineStore('user', () => {
             age: 0,
         })
 
-        clearLogoutTimer();
     }
 
-    // automatic logout after 3 hour
 
-    function startLogoutTimer() {
-        const expirationTime = 3600; // 1 hour
-        logoutTimer = setTimeout(logout, expirationTime * 1000);
-    }
-
-    function clearLogoutTimer() {
-        if (logoutTimer) {
-            clearTimeout(logoutTimer);
-            logoutTimer = null;
-        }
-    }
-
-    return { user, access_token, refresh_token, setTokens, setUser, logout, startLogoutTimer, clearLogoutTimer}
+    return { user, access_token, refresh_token, setTokens, setUser, logout}
 
 })
