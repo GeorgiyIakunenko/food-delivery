@@ -1,4 +1,4 @@
-import {computed, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {defineStore} from "pinia";
 import {getLocalStorageItem, setLocalStorageItem} from "@/healpers/localstorage";
 
@@ -30,8 +30,8 @@ export const useUserStore = defineStore('user', () => {
     const setUser = (userData) => {
         user.id = userData.id;
         user.email = userData.email;
-        user.first_name = userData.first_name;
-        user.last_name = userData.last_name;
+        user.first_name = userData.firstName;
+        user.last_name = userData.lastName;
         user.username = userData.username;
         user.address = userData.address;
         user.phone = userData.phone;
@@ -56,7 +56,29 @@ export const useUserStore = defineStore('user', () => {
 
     }
 
+    const updatedUser = reactive({
+        id: 0,
+        email: '',
+        first_name: '',
+        last_name: '',
+        username: '',
+        address: '',
+        phone: '',
+        age: 0,
+    })
 
-    return { user, access_token, refresh_token, setTokens, setUser, logout}
+    const userUpdate = (userData) => {
+        updatedUser.id = userData.id;
+        updatedUser.email = userData.email;
+        updatedUser.first_name = userData.first_name;
+        updatedUser.last_name = userData.last_name;
+        updatedUser.username = userData.username;
+        updatedUser.address = userData.address;
+        updatedUser.phone = userData.phone;
+        updatedUser.age = userData.age;
+    }
+
+
+    return { user, access_token, refresh_token, setTokens, setUser, logout, userUpdate, updatedUser}
 
 })

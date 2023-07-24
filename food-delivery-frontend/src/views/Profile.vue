@@ -3,7 +3,7 @@ import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import { useUserStore } from "@/stores/user";
 import { onMounted, ref } from "vue";
-import { getUserData } from "@/api/api";
+import {getUserData, updateProfile} from "@/api/api";
 
 const userStore = useUserStore();
 
@@ -11,71 +11,92 @@ onMounted(() => {
   getUserData();
 });
 
+const updateUserProfile = () => {
+  const updateUserRequestBody = {
+    first_name: userStore.updatedUser.first_name !== userStore.user.first_name ? userStore.updatedUser.first_name : "",
+    last_name: userStore.updatedUser.last_name !== userStore.user.last_name ? userStore.updatedUser.last_name : "",
+    username: userStore.updatedUser.username !== userStore.user.username ? userStore.updatedUser.username : "",
+    age: userStore.updatedUser.age !== userStore.user.age ? userStore.updatedUser.age : 0,
+    phone: userStore.updatedUser.phone !== userStore.user.phone ? userStore.updatedUser.phone : "",
+    address: userStore.updatedUser.address !== userStore.user.address ? userStore.updatedUser.address : "",
+  };
+
+  console.log(updateUserRequestBody)
+
+  updateProfile(updateUserRequestBody);
+};
+
+
 const isEditMode = ref(false);
 
 const toggleEditMode = () => {
   isEditMode.value = !isEditMode.value;
+  if (isEditMode.value) {
+    userStore.userUpdate(userStore.user)
+  }
 };
 
-const updateUserProfile = () => {
-  alert("Profile updated successfully!");
-};
 </script>
 
 <template>
   <Header />
   <main class="profile-container">
-    <div class="user-data">
-      <h1 class="profile-heading">Profile</h1>
-      <div v-if="isEditMode">
-        <form @submit.prevent="updateUserProfile" class="profile-form">
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="name">Name</label>
-            <input v-model="userStore.user.name" class="profile-form-input" type="text" id="name" required />
-          </div>
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="email">Email</label>
-            <input v-model="userStore.user.email" class="profile-form-input" type="email" id="email" required />
-          </div>
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="age">Age</label>
-            <input v-model="userStore.user.age" class="profile-form-input" type="number" id="age" required />
-          </div>
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="phone">Phone</label>
-            <input v-model="userStore.user.phone" class="profile-form-input" type="tel" id="phone" required />
-          </div>
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="address">Address</label>
-            <input v-model="userStore.user.address" class="profile-form-input" type="text" id="address" required />
-          </div>
-          <div class="profile-form-group">
-            <label class="profile-form-label" for="username">Username</label>
-            <input v-model="userStore.user.username" class="profile-form-input" type="text" id="username" required />
-          </div>
-          <button type="submit" class="profile-form-button">Save</button>
-        </form>
-      </div>
-      <div v-else>
-        <div class="profile-info">
-          <p><strong>Name:</strong> {{ userStore.user.name }}</p>
-          <p><strong>Email:</strong> {{ userStore.user.email }}</p>
-          <p><strong>Age:</strong> {{ userStore.user.age }}</p>
-          <p><strong>Phone:</strong> {{ userStore.user.phone }}</p>
-          <p><strong>Address:</strong> {{ userStore.user.address }}</p>
-          <p><strong>Username:</strong> {{ userStore.user.username }}</p>
+    <div class="container">
+      <div class="user-data">
+        <h1 class="profile-heading">Profile</h1>
+        <div v-if="isEditMode">
+          <form @submit.prevent="updateUserProfile" class="profile-form">
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="name">First Name</label>
+              <input v-model="userStore.updatedUser.first_name" class="profile-form-input" type="text" id="name" required />
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="name">Last Name</label>
+              <input v-model="userStore.updatedUser.last_name" class="profile-form-input" type="text" id="name" required />
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="age">Age</label>
+              <input v-model="userStore.updatedUser.age" class="profile-form-input" type="number" id="age" required />
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="phone">Phone</label>
+              <input v-model="userStore.updatedUser.phone" class="profile-form-input" type="tel" id="phone" required />
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="address">Address</label>
+              <input v-model="userStore.updatedUser.address" class="profile-form-input" type="text" id="address" required />
+            </div>
+            <div class="profile-form-group">
+              <label class="profile-form-label" for="username">Username</label>
+              <input v-model="userStore.updatedUser.username" class="profile-form-input" type="text" id="username" required />
+            </div>
+            <button @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
+          </form>
         </div>
+        <div v-else>
+          <div class="profile-info">
+            <p><strong>First Name</strong> {{ userStore.user.first_name }}</p>
+            <p><strong>Last Name</strong> {{ userStore.user.last_name }}</p>
+            <p><strong>Email:</strong> {{ userStore.user.email }}</p>
+            <p><strong>Age:</strong> {{ userStore.user.age }}</p>
+            <p><strong>Phone:</strong> {{ userStore.user.phone }}</p>
+            <p><strong>Address:</strong> {{ userStore.user.address }}</p>
+            <p><strong>Username:</strong> {{ userStore.user.username }}</p>
+          </div>
+        </div>
+        <button @click="toggleEditMode" class="edit-button">{{ isEditMode ? 'Cancel' : 'Edit' }}</button>
       </div>
-      <button @click="toggleEditMode" class="edit-button">{{ isEditMode ? 'Cancel' : 'Edit' }}</button>
-    </div>
-    <div class="user-orders">
+      <div class="user-orders">
 
+      </div>
     </div>
   </main>
   <Footer />
 </template>
 
 <style>
+
+
 
 .profile-container {
   width: 90%;
@@ -97,11 +118,17 @@ const updateUserProfile = () => {
   font-size: 1rem;
   color: #333;
   line-height: 1.5;
+
+}
+
+.profile-info p {
+  margin-bottom: 1rem;
 }
 
 .profile-form {
   display: grid;
   grid-gap: 1rem;
+  max-width: 50%;
 }
 
 .profile-form-label {
@@ -151,4 +178,15 @@ const updateUserProfile = () => {
 .edit-button:hover {
   background-color: #0056b3;
 }
+
+
+@media (max-width: 768px) {
+  .profile-form {
+    max-width: 100%;
+  }
+}
+
+
+
+
 </style>
