@@ -15,7 +15,7 @@ const updateUserProfile = () => {
   const updateUserRequestBody = {
     first_name: userStore.updatedUser.first_name !== userStore.user.first_name ? userStore.updatedUser.first_name : "",
     last_name: userStore.updatedUser.last_name !== userStore.user.last_name ? userStore.updatedUser.last_name : "",
-    username: userStore.updatedUser.username !== userStore.user.username ? userStore.updatedUser.username : "",
+    username: "",
     age: userStore.updatedUser.age !== userStore.user.age ? userStore.updatedUser.age : 0,
     phone: userStore.updatedUser.phone !== userStore.user.phone ? userStore.updatedUser.phone : "",
     address: userStore.updatedUser.address !== userStore.user.address ? userStore.updatedUser.address : "",
@@ -66,10 +66,10 @@ const toggleEditMode = () => {
               <label class="profile-form-label" for="address">Address</label>
               <input v-model="userStore.updatedUser.address" class="profile-form-input" type="text" id="address" required />
             </div>
-            <div class="profile-form-group">
+<!--            <div class="profile-form-group">
               <label class="profile-form-label" for="username">Username</label>
               <input v-model="userStore.updatedUser.username" class="profile-form-input" type="text" id="username" required />
-            </div>
+            </div>-->
             <button @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
           </form>
         </div>

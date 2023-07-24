@@ -6,7 +6,6 @@ export const useSupplierStore = defineStore('supplier', () => {
 
     const suppliers = ref(null)
 
-
     const CurrentSupplier = reactive({})
 
     function setCurrentSupplier(supplier) {

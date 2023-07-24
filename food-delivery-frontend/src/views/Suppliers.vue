@@ -21,7 +21,9 @@
       <div class="box">
         <h1>Suppliers</h1>
         <div class="suppliers">
-          <Supplier @click="supplierStore.setCurrentSupplier(supplier)" :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
+          <router-link v-for="supplier in supplierStore.suppliers" :to="`/suppliers/${supplier.id}/categories`" :key="supplier.id">
+            <Supplier :supplier="supplier"></Supplier>
+          </router-link>
         </div>
       </div>
     </div>
