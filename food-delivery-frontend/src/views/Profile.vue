@@ -8,8 +8,8 @@ import Button from "@/components/UI/Button.vue";
 
 const userStore = useUserStore();
 
-onMounted(() => {
-  getUserData();
+onMounted(async () => {
+  await getUserData();
 });
 
 const updateUserProfile = () => {

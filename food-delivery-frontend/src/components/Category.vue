@@ -19,11 +19,13 @@
   const supplierStore = useSupplierStore()
   const categoryStore = useCategoryStore()
 
+  const categoryImageUrl = new URL('/' + props.category.image, import.meta.url)
+
 </script>
 
 <template>
   <div class="category">
-    <img src="@/assets/images/categories/fruits.jpg" alt="{{category.name}}">
+    <img :src="categoryImageUrl" :alt="category.name">
     <p> {{category.description}} </p>
     <div class="category__bottom-box">
       <h2>{{ category.name }}</h2>
@@ -37,7 +39,7 @@
   .category {
     background-color: white;
     width: 300px;
-    height: 400px;
+    height: 470px;
     display: flex;
     font-family: "DM Sans", sans-serif;
     text-transform: capitalize;
@@ -56,7 +58,7 @@
   .category img {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .category__bottom-box {

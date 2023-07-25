@@ -16,7 +16,7 @@
   console.log(props.supplier)
 
   const categoryStore = useCategoryStore()
-
+  const supplierImageUrl = new URL('/' + props.supplier.image, import.meta.url)
 
 </script>
 
@@ -26,7 +26,7 @@
       <p>{{supplier.type}}</p>
       <p>{{supplier.open_time}} - {{supplier.close_time}}</p>
     </div>
-    <img src="@/assets/images/suppliers/aldi.jpg" alt="{{supplier.name}}">
+    <img :src="supplierImageUrl" :alt="supplier.name">
     <p>{{ supplier.description }}</p>
     <div class="supplier-card__bottom">
       <h3>{{ supplier.name }}</h3>
@@ -60,7 +60,7 @@
   .supplier-card img {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .supplier-card__bottom {

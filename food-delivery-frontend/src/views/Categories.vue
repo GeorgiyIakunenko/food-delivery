@@ -39,6 +39,7 @@ const Categories = computed(() => CategoryStore.categories)
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 2rem;
   }
 

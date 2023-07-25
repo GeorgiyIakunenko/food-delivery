@@ -34,9 +34,9 @@ const toggleMenu = () => {
             <li class="menu-list__item">
               <router-link class="menu-list__link" to="/categories">Categories</router-link>
             </li>
-<!--            <li class="menu-list__item">
+            <li class="menu-list__item">
               <router-link class="menu-list__link" to="/products">Products</router-link>
-            </li>-->
+            </li>
           </ul>
         </nav>
         <div class="button-box">
@@ -175,7 +175,7 @@ const toggleMenu = () => {
     top: 0;
     right: 0;
     height: 100vh;
-    width: auto;
+    width: 70%;
     padding: 45px;
     background-color: #f9f9f9;
     z-index: 99;
