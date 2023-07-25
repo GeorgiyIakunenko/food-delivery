@@ -89,7 +89,31 @@ export const useUserStore = defineStore('user', () => {
         updatedUser.age = userData.age;
     }
 
+    const resetForm =  reactive({
+        email: 'g10072004@gmail.com',
+        reset_code: '',
+        new_password: '',
+    })
 
-    return { user, access_token, refresh_token, setTokens, setUser, logout, userUpdate, updatedUser, setUserAfterUpdate}
+    const setResetForm = (resetData) => {
+        resetForm.email = resetData.email;
+        resetForm.reset_code = resetData.reset_code;
+        resetForm.new_password = resetData.new_password;
+    }
+
+
+    return { user,
+        access_token,
+        refresh_token,
+        setTokens,
+        setUser,
+        logout,
+        userUpdate,
+        updatedUser,
+        setUserAfterUpdate,
+        resetForm,
+        setResetForm,
+
+    }
 
 })

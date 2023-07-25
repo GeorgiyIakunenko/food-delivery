@@ -1,7 +1,12 @@
 <script setup>
-import {reactive} from "vue";
+
+import {reactive, ref} from "vue";
+import {useUserStore} from "@/stores/user";
+import {ResetPassword} from "@/api/api";
 
 const activeInputs = reactive({});
+
+const userStore = useUserStore()
 
 const toggleFocus = (inputKey) => {
   activeInputs[inputKey] = !activeInputs[inputKey];
@@ -11,13 +16,38 @@ const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
 
-const ResetForm = reactive({
-  Email: '',
-  resetCode: '',
-  newPassword: '',
-})
+const emit = defineEmits(['changeMode'])
+
+const dialogMessage = ref('you successfully reset your password')
+const dialogType = ref('success')
+
+
+const showDialog = () => {
+  emit('showModal', {
+    type: dialogType.value,
+    message: dialogMessage.value
+  })
+}
+
+const SubmitForm = () => {
+
+  ResetPassword(userStore.resetForm.email, userStore.resetForm.reset_code, userStore.resetForm.new_password).then((response) => {
+    if (response) {
+      dialogType.value = 'success'
+      dialogMessage.value = 'you successfully reset your password'
+      emit('changeMode')
+      console.log(response)
+      showDialog()
+    } else {
+      dialogType.value = 'error'
+      dialogMessage.value = 'You enter wrong code'
+      showDialog()
+    }
+  })
+}
 
 </script>
+
 <template>
   <form action="#" autocomplete="off" class="sign-up-form form-2">
     <div class="heading">
@@ -31,9 +61,9 @@ const ResetForm = reactive({
           <input
               @focus="toggleFocus('resetCode')"
               @blur="toggleFocus('resetCode')"
-              v-model="ResetForm.resetCode"
-              :class="{'active': isActive('resetCode') || ResetForm.resetCode !== ''}"
-              type="number"
+              :class="{'active': isActive('resetCode') || userStore.resetForm.reset_code !== ''}"
+              v-model="userStore.resetForm.reset_code"
+              type="text"
               class="input-field"
               autocomplete="off"
               required
@@ -44,8 +74,8 @@ const ResetForm = reactive({
           <input
               @focus="toggleFocus('resetPassword')"
               @blur="toggleFocus('resetPassword')"
-              :class="{'active': isActive('resetPassword') || ResetForm.newPassword.length > 0}"
-              v-model="ResetForm.newPassword"
+              :class="{'active': isActive('resetPassword') || userStore.resetForm.new_password !== ''}"
+              v-model="userStore.resetForm.new_password"
               type="password"
               minlength="6"
               class="input-field"
@@ -55,7 +85,7 @@ const ResetForm = reactive({
           <label>New password</label>
         </div>
       </div>
-      <input type="submit" value="Reset Password" class="auth-btn" />
+      <input @click.stop.prevent="SubmitForm" type="submit" value="Reset Password" class="auth-btn" />
     </div>
   </form>
 </template>

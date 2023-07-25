@@ -216,6 +216,28 @@ async function getCategoryById(categoryId) {
     }
 }
 
+async function ResetPasswordRequest(email) {
+    try {
+        console.log(email)
+        const response = await api.post('/auth/reset-password', { email });
+        return response.status === 200;
+    } catch (error) {
+        console.error('Reset Password Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function ResetPassword(email, reset_code, new_password) {
+        console.log(email, reset_code, new_password)
+
+        try {
+        const response = await api.post('/auth/submit-code', { email, reset_code, new_password });
+        return response.status === 200;
+    } catch (error) {
+        console.error('Reset Password Failed:', error.response.data);
+        return false;
+    }
+}
 
 export {
     login,
@@ -230,5 +252,7 @@ export {
     getSupplierById,
     getProductsBySupplierAndCategoryIDs,
     getSuppliersByCategoryId,
-    getCategoryById
+    getCategoryById,
+    ResetPasswordRequest,
+    ResetPassword,
 };
