@@ -11,16 +11,27 @@
     return activeInputs[inputKey] || false;
   }
 
+  const emits = defineEmits(['changeMode'])
+
   const RegisterForm = reactive({
-    first_name: "",
-    last_name: "",
-    username: "",
-    age: "",
-    email: "",
-    phone: "",
-    password: "",
-    address: ""
+    first_name: "abc",
+    last_name: "cba",
+    username: "tttuop",
+    age: 18,
+    email: "viktor@gmail.com",
+    phone: "+452345234",
+    password: "123456",
+    address: "gogo utca 4"
   })
+
+  const SubmitForm = () => {
+    register(RegisterForm).then((response) => {
+      console.log(response)
+      emits('changeMode')
+    })
+
+
+  }
 
 </script>
 <template>
@@ -142,7 +153,7 @@
           <label>Password</label>
         </div>
       </div>
-      <input @click.stop.prevent="register(RegisterForm)" type="submit" value="Sign Up" class="sign-btn" />
+      <input @click.stop.prevent="SubmitForm" type="submit" value="Sign Up" class="sign-btn" />
       <p class="text">
         By signing up, I agree to the
         <a href="#">Terms of Services</a> and
