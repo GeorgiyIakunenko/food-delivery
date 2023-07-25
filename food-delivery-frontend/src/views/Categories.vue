@@ -51,8 +51,7 @@ const Categories = computed(() => CategoryStore.categories)
 
   h1 {
     font-family: 'DM Sans', sans-serif;
-    font-size: 6rem;
-    color: #897ec7;
+    font-size: 4rem;
     font-weight: 600;
     margin-left: 1rem;
   }

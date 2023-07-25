@@ -82,7 +82,6 @@
     background-color: white;
     align-items: center;
     justify-content: space-between;
-    width: 400px;
     padding: 0.5rem;
     border-radius: 1rem;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
@@ -117,13 +116,6 @@
     cursor: pointer;
   }
 
-
-  @media (max-width: 860px) {
-    .cart-product {
-      width: 300px;
-    }
-  }
-  
   @media (max-width: 560px) {
     .cart-product {
       text-align: center;

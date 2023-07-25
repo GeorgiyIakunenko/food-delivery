@@ -5,6 +5,11 @@ import {ref, computed, onMounted} from 'vue';
 export const useCartStore = defineStore('cart', () => {
     const items = ref([]);
 
+    const cartTotal = computed(() => {
+        return items.value.reduce((total, item) => total + (item.quantity * item.price), 0);
+    });
+
+
     function addToCart(product) {
         const existingProduct = items.value.find((item) => item.id === product.id);
 
@@ -59,16 +64,13 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    const cartTotal = computed(() =>
-        items.value.reduce((total, item) => total + item.price * item.quantity, 0)
-    );
 
     return {
         items,
         addToCart,
         removeFromCart,
-        clearCart,
         cartTotal,
+        clearCart,
         initializeCartFromLocalStorage,
         decreaseQuantity,
     };

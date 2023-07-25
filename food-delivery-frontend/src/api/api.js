@@ -17,13 +17,20 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response.message === 'token is expired' ) {
             originalRequest._retry = true;
             const refreshToken = getLocalStorageItem('refresh_token');
             try {
                 const { data } = await api.post('/auth/refresh', null, {
                     headers: { 'Authorization': `Bearer ${refreshToken}` },
                 });
+
+                if (!data || !data.access_token || !data.refresh_token) {
+                    console.log('Refresh token expired. Logging out.')
+                    useUserStore().logout();
+                    return;
+                }
+
                 useUserStore().setTokens(data.access_token, data.refresh_token);
                 setLocalStorageItem('access_token', data.access_token);
                 setLocalStorageItem('refresh_token', data.refresh_token);
@@ -70,12 +77,11 @@ async function updateProfile(userData) {
         console.error('Access token not found in localStorage.');
         return false;
     }
-
     try {
         const response = await api.put('/user/profile', userData, {
             headers: { 'Authorization': `Bearer ${accessToken}` },
         });
-        useUserStore().setUser(response.data);
+        useUserStore().setUserAfterUpdate();
         return true;
     } catch (error) {
         console.error('User Update Failed:', error.response.data);

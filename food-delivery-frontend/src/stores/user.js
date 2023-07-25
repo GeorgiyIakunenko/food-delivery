@@ -38,6 +38,17 @@ export const useUserStore = defineStore('user', () => {
         user.age = userData.age;
     }
 
+    const setUserAfterUpdate = () => {
+        user.id = updatedUser.id !== 0 ? updatedUser.id : user.id;
+        user.email = updatedUser.email !== '' ? updatedUser.email : user.email;
+        user.first_name = updatedUser.first_name !== '' ? updatedUser.first_name : user.first_name;
+        user.last_name = updatedUser.last_name !== '' ? updatedUser.last_name : user.last_name;
+        user.username = updatedUser.username !== '' ? updatedUser.username : user.username;
+        user.address = updatedUser.address !== '' ? updatedUser.address : user.address;
+        user.phone = updatedUser.phone !== '' ? updatedUser.phone : user.phone;
+        user.age = updatedUser.age !== 0 ? updatedUser.age : user.age;
+    }
+
     const logout = () => {
         access_token.value = '';
         refresh_token.value = '';
@@ -79,6 +90,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
 
-    return { user, access_token, refresh_token, setTokens, setUser, logout, userUpdate, updatedUser}
+    return { user, access_token, refresh_token, setTokens, setUser, logout, userUpdate, updatedUser, setUserAfterUpdate}
 
 })

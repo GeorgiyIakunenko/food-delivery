@@ -36,7 +36,6 @@ const toggleEditMode = () => {
     userStore.userUpdate(userStore.user)
   }
 };
-
 </script>
 
 <template>
@@ -71,7 +70,7 @@ const toggleEditMode = () => {
               <label class="profile-form-label" for="username">Username</label>
               <input v-model="userStore.updatedUser.username" class="profile-form-input" type="text" id="username" required />
             </div>-->
-            <button @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
+            <button  @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
           </form>
         </div>
         <div v-else>

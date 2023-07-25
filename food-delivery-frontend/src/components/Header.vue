@@ -34,9 +34,9 @@ const toggleMenu = () => {
             <li class="menu-list__item">
               <router-link class="menu-list__link" to="/categories">Categories</router-link>
             </li>
-            <li class="menu-list__item">
+<!--            <li class="menu-list__item">
               <router-link class="menu-list__link" to="/products">Products</router-link>
-            </li>
+            </li>-->
           </ul>
         </nav>
         <div class="button-box">
@@ -50,7 +50,7 @@ const toggleMenu = () => {
           <router-link v-if="userStore.access_token === ''" style="z-index: 101" to="/login">
             <Button intent="text">Login</Button>
           </router-link>
-          <router-link v-if="userStore.access_token !== ''" style="z-index: 101" to="/profile">
+          <router-link v-else style="z-index: 101" to="/profile">
             <Button intent="primary">Profile</Button>
           </router-link>
           <div @click="toggleMenu" class="menu-btn" :class="{active : menuActive}">

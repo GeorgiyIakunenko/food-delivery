@@ -3,7 +3,7 @@ import {useProductStore} from "@/stores/product";
 import {useCategoryStore} from "@/stores/category";
 import {useRoute, useRouter} from "vue-router";
 import {onMounted} from "vue";
-import {getProductsBySupplierAndCategoryIDs} from "@/api/api";
+import {getCategoryById, getProductsBySupplierAndCategoryIDs, getSupplierById} from "@/api/api";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import {useSupplierStore} from "@/stores/supplier";
@@ -19,6 +19,8 @@ onMounted(() => {
   const categoryId = route.params.categoryId
   const supplierId = route.params.supplierId
   getProductsBySupplierAndCategoryIDs(categoryId, supplierId)
+  getCategoryById(categoryId)
+  getSupplierById(supplierId)
 })
 
 </script>

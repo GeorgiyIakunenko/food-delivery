@@ -69,6 +69,10 @@
 </template>
 
 <style scoped>
+
+
+
+
   .product-card {
     font-family: "DM Sans", sans-serif;
     display: flex;
