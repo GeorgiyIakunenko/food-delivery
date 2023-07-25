@@ -58,6 +58,11 @@ const router = createRouter({
           path: '/suppliers/:supplierId/category/:categoryId/products',
           name: 'supplier-product',
           component: () => import('../views/SupplierAndCategoryProducts.vue')
+      },
+      {
+            path: '/suppliers/category/:categoryId',
+            name: 'category-=suppliers',
+            component: () => import('../views/CategorySuppliers.vue')
       }
   ]
 })

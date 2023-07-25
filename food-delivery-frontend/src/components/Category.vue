@@ -26,8 +26,8 @@
     <p> {{category.description}} </p>
     <div class="category__bottom-box">
       <h2>{{ category.name }}</h2>
-      <router-link v-if="to === 'suppliers'" :to="`/suppliers/${supplierStore.CurrentSupplier.id}/products`"><Button intent="secondary">Open</Button></router-link>
-      <router-link v-if="to === 'products'" :to="`/suppliers/${supplierStore.CurrentSupplier.value.id}/category/${category.id}/products`"><Button intent="secondary">Open</Button></router-link>
+      <router-link v-if="to === 'suppliers'" :to="`/suppliers/category/${category.id}`"><Button intent="secondary">Open</Button></router-link>
+      <router-link v-if="to === 'products'" :to="`/suppliers/${supplierStore.CurrentSupplier.id}/category/${category.id}/products`"><Button intent="secondary">Open</Button></router-link>
     </div>
   </div>
 </template>

@@ -22,14 +22,13 @@ const supplierStore = useSupplierStore()
 const categoryStore = useCategoryStore()
 
 
-
 </script>
 
 <template>
   <Header />
   <main>
     <div class="container">
-      <h1>Categories of {{supplierStore.CurrentSupplier.value.name}}</h1>
+<!--      <h1>Categories of {{supplierStore.CurrentSupplier.value.name}}</h1>-->
       <div class="categories">
         <Category :to="'products'" :category="category" v-for="category in categoryStore.categories" :key="category.id">
         </Category>

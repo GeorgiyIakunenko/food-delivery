@@ -192,6 +192,18 @@ async function getProductsBySupplierAndCategoryIDs(CategoryId, SupplierId) {
     }
 }
 
+async function getCategoryById(categoryId) {
+    try {
+        const response = await api.get(`/category/${categoryId}`);
+        useCategoryStore().setCurrentCategory(response.data);
+        return true;
+    } catch (error) {
+        console.error('Get Category Failed:', error.response.data);
+        return false;
+    }
+}
+
+
 export {
     login,
     register,
@@ -204,5 +216,6 @@ export {
     getSupplierCategoriesById,
     getSupplierById,
     getProductsBySupplierAndCategoryIDs,
-    getSuppliersByCategoryId
+    getSuppliersByCategoryId,
+    getCategoryById
 };

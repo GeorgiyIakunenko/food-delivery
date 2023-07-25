@@ -26,7 +26,7 @@ const Categories = computed(() => CategoryStore.categories)
         <h1>Categories</h1>
       </div>
       <div class="categories">
-          <Category :category="category" v-for="category in Categories" :key="category.id"></Category>
+          <Category :to="'suppliers'" :category="category" v-for="category in Categories" :key="category.id"></Category>
       </div>
     </div>
   </main>
