@@ -1,13 +1,21 @@
 <script setup>
   import Button from "@/components/UI/Button.vue";
+  import {useCategoryStore} from "@/stores/category";
  const props = defineProps({
    supplier: {
      type: Object,
      required: true
+   },
+   to : {
+     type: String,
+     required: false,
+     default: 'products'
    }
  })
 
   console.log(props.supplier)
+
+  const categoryStore = useCategoryStore()
 
 
 </script>
@@ -22,7 +30,8 @@
     <p>{{ supplier.description }}</p>
     <div class="supplier-card__bottom">
       <h3>{{ supplier.name }}</h3>
-      <Button intent="secondary">Open</Button>
+      <router-link v-if="to === 'categories'" :to="`/suppliers/${supplier.id}/categories`" ><Button intent="secondary">Open</Button></router-link>
+      <router-link v-if="to === 'products'" :to="`/suppliers/${supplier.id}/category/${categoryStore.CurrentCategory.id}/products`" ><Button intent="secondary" >Open</Button></router-link>
     </div>
 
   </div>

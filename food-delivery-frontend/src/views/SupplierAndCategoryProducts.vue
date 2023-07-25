@@ -27,7 +27,8 @@ onMounted(() => {
   <Header />
   <main>
     <div class="container">
-<!--      <h1>Products in {{categoryStore.CurrentCategory.value.name}} of {{supplierStore.CurrentSupplier.value.name}}</h1>-->
+
+        <h1>Products in {{categoryStore.CurrentCategory.name}} of {{supplierStore.CurrentSupplier.name}}</h1>
       <div class="products">
         <Product :product="product" v-for="product in productStore.products" :key="product.id"></Product>
       </div>
@@ -38,4 +39,22 @@ onMounted(() => {
 
 <style scoped>
 
+    .products {
+      display: flex;
+      grid-gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 4rem;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 2rem ;
+      margin-left: 1rem;
+    }
+    main {
+      background: #FFF1E5;
+    }
 </style>

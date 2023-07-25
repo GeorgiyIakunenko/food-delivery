@@ -3,7 +3,8 @@ import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import { useUserStore } from "@/stores/user";
 import { onMounted, ref } from "vue";
-import {getUserData, updateProfile} from "@/api/api";
+import {getUserData, logout, updateProfile} from "@/api/api";
+import Button from "@/components/UI/Button.vue";
 
 const userStore = useUserStore();
 
@@ -82,21 +83,27 @@ const toggleEditMode = () => {
             <p><strong>Phone:</strong> {{ userStore.user.phone }}</p>
             <p><strong>Address:</strong> {{ userStore.user.address }}</p>
             <p><strong>Username:</strong> {{ userStore.user.username }}</p>
+            <router-link to="/products" @click="logout" ><Button class="logout-btn"  intent="secondary">Logout</Button> </router-link>
+
           </div>
         </div>
         <button @click="toggleEditMode" class="edit-button">{{ isEditMode ? 'Cancel' : 'Edit' }}</button>
+
       </div>
       <div class="user-orders">
 
       </div>
     </div>
+
   </main>
   <Footer />
 </template>
 
 <style>
 
-
+.logout-btn {
+  margin-top: 20px;
+}
 
 .profile-container {
   width: 90%;

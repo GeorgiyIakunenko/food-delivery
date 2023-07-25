@@ -28,7 +28,7 @@ const categoryStore = useCategoryStore()
   <Header />
   <main>
     <div class="container">
-<!--      <h1>Categories of {{supplierStore.CurrentSupplier.value.name}}</h1>-->
+    <h1>Categories of {{supplierStore.CurrentSupplier.name}}</h1>
       <div class="categories">
         <Category :to="'products'" :category="category" v-for="category in categoryStore.categories" :key="category.id">
         </Category>
@@ -39,5 +39,25 @@ const categoryStore = useCategoryStore()
 </template>
 
 <style scoped>
+  main {
+    background: #FFF1E5;
+  }
+
+  h1 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 4rem;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 2rem ;
+    margin-left: 1rem;
+  }
+
+  .categories {
+    display: flex;
+    grid-gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
 
 </style>

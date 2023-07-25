@@ -22,7 +22,7 @@
         <h1>Suppliers</h1>
         <div class="suppliers">
           <router-link v-for="supplier in supplierStore.suppliers" :to="`/suppliers/${supplier.id}/categories`" :key="supplier.id">
-            <Supplier :supplier="supplier"></Supplier>
+            <Supplier to="categories" :supplier="supplier"></Supplier>
           </router-link>
         </div>
       </div>

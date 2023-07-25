@@ -21,13 +21,17 @@ api.interceptors.response.use(
             originalRequest._retry = true;
             const refreshToken = getLocalStorageItem('refresh_token');
             try {
-                const { data } = await api.post('/auth/refresh-token', { refresh_token: refreshToken });
+                const { data } = await api.post('/auth/refresh', null, {
+                    headers: { 'Authorization': `Bearer ${refreshToken}` },
+                });
                 useUserStore().setTokens(data.access_token, data.refresh_token);
                 setLocalStorageItem('access_token', data.access_token);
                 setLocalStorageItem('refresh_token', data.refresh_token);
                 originalRequest.headers['Authorization'] = `Bearer ${data.access_token}`;
                 return api(originalRequest);
             } catch (err) {
+                console.log('Refresh token expired. Logging out.')
+                useUserStore().logout();
                 return Promise.reject(err);
             }
         }
@@ -37,7 +41,10 @@ api.interceptors.response.use(
 
 async function login(email, password) {
     try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post('/auth/login', { email, password }, {
+            headers: { 'Content-Type': 'application/json' },
+
+        });
         useUserStore().setTokens(response.data.access_token, response.data.refresh_token);
         await getUserData();
         return true;
