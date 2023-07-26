@@ -18,7 +18,7 @@
     last_name: "cba",
     username: "tttuop",
     age: 18,
-    email: "viktor@gmail.com",
+    email: "goshan3097@gmail.com",
     phone: "+452345234",
     password: "123456",
     address: "gogo utca 4"

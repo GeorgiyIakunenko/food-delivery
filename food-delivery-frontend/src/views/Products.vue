@@ -51,15 +51,17 @@ watch(filterSearch, () => {
   <Header />
   <main>
       <div class="container">
-        <h1>Products</h1>
+
         <div class="filter-box">
+          <h1>Products</h1>
           <div class="search">
-            <label for="search">Search:</label>
+            <label for="search">Search  </label>
             <input v-model="filterSearch" type="text" name="search" id="search">
           </div>
         </div>
         <div class="products">
-          <Product  v-for="product in productStore.filteredProducts" :product="product"  :key="product.id"></Product>
+          <div v-if="productStore.filteredProducts.length === 0" >No products found</div>
+          <Product v-else  v-for="product in productStore.filteredProducts" :product="product"  :key="product.id"></Product>
         </div>
       </div>
   </main>

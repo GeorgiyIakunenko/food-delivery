@@ -8,8 +8,8 @@ import Dialog from "@/components/UI/Dialog.vue";
 const router = useRouter()
 
 const LoginForm = reactive({
-  email: 'g10072004@gmail.com',
-  password: '506021'
+  email: 'goshan3097@gmail.com',
+  password: ''
 })
 
 const activeInputs = reactive({});
