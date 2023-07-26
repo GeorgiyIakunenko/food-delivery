@@ -27,6 +27,7 @@
   const SubmitForm = () => {
     register(RegisterForm).then((response) => {
       console.log(response)
+      alert('You have successfully registered')
       emits('changeMode')
     })
 

@@ -239,6 +239,19 @@ async function ResetPassword(email, reset_code, new_password) {
     }
 }
 
+async function createOrder(total_price, payment_method, address, product) {
+    try {
+        const response = await api.post('/order/create', {total_price, payment_method, address, product}, {
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${useUserStore().access_token}` },
+
+        } );
+        return response.status === 200;
+    } catch (error) {
+        console.error('Add Products To Cart Failed:', error.response.data);
+        return false;
+    }
+}
+
 export {
     login,
     register,
@@ -255,4 +268,5 @@ export {
     getCategoryById,
     ResetPasswordRequest,
     ResetPassword,
+    createOrder
 };

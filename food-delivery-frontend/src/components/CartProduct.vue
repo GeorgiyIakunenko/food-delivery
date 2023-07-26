@@ -25,6 +25,8 @@
     cartStore.decreaseQuantity(product)
   }
 
+  const prodImageUrl = new URL('/' + props.product.image, import.meta.url)
+
 </script>
 
 <template>
@@ -32,7 +34,7 @@
 
         <div class="cart-product__info">
           <div class="cart-product__image">
-            <img class="cart-product__image" src="@/assets/images/products/apple.png" alt="product.name">
+            <img class="cart-product__image" :src="prodImageUrl" :alt="product.name">
           </div>
           <h3>{{ product.name }}</h3>
         </div>

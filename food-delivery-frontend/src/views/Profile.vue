@@ -22,9 +22,7 @@ const updateUserProfile = () => {
     address: userStore.updatedUser.address !== userStore.user.address ? userStore.updatedUser.address : "",
   };
 
-  console.log(updateUserRequestBody)
-
-  updateProfile(updateUserRequestBody);
+  updateProfile(updateUserRequestBody)
 };
 
 

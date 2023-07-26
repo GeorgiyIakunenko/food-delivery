@@ -6,6 +6,7 @@ import {useCartStore} from "@/stores/cart";
 import CartProduct from "@/components/CartProduct.vue";
 import {ref} from "vue";
 import {useUserStore} from "@/stores/user";
+import {createOrder} from "@/api/api";
 
 const userStore = useUserStore()
 const cartStore = useCartStore()
@@ -17,6 +18,28 @@ const addToCart = (product) => {
 const removeFromCart = (item) => {
     cartStore.removeFromCart(item)
 }
+
+const addOrder = () => {
+    const orderRequest = {
+        total_price : parseFloat(cartStore.cartTotal),
+        payment_method: cartStore.orderRequest.payment_method,
+        address: userStore.user.address,
+        product: cartStore.items.map(item => {
+            return {
+                product_id: item.id,
+                quantity: item.quantity
+            }
+        })
+    }
+
+    console.log(orderRequest)
+
+  createOrder(orderRequest.total_price, orderRequest.payment_method, orderRequest.address, orderRequest.product).then(() => {
+    cartStore.clearCart()
+    alert('Order created successfully')
+  })
+}
+
 </script>
 
 <template>
@@ -32,7 +55,22 @@ const removeFromCart = (item) => {
             </div>
             <div class="cart-total">
               <h2>Total: {{cartStore.cartTotal}} HUF</h2>
-              <button v-if="userStore.access_token !== ''" class="btn">Checkout</button>
+
+            </div>
+            <div class="cart-checkout">
+
+              <div v-if="userStore.access_token !== ''" class="checkout">
+                <div class="profile-form-group">
+                  <label class="profile-form-label" for="phone">Payment Method</label>
+                  <input v-model="cartStore.orderRequest.payment_method" placeholder="Now only cash is available" class="profile-form-input" type="text" id="phone" disabled required />
+                </div>
+                <div class="profile-form-group">
+                  <label class="profile-form-label" for="address">Address</label>
+                  <input v-model="userStore.user.address" class="profile-form-input" type="text" id="address" required />
+                </div>
+              </div>
+
+              <button v-if="userStore.access_token !== ''" @click="addOrder" class="btn">Checkout</button>
               <router-link v-else  to="/login"> <button  class="btn login-to-checkout">Login to Checkout</button></router-link>
             </div>
         </div>
@@ -41,6 +79,32 @@ const removeFromCart = (item) => {
 </template>
 
 <style scoped>
+
+  .profile-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+
+  .profile-form-label {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .profile-form-input {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+
+  .checkout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 20px;
+  }
+
 
   main {
     padding-bottom: 15px;
@@ -87,6 +151,14 @@ const removeFromCart = (item) => {
     grid-gap: 50px;
     flex-wrap: wrap;
     margin-bottom: 2rem;
+  }
+
+  .cart-checkout {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-gap: 20px;
   }
 
   @media (max-width: 550px) {
