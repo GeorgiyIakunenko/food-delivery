@@ -101,6 +101,11 @@ export const useUserStore = defineStore('user', () => {
         resetForm.new_password = resetData.new_password;
     }
 
+    const orders = ref([])
+
+    const setOrders = (ordersData) => {
+        orders.value = (ordersData)
+    }
 
     return { user,
         access_token,
@@ -113,6 +118,8 @@ export const useUserStore = defineStore('user', () => {
         setUserAfterUpdate,
         resetForm,
         setResetForm,
+        orders,
+        setOrders
 
     }
 

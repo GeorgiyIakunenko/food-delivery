@@ -46,10 +46,10 @@ const addOrder = () => {
     <Header />
     <main>
         <div class="container">
-          <div class="box">
+          <div v-if="cartStore.items.length > 0" class="box">
             <h1>Cart</h1>
-<!--            <img src="@/assets/images/" alt="">-->
           </div>
+          <div v-if="cartStore.items.length > 0" class="div">
             <div class="cart-products">
               <CartProduct :product="item"  v-for="item in cartStore.items" :key="item.id" />
             </div>
@@ -58,7 +58,6 @@ const addOrder = () => {
 
             </div>
             <div class="cart-checkout">
-
               <div v-if="userStore.access_token !== ''" class="checkout">
                 <div class="profile-form-group">
                   <label class="profile-form-label" for="phone">Payment Method</label>
@@ -73,12 +72,20 @@ const addOrder = () => {
               <button v-if="userStore.access_token !== ''" @click="addOrder" class="btn">Checkout</button>
               <router-link v-else  to="/login"> <button  class="btn login-to-checkout">Login to Checkout</button></router-link>
             </div>
+          </div>
+          <div class="cart-empty" v-else> You cart is empty</div>
         </div>
     </main>
     <Footer />
 </template>
 
 <style scoped>
+
+  .cart-empty {
+    font-size: 40px;
+    text-align: center;
+    padding-top: 100px;
+  }
 
   .profile-form-group {
     display: flex;
@@ -123,7 +130,7 @@ const addOrder = () => {
 
   .cart-total {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-top: 2rem;
   }

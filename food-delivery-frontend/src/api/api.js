@@ -252,6 +252,21 @@ async function createOrder(total_price, payment_method, address, product) {
     }
 }
 
+async function getOrders() {
+    try {
+        const response = await api.get('/order', {
+            headers: { 'Authorization': `Bearer ${useUserStore().access_token}` },
+        } );
+
+        useUserStore().setOrders(response.data);
+
+        return response.status === 200;
+    } catch (error) {
+        console.error('Add Products To Cart Failed:', error.response.data);
+        return false;
+    }
+}
+
 export {
     login,
     register,
@@ -268,5 +283,6 @@ export {
     getCategoryById,
     ResetPasswordRequest,
     ResetPassword,
-    createOrder
+    createOrder,
+    getOrders
 };
