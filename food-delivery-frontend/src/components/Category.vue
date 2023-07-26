@@ -1,22 +1,36 @@
 <script setup>
 
   import Button from "@/components/UI/Button.vue";
+  import {useSupplierStore} from "@/stores/supplier";
+  import {useCategoryStore} from "@/stores/category";
 
   const props = defineProps({
     category: {
       type: Object,
       required: true
+    },
+    to: {
+      type: String,
+      required: false,
+      default: 'products'
     }
   })
+
+  const supplierStore = useSupplierStore()
+  const categoryStore = useCategoryStore()
+
+  const categoryImageUrl = new URL('/' + props.category.image, import.meta.url)
+
 </script>
 
 <template>
   <div class="category">
-    <img src="@/assets/images/categories/fruits.jpg" alt="{{category.name}}">
+    <img :src="categoryImageUrl" :alt="category.name">
     <p> {{category.description}} </p>
     <div class="category__bottom-box">
       <h2>{{ category.name }}</h2>
-      <Button intent="secondary">Open</Button>
+      <router-link v-if="to === 'suppliers'" :to="`/suppliers/category/${category.id}`"><Button intent="secondary">Open</Button></router-link>
+      <router-link v-if="to === 'products'" :to="`/suppliers/${supplierStore.CurrentSupplier.id}/category/${category.id}/products`"><Button intent="secondary">Open</Button></router-link>
     </div>
   </div>
 </template>
@@ -25,7 +39,7 @@
   .category {
     background-color: white;
     width: 300px;
-    height: 400px;
+    height: 470px;
     display: flex;
     font-family: "DM Sans", sans-serif;
     text-transform: capitalize;
@@ -44,7 +58,7 @@
   .category img {
     width: 100%;
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   .category__bottom-box {

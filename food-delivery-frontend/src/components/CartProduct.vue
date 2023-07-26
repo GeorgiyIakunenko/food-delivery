@@ -25,6 +25,8 @@
     cartStore.decreaseQuantity(product)
   }
 
+  const prodImageUrl = new URL('/' + props.product.image, import.meta.url)
+
 </script>
 
 <template>
@@ -32,7 +34,7 @@
 
         <div class="cart-product__info">
           <div class="cart-product__image">
-            <img class="cart-product__image" src="@/assets/images/products/apple.png" alt="product.name">
+            <img class="cart-product__image" :src="prodImageUrl" :alt="product.name">
           </div>
           <h3>{{ product.name }}</h3>
         </div>
@@ -82,7 +84,6 @@
     background-color: white;
     align-items: center;
     justify-content: space-between;
-    width: 400px;
     padding: 0.5rem;
     border-radius: 1rem;
     box-shadow: 0 0 10px rgba(0,0,0,0.2);
@@ -117,13 +118,6 @@
     cursor: pointer;
   }
 
-
-  @media (max-width: 860px) {
-    .cart-product {
-      width: 300px;
-    }
-  }
-  
   @media (max-width: 560px) {
     .cart-product {
       text-align: center;

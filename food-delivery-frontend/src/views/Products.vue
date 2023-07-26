@@ -42,6 +42,12 @@ async function fetchProducts() {
 </template>
 
 <style scoped>
+
+    h1 {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
     .products {
       display: flex;
       flex-wrap: wrap;

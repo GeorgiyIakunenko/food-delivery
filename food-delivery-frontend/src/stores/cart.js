@@ -1,9 +1,14 @@
 
 import { defineStore } from 'pinia';
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, reactive} from 'vue';
 
 export const useCartStore = defineStore('cart', () => {
     const items = ref([]);
+
+    const cartTotal = computed(() => {
+        return items.value.reduce((total, item) => total + (item.quantity * item.price), 0.00);
+    });
+
 
     function addToCart(product) {
         const existingProduct = items.value.find((item) => item.id === product.id);
@@ -59,17 +64,29 @@ export const useCartStore = defineStore('cart', () => {
         }
     }
 
-    const cartTotal = computed(() =>
-        items.value.reduce((total, item) => total + item.price * item.quantity, 0)
-    );
+    const orderRequest = reactive({
+        total_price: 0,
+        payment_method: 'Cash',
+        address: '',
+        product: [],
+    })
+
+    const setOrderRequest = (total_price, payment_method, address, product) => {
+        orderRequest.total_price = parseFloat(total_price + ".00");
+        orderRequest.payment_method = payment_method;
+        orderRequest.address = address;
+        orderRequest.product = product;
+    }
 
     return {
         items,
         addToCart,
         removeFromCart,
-        clearCart,
         cartTotal,
+        clearCart,
         initializeCartFromLocalStorage,
         decreaseQuantity,
+        orderRequest,
+        setOrderRequest,
     };
 });

@@ -19,23 +19,31 @@
   <main>
     <div class="container">
       <div class="box">
-        <h1>Suppliers</h1>
-        <div class="suppliers">
-          <Supplier @click="supplierStore.setCurrentSupplier(supplier)" :supplier="supplier" v-for="supplier in supplierStore.suppliers" :key="supplier.id"></Supplier>
-        </div>
+        <img src="@/assets/images/suppliers/supplier.png" alt="supplier">
+        <h1>Products</h1>
       </div>
+        <div class="suppliers">
+          <router-link v-for="supplier in supplierStore.suppliers" :to="`/suppliers/${supplier.id}/categories`" :key="supplier.id">
+            <Supplier to="categories" :supplier="supplier"></Supplier>
+          </router-link>
+        </div>
     </div>
   </main>
   <Footer />
 </template>
 
 <style scoped>
-
     .box {
       display: flex;
       align-items: center;
+      justify-content: center;
+      grid-gap: 50px;
       flex-wrap: wrap;
       margin-bottom: 2rem;
+    }
+
+    img {
+      max-width: 400px;
     }
 
     .suppliers {
@@ -47,13 +55,25 @@
 
     h1 {
       font-family: 'DM Sans', sans-serif;
-      font-size: 6rem;
-      color: #897ec7;
+      font-size: 4rem;
       font-weight: 600;
-      margin-left: 1rem;
+      text-align: center;
+      margin: 2rem 0;
     }
 
     main {
       background: #FFF1E5;
+    }
+
+
+    @media (max-width: 550px) {
+
+      .box {
+        grid-gap: 10px;
+      }
+
+      img {
+       max-width: 300px;
+      }
     }
 </style>

@@ -1,11 +1,17 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import {defineProps, computed, reactive, ref} from 'vue';
+import {useUserStore} from "@/stores/user";
+import {ResetPasswordRequest} from "@/api/api";
 
 
 const ResetRequestForm = reactive({
-  email: '',
+  email: 'g10072004@gmail.com',
+  reset_code: '',
+  new_password: '',
 })
+
+const userStore = useUserStore()
 
 const activeInputs = reactive({});
 
@@ -16,7 +22,7 @@ const isActive = (inputKey) => {
   return activeInputs[inputKey] || false;
 }
 
-/*const emit = defineEmits(['changeMode', 'change-reset-mode'])
+const emit = defineEmits(['changeMode', 'change-reset-mode'])
 
 const dialogMessage = ref('We send you a verification code to your email address')
 const dialogType = ref('success')
@@ -30,10 +36,23 @@ const showDialog = () => {
 }
 
 const submitForm = async () => {
-  dialogType.value = 'success';
-  dialogMessage.value = 'We send you a verification code to your email address'
-  showDialog()
-}*/
+  await ResetPasswordRequest(userStore.resetForm.email).then(
+      (response) => {
+        if(response) {
+          dialogType.value = 'success';
+          dialogMessage.value = 'We send you a verification code to your email address'
+          emit('changeMode')
+          showDialog()
+        }else {
+          dialogType.value = 'error';
+          dialogMessage.value = 'You enter wrong email'
+          showDialog()
+        }
+      }
+  )
+
+
+}
 
 </script>
 
@@ -49,8 +68,8 @@ const submitForm = async () => {
         <input
             @focus="toggleFocus('resetEmail')"
             @blur="toggleFocus('resetEmail')"
-            :class="{'active': isActive('resetEmail')}"
-            v-model="ResetRequestForm.email"
+            :class="{'active': isActive('resetEmail') || userStore.resetForm.email.length > 0}"
+            v-model="userStore.resetForm.email"
             type="email"
             minlength="6"
             class="input-field"
@@ -59,7 +78,7 @@ const submitForm = async () => {
         />
         <label>Email</label>
       </div>
-      <input type="submit" @click="$emit('changeMode')" value="Send Code" class="auth-btn" />
+      <input type="submit" @click.stop.prevent="submitForm" value="Send Code" class="auth-btn" />
     </div>
   </form>
 </template>

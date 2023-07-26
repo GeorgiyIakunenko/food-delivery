@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import('../views/Products.vue')
     },
     {
       path: '/suppliers',
@@ -48,11 +48,22 @@ const router = createRouter({
         path: '/categories',
         name: 'categories',
         component: () => import('../views/Categories.vue')
-    }
-
-
-
-
+    },
+      {
+          path: '/suppliers/:id/categories',
+          name: 'supplier',
+          component: () => import('../views/SuppliersCategories.vue')
+      },
+      {
+          path: '/suppliers/:supplierId/category/:categoryId/products',
+          name: 'supplier-product',
+          component: () => import('../views/SupplierAndCategoryProducts.vue')
+      },
+      {
+            path: '/suppliers/category/:categoryId',
+            name: 'category-=suppliers',
+            component: () => import('../views/CategorySuppliers.vue')
+      }
   ]
 })
 

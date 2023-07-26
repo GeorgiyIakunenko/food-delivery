@@ -1,325 +1,288 @@
-import {useUserStore} from "@/stores/user";
-import {getLocalStorageItem} from "@/healpers/localstorage";
-import {useProductStore} from "@/stores/product";
-import {useCategoryStore} from "@/stores/category";
-import {useSupplierStore} from "@/stores/supplier";
+import { useUserStore } from "@/stores/user";
+import { getLocalStorageItem, setLocalStorageItem } from "@/healpers/localstorage";
+import { useProductStore } from "@/stores/product";
+import { useCategoryStore } from "@/stores/category";
+import { useSupplierStore } from "@/stores/supplier";
+import axios from "axios";
 
+const api = axios.create({
+    baseURL: 'http://localhost:8080',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-const root = 'http://localhost:8080'
+        if (error.response.message === 'token is expired' ) {
+            originalRequest._retry = true;
+            const refreshToken = getLocalStorageItem('refresh_token');
+            try {
+                const { data } = await api.post('/auth/refresh', null, {
+                    headers: { 'Authorization': `Bearer ${refreshToken}` },
+                });
 
-//console.log(root)
+                if (!data || !data.access_token || !data.refresh_token) {
+                    console.log('Refresh token expired. Logging out.')
+                    useUserStore().logout();
+                    return;
+                }
 
-async function apiFetch(url, options) {
-    return fetch(root + url, options);
-}
-
-async function fetchApi(url, options, isProtected = false) {
-    if (isProtected) {
-        return await refreshTokenMiddleware(url, options)
-    } else {
-        return apiFetch(url, options)
-    }
-}
-
-async function refreshTokenMiddleware(url, options) {
-    const userStore = useUserStore();
-    const accessToken = getLocalStorageItem('access_token');
-    const refreshToken = getLocalStorageItem('refresh_token');
-
-    if (!accessToken || !refreshToken) {
-        console.error('Access token or refresh token not found in localStorage.');
-        return null;
-    }
-
-    let response;
-
-    try {
-        response = await apiFetch(url, options);
-        if (!response.ok) {
-            console.log('Going to request new access token');
-            const refreshSuccess = await refreshTokenRequest();
-            if (refreshSuccess) {
-                console.log('New access token received, retrying original request');
-                const newOptions = { ...options, headers: { ...options.headers, 'Authorization': `Bearer ${useUserStore().access_token}` } };
-                response = await apiFetch(url, newOptions);
+                useUserStore().setTokens(data.access_token, data.refresh_token);
+                setLocalStorageItem('access_token', data.access_token);
+                setLocalStorageItem('refresh_token', data.refresh_token);
+                originalRequest.headers['Authorization'] = `Bearer ${data.access_token}`;
+                return api(originalRequest);
+            } catch (err) {
+                console.log('Refresh token expired. Logging out.')
+                useUserStore().logout();
+                return Promise.reject(err);
             }
-
         }
-    } catch (error) {
-        console.error('Error during request:', error);
-        return null;
+        return Promise.reject(error);
     }
-
-    return response;
-}
-
-async function refreshTokenRequest() {
-    const url = '/auth/refresh';
-    const refreshToken = getLocalStorageItem('refresh_token');
-    console.log(refreshToken)
-    if (!refreshToken) {
-        console.error('Refresh token not found in localStorage.');
-        return false;
-    }
-
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${refreshToken}`,
-        }
-    }
-
-    try {
-        const response = await apiFetch(url, options);
-        if (response.ok) {
-            const data = await response.json();
-            useUserStore().setTokens(data.access_token, data.refresh_token);
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Token refresh Failed:', errorData);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error during token refresh:', error);
-        return false;
-    }
-}
+);
 
 async function login(email, password) {
-    const url = '/auth/login';
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    };
-    console.log(options.body)
-
     try {
-        const response = await apiFetch(url, options);
-        if (response.ok) {
-            const data = await response.json();
-            useUserStore().setTokens(data.access_token, data.refresh_token);
-            await getUserData();
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Login Failed:', errorData);
-            return false;
-        }
+        const response = await api.post('/auth/login', { email, password }, {
+            headers: { 'Content-Type': 'application/json' },
+
+        });
+        useUserStore().setTokens(response.data.access_token, response.data.refresh_token);
+        await getUserData();
+        return true;
     } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Login Failed:', error.response.data);
         return false;
     }
 }
 
 async function register(userData) {
-    const url = '/auth/register';
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-    };
-
     try {
-        const response = await apiFetch(url, options);
-        if (response.ok) {
-            const data = await response.json();
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Registration Failed:', errorData);
-            return false;
-        }
+        const response = await api.post('/auth/register', userData);
+        return response.status === 200;
     } catch (error) {
-        console.error('Error during registration:', error);
+        console.error('Registration Failed:', error.response.data);
         return false;
     }
 }
 
 async function updateProfile(userData) {
-    const url = '/user/profile';
     const accessToken = getLocalStorageItem('access_token');
-
     if (!accessToken) {
         console.error('Access token not found in localStorage.');
         return false;
     }
-
-    const options = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
-        },
-        body : JSON.stringify(userData)
-    }
-
     try {
-        const response = await fetchApi(url, options, true);
-        if (response.ok) {
-            const data = await response.json();
-            useUserStore().setUser(userData);
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('User Update Failed:', errorData);
-            return false;
-        }
+        const response = await api.put('/user/profile', userData, {
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
+        useUserStore().setUserAfterUpdate();
+        return true;
     } catch (error) {
-        console.error('Error during User Update:', error);
+        console.error('User Update Failed:', error.response.data);
         return false;
     }
-
 }
 
 async function getUserData() {
-    const url = '/user/profile';
-
     const accessToken = useUserStore().access_token;
-    console.log(accessToken)
     if (!accessToken) {
         console.error('Access token not found in localStorage.');
         return false;
     }
 
-    const options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
-        },
-    };
-
     try {
-        const response = await fetchApi(url, options, true);
-        if (response.ok) {
-            const data = await response.json();
-            useUserStore().setUser(data);
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('User Data Failed:', errorData);
-            return false;
-        }
+        const response = await api.get('/user/profile', {
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
+        useUserStore().setUser(response.data);
+        return true;
     } catch (error) {
-        console.error('Error during User Data:', error);
+        console.error('Get User Data Failed:', error.response.data);
         return false;
     }
 }
 
 async function logout() {
-    const url = '/auth/logout';
-
     const accessToken = getLocalStorageItem('access_token');
-    console.log(accessToken)
     if (!accessToken) {
         console.error('Access token not found in localStorage.');
-        return false
+        return false;
     }
 
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${accessToken}`, // Add the access token to the Authorization header
-        },
-    };
-
     try {
-        const response = await fetchApi(url, options, true);
-        if (response.ok) {
-            useUserStore().logout();
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Logout Failed:', errorData);
-            return false;
-        }
+        await api.post('/auth/logout', {}, {
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
+        useUserStore().logout();
+        return true;
     } catch (error) {
-        console.error('Error during logout:', error);
+        console.error('Logout Failed:', error.response.data);
         return false;
     }
 }
 
 async function getAllProducts() {
-    const url = '/products';
-    const options = {
-        method: 'GET',
-    }
-
     try {
-        const response = await fetchApi(url, options);
-        if (response.ok) {
-            const products = await response.json();
-            console.log(products)
-            useProductStore().setProducts(products)
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Get Products Failed:', errorData);
-            return false;
-        }
+        const response = await api.get('/products');
+        useProductStore().setProducts(response.data);
+        return true;
     } catch (error) {
-        console.error('Error during getting products:', error);
+        console.error('Get Products Failed:', error.response.data);
         return false;
     }
 }
 
 async function getAllCategories() {
-    const url = '/categories';
-    const options = {
-        method: 'GET',
-    }
-
     try {
-        const response = await fetchApi(url, options);
-        if (response.ok) {
-            const categories = await response.json();
-            console.log(categories)
-            useCategoryStore().setCategories(categories)
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Get Categories Failed:', errorData);
-            return false;
-        }
+        const response = await api.get('/categories');
+        useCategoryStore().setCategories(response.data);
+        return true;
     } catch (error) {
-        console.error('Error during getting categories:', error);
+        console.error('Get Categories Failed:', error.response.data);
         return false;
     }
 }
 
 async function getAllSuppliers() {
-    const url = '/suppliers';
-    const options = {
-        method: 'GET',
-    }
-
     try {
-        const response = await fetchApi(url, options);
-        if (response.ok) {
-            const suppliers = await response.json();
-            console.log(suppliers)
-            useSupplierStore().setSuppliers(suppliers)
-            return true;
-        } else {
-            const errorData = await response.json();
-            console.log('Get Suppliers Failed:', errorData);
-            return false;
-        }
+        const response = await api.get('/suppliers');
+        useSupplierStore().setSuppliers(response.data);
+        return true;
     } catch (error) {
-        console.error('Error during getting suppliers:', error);
+        console.error('Get Suppliers Failed:', error.response.data);
         return false;
     }
 }
 
+async function getSupplierCategoriesById(id) {
+    try {
+        const response = await api.get(`/supplier/${id}/categories`);
+        console.log(response.data)
+        useCategoryStore().setCategories(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Get Supplier Categories Failed:', error.response.data);
+        return false;
+    }
+}
 
+async function getSuppliersByCategoryId(id) {
+    try {
+        const response = await api.get(`/suppliers/category/${id}`);
+        useSupplierStore().setSuppliers(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Get Supplier Categories Failed:', error.response.data);
+        return false;
+    }
+}
 
-export { login, register, getUserData, logout, getAllProducts, getAllCategories, getAllSuppliers, updateProfile }
+async function getSupplierById(id) {
+    try {
+        const response = await api.get(`/supplier/${id}`);
+        useSupplierStore().setCurrentSupplier(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Get Supplier Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function getProductsBySupplierAndCategoryIDs(CategoryId, SupplierId) {
+    try {
+        const response = await api.get(`/categories/${CategoryId}/suppliers/${SupplierId}/products`);
+        useProductStore().setProducts(response.data);
+        return true;
+    } catch (error) {
+        console.error('Get Supplier Categories Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function getCategoryById(categoryId) {
+    try {
+        const response = await api.get(`/category/${categoryId}`);
+        useCategoryStore().setCurrentCategory(response.data);
+        return true;
+    } catch (error) {
+        console.error('Get Category Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function ResetPasswordRequest(email) {
+    try {
+        console.log(email)
+        const response = await api.post('/auth/reset-password', { email });
+        return response.status === 200;
+    } catch (error) {
+        console.error('Reset Password Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function ResetPassword(email, reset_code, new_password) {
+        console.log(email, reset_code, new_password)
+
+        try {
+        const response = await api.post('/auth/submit-code', { email, reset_code, new_password });
+        return response.status === 200;
+    } catch (error) {
+        console.error('Reset Password Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function createOrder(total_price, payment_method, address, product) {
+    try {
+        const response = await api.post('/order/create', {total_price, payment_method, address, product}, {
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${useUserStore().access_token}` },
+
+        } );
+        return response.status === 200;
+    } catch (error) {
+        console.error('Add Products To Cart Failed:', error.response.data);
+        return false;
+    }
+}
+
+async function getOrders() {
+    try {
+        const response = await api.get('/order', {
+            headers: { 'Authorization': `Bearer ${useUserStore().access_token}` },
+        } );
+
+        useUserStore().setOrders(response.data);
+
+        return response.status === 200;
+    } catch (error) {
+        console.error('Add Products To Cart Failed:', error.response.data);
+        return false;
+    }
+}
+
+export {
+    login,
+    register,
+    getUserData,
+    logout,
+    getAllProducts,
+    getAllCategories,
+    getAllSuppliers,
+    updateProfile,
+    getSupplierCategoriesById,
+    getSupplierById,
+    getProductsBySupplierAndCategoryIDs,
+    getSuppliersByCategoryId,
+    getCategoryById,
+    ResetPasswordRequest,
+    ResetPassword,
+    createOrder,
+    getOrders
+};

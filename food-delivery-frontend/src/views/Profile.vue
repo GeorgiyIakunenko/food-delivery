@@ -3,29 +3,36 @@ import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
 import { useUserStore } from "@/stores/user";
 import { onMounted, ref } from "vue";
-import {getUserData, updateProfile} from "@/api/api";
+import {getOrders, getUserData, logout, updateProfile} from "@/api/api";
+import Button from "@/components/UI/Button.vue";
 
 const userStore = useUserStore();
 
-onMounted(() => {
-  getUserData();
+onMounted(async () => {
+  await getUserData();
+  await getOrders();
+
+  console.log(userStore.orders)
 });
 
 const updateUserProfile = () => {
   const updateUserRequestBody = {
     first_name: userStore.updatedUser.first_name !== userStore.user.first_name ? userStore.updatedUser.first_name : "",
     last_name: userStore.updatedUser.last_name !== userStore.user.last_name ? userStore.updatedUser.last_name : "",
-    username: userStore.updatedUser.username !== userStore.user.username ? userStore.updatedUser.username : "",
+    username: "",
     age: userStore.updatedUser.age !== userStore.user.age ? userStore.updatedUser.age : 0,
     phone: userStore.updatedUser.phone !== userStore.user.phone ? userStore.updatedUser.phone : "",
     address: userStore.updatedUser.address !== userStore.user.address ? userStore.updatedUser.address : "",
   };
 
-  console.log(updateUserRequestBody)
-
-  updateProfile(updateUserRequestBody);
+  updateProfile(updateUserRequestBody)
 };
 
+const orderMode = ref(false);
+
+const toggleOrderMode = () => {
+  orderMode.value = !orderMode.value;
+};
 
 const isEditMode = ref(false);
 
@@ -36,14 +43,24 @@ const toggleEditMode = () => {
   }
 };
 
+const formatCreatedAt = (createdAt) => {
+  const date = new Date(createdAt);
+  return date.toLocaleString();
+};
+
+
 </script>
 
 <template>
   <Header />
   <main class="profile-container">
     <div class="container">
-      <div class="user-data">
-        <h1 class="profile-heading">Profile</h1>
+      <div class="heading_container">
+        <div @click="toggleOrderMode" class="heading">Profile</div>
+        <div @click="toggleOrderMode" class="heading" >Orders </div>
+      </div>
+
+      <div v-if="!orderMode" class="user-data">
         <div v-if="isEditMode">
           <form @submit.prevent="updateUserProfile" class="profile-form">
             <div class="profile-form-group">
@@ -66,11 +83,11 @@ const toggleEditMode = () => {
               <label class="profile-form-label" for="address">Address</label>
               <input v-model="userStore.updatedUser.address" class="profile-form-input" type="text" id="address" required />
             </div>
-            <div class="profile-form-group">
+<!--            <div class="profile-form-group">
               <label class="profile-form-label" for="username">Username</label>
               <input v-model="userStore.updatedUser.username" class="profile-form-input" type="text" id="username" required />
-            </div>
-            <button @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
+            </div>-->
+            <button  @click="updateUserProfile" type="submit" class="profile-form-button">Save</button>
           </form>
         </div>
         <div v-else>
@@ -82,21 +99,39 @@ const toggleEditMode = () => {
             <p><strong>Phone:</strong> {{ userStore.user.phone }}</p>
             <p><strong>Address:</strong> {{ userStore.user.address }}</p>
             <p><strong>Username:</strong> {{ userStore.user.username }}</p>
+            <router-link to="/products" @click="logout" ><Button class="logout-btn"  intent="secondary">Logout</Button> </router-link>
+
           </div>
         </div>
         <button @click="toggleEditMode" class="edit-button">{{ isEditMode ? 'Cancel' : 'Edit' }}</button>
-      </div>
-      <div class="user-orders">
 
       </div>
+      <div v-else class="orders">
+        <div v-if="userStore.orders.length === 0" class="no-orders-message">No orders found.</div>
+        <div v-else class="order-items">
+          <div v-for="order in userStore.orders" :key="order.id" class="order-card">
+            <div class="order-info">
+              <p><strong>Order ID:</strong> {{ order.id }}</p>
+              <p><strong>Total Price:</strong> {{ order.total_price }}</p>
+              <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+              <p><strong>Address:</strong> {{ order.address }}</p>
+              <p><strong>Order Status:</strong> {{ order.order_status }}</p>
+              <p><strong>Created At:</strong> {{ formatCreatedAt(order.created_at) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
   <Footer />
 </template>
 
-<style>
+<style scoped>
 
-
+.logout-btn {
+  margin-top: 20px;
+}
 
 .profile-container {
   width: 90%;
@@ -107,11 +142,38 @@ const toggleEditMode = () => {
   box-shadow: 1px 1px 8px 2px rgba(0, 0, 0, 0.12);
 }
 
-.profile-heading {
+.order-items {
+  display: flex;
+  grid-gap: 20px;
+  flex-wrap: wrap;
+}
+
+.order-info {
+  color: #0D0D0D;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+}
+
+.heading_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20px;
+  flex-wrap: wrap;
+}
+
+.heading {
   text-align: center;
   font-size: 1.5rem;
   margin-bottom: 2rem;
   color: #333;
+  background-color: #c49b9b;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 6px;
+
 }
 
 .profile-info {

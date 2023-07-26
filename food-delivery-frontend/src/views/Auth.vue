@@ -45,11 +45,11 @@
       <div class="inner-box">
         <div v-if="!resetMode" class="forms-wrap">
           <LoginForm @reset-password="toggleReset" @show-modal="showModal"  @changeMode="toggleChangeMode"></LoginForm>
-          <RegisterForm @changeMode="toggleChangeMode" ></RegisterForm>
+          <RegisterForm @show-modal="showModal" @changeMode="toggleChangeMode" ></RegisterForm>
         </div>
         <div v-else class="forms-wrap">
-          <ResetRequestForm  @change-reset-mode="toggleReset"  @changeMode="toggleChangeMode"></ResetRequestForm>
-          <ResetForm  @changeMode="toggleChangeMode"></ResetForm>
+          <ResetRequestForm @show-modal="showModal"  @change-reset-mode="toggleReset"  @changeMode="toggleChangeMode"></ResetRequestForm>
+          <ResetForm @show-modal="showModal"  @changeMode="toggleChangeMode"></ResetForm>
         </div>
         <div class="carousel">
           <div v-if="!resetMode" class="images-wrapper">

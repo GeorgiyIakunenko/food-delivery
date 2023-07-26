@@ -26,7 +26,7 @@ const Categories = computed(() => CategoryStore.categories)
         <h1>Categories</h1>
       </div>
       <div class="categories">
-          <Category :category="category" v-for="category in Categories" :key="category.id"></Category>
+          <Category :to="'suppliers'" :category="category" v-for="category in Categories" :key="category.id"></Category>
       </div>
     </div>
   </main>
@@ -39,6 +39,7 @@ const Categories = computed(() => CategoryStore.categories)
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 2rem;
   }
 
@@ -51,8 +52,7 @@ const Categories = computed(() => CategoryStore.categories)
 
   h1 {
     font-family: 'DM Sans', sans-serif;
-    font-size: 6rem;
-    color: #897ec7;
+    font-size: 4rem;
     font-weight: 600;
     margin-left: 1rem;
   }

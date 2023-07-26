@@ -18,6 +18,9 @@
     cartStore.removeFromCart(product)
   }
 
+  const prodImageUrl = new URL('/' + props.product.image, import.meta.url)
+  const supImageUrl = new URL('/' + props.product.supplier.image, import.meta.url)
+
 </script>
 
 <template>
@@ -25,7 +28,7 @@
     <div class="product-card__top">
       <div class="product__supplier">
         <div class="product__supplier-box">
-          <img class="product__supplier-img" src="@/assets/images/suppliers/aldi.jpg" alt="{{product.supplier.name}}">
+          <img class="product__supplier-img" :src="supImageUrl" :alt="product.supplier.name">
           <div class="product__supplier-name">{{product.supplier.name}}</div>
         </div>
         <div class="product__supplier-working-hours">
@@ -37,7 +40,7 @@
     </div>
 
     <div class="product__image">
-      <img src="@/assets/images/products/apple.png" alt="product.name">
+      <img :src="prodImageUrl" :alt="product.name">
     </div>
     <div class="product__info">
       <h3>{{ product.name }}</h3>
@@ -69,6 +72,10 @@
 </template>
 
 <style scoped>
+
+
+
+
   .product-card {
     font-family: "DM Sans", sans-serif;
     display: flex;
@@ -78,7 +85,7 @@
     align-items: center;
     justify-content: center;
     width: 250px;
-    height: 420px;
+    height: 475px;
     box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
     border-radius: 10px;
     padding: 1.75rem;
@@ -100,12 +107,15 @@
   img {
     height: 200px;
     width: 200px;
-    object-fit: cover;
+    object-fit: contain;
+
   }
 
   .product__supplier-img {
     height: 20px;
     width: 20px;
+    margin-right: 10px;
+    object-fit: contain;
   }
 
   .product__supplier-box {
