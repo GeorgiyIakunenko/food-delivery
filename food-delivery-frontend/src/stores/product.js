@@ -9,9 +9,17 @@ export const useProductStore = defineStore('product', () => {
     function setProducts(newProducts) {
         console.log(newProducts)
         products.value = newProducts
+        filteredProducts.value = newProducts
     }
 
-    return {products, setProducts}
+    const filteredProducts = ref([])
+
+    function setFilteredProducts(newProducts) {
+        filteredProducts.value = newProducts
+    }
+
+
+    return {products, setProducts,filteredProducts,setFilteredProducts}
 })
 
 

@@ -63,6 +63,7 @@
 
     main {
       background: #FFF1E5;
+      padding-bottom: 50px;
     }
 
 

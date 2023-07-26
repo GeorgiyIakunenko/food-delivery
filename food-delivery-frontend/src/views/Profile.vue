@@ -111,7 +111,7 @@ const formatCreatedAt = (createdAt) => {
         <div v-else class="order-items">
           <div v-for="order in userStore.orders" :key="order.id" class="order-card">
             <div class="order-info">
-              <p><strong>Order ID:</strong> {{ order.id }}</p>
+              <p><strong>Order Number:</strong> {{ order.id }}</p>
               <p><strong>Total Price:</strong> {{ order.total_price }}</p>
               <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
               <p><strong>Address:</strong> {{ order.address }}</p>
