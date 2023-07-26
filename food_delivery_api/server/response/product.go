@@ -7,7 +7,7 @@ type Product struct {
 	Category    *Category `json:"category"`
 	SupplierID  int64     `json:"supplier_id"`
 	Supplier    *Supplier `json:"supplier"`
-	Image       []byte    `json:"image"`
+	Image       string    `json:"image"`
 	Price       float64   `json:"price"`
 	Description string    `json:"description"`
 }
