@@ -5,11 +5,14 @@
   const toggleMenu = () => {
     menuActive.value = !menuActive.value
   }
+  const CloseMenu = () => {
+    menuActive.value = false
+  }
 
 </script>
 
 <template>
-  <header class="bg-primary-400 py-3  min-h-11 fixed top-0 left-0 right-0">
+  <header class="bg-primary-400 py-3 font-sans min-h-11 fixed top-0 left-0 right-0">
     <div class="container">
       <div class="wrapper flex justify-between items-center">
         <div class="bg-neutral-30 p-1 hover:bg-neutral-0 transition-all duration-300 cursor-pointer rounded-xl">
@@ -37,12 +40,11 @@
             <path d="M185.426 178.661L181.191 149.012C180.567 148.975 179.977 148.826 179.345 148.826C175.709 148.826 172.266 149.572 169.027 150.738L173.264 180.4L185.426 178.661Z" fill="#C7CFE1"/>
           </svg>
         </div>
-        <nav class="menu max-[768px]:bg-neutral-200 rounded-e-xl shadow-2xl font-sans" :class='{ "active" : menuActive}'>
-          <ul class="mt-12 flex gap-3 text-neutral-0 md:gap-5 :gap-1">
-            <li><a class="hover:text-red-600" href="#">Home</a></li>
-            <li><a class="hover:text-red-600" href="#">Menu</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+        <nav class="menu max-[768px]:bg-neutral-200 rounded-e-xl shadow-2xl " :class='{ "active" : menuActive}'>
+          <ul class="mt-12 md:mt-0 flex gap-3 text-neutral-0 md:gap-5 :gap-1">
+            <li><router-link @click="CloseMenu" class="hover:text-red-600" to="/">Home</router-link></li>
+            <li><router-link @click="CloseMenu" class="hover:text-red-600" to="/suppliers">Suppliers</router-link></li>
+            <li><router-link @click="CloseMenu" class="hover:text-blue-600" to="/categories">Categories</router-link></li>
           </ul>
         </nav>
         <div class="left-block flex gap-5">
