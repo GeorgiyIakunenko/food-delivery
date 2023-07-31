@@ -32,7 +32,9 @@ body {
 
 main {
   flex-grow: 1;
-  padding-top: 70px;
+  padding-top: 130px;  /* 70px header + 60px */
+  padding-bottom: 60px;
+
 }
 
 .container {
