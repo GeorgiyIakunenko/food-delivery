@@ -1,5 +1,11 @@
 <script setup>
-  import { ref } from 'vue'
+import {ref, watch} from 'vue'
+  import router from "@/router/router";
+  import Button from "@/components/Button.vue";
+
+
+
+
   const menuActive = ref(false)
 
   const toggleMenu = () => {
@@ -9,14 +15,25 @@
     menuActive.value = false
   }
 
+  const isRouteActive = (routeName) => {
+    const currentRoute = router.currentRoute.value.name
+
+    //console.log(currentRoute, routeName)
+
+    if(currentRoute === routeName) {
+      return 'font-bold'
+    }
+    return 'hover:text-blue-75 transition-all '
+  }
+
 </script>
 
 <template>
   <header class="bg-primary-400 py-3 font-sans min-h-11 fixed top-0 left-0 right-0">
     <div class="container">
       <div class="wrapper flex justify-between items-center">
-        <div class="bg-neutral-30 p-1 hover:bg-neutral-0 transition-all duration-300 cursor-pointer rounded-xl">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 211 211" fill="none">
+        <div class="bg-neutral-30 p-1 hover:bg-neutral-0 transition-all duration-300 cursor-pointer rounded-xl z-20">
+          <router-link to="/"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 211 211" fill="none">
             <path d="M92.9631 0.625519C82.8044 0.625519 74.5404 8.88952 74.5404 19.0482V25.5985L86.8222 31.7394H92.9631H99.104L111.386 25.5985V19.0482C111.386 8.88952 103.122 0.625519 92.9631 0.625519Z" fill="#FF6A4D"/>
             <path d="M111.386 25.5985V19.0482C111.386 8.88952 103.122 0.625519 92.9631 0.625519V31.7394H99.104L111.386 25.5985Z" fill="#E64D2E"/>
             <path d="M0.440331 185.671C3.28602 199.685 16.2904 210.235 31.1448 210.235C45.9992 210.235 59.4129 199.685 62.2586 185.671L48.9173 179.53H8.96552L0.440331 185.671Z" fill="#474F54"/>
@@ -38,19 +55,19 @@
             <path d="M181.19 149.012L179.405 155.836L169.026 150.738C157.182 155 148.64 166.237 148.64 179.53C148.64 196.46 162.415 210.235 179.345 210.235C196.275 210.235 210.049 196.46 210.049 179.53C210.049 163.233 197.246 149.988 181.19 149.012Z" fill="#32393F"/>
             <path d="M179.345 161.107C169.186 161.107 160.922 169.371 160.922 179.53C160.922 189.689 169.186 197.953 179.345 197.953C189.504 197.953 197.768 189.689 197.768 179.53C197.768 169.371 189.504 161.107 179.345 161.107Z" fill="#DFE7F4"/>
             <path d="M185.426 178.661L181.191 149.012C180.567 148.975 179.977 148.826 179.345 148.826C175.709 148.826 172.266 149.572 169.027 150.738L173.264 180.4L185.426 178.661Z" fill="#C7CFE1"/>
-          </svg>
+          </svg></router-link>
         </div>
         <nav class="menu max-[768px]:bg-neutral-200 rounded-e-xl shadow-2xl " :class='{ "active" : menuActive}'>
           <ul class="mt-12 md:mt-0 flex gap-3 text-neutral-0 md:gap-5 :gap-1">
-            <li><router-link @click="CloseMenu" class="hover:text-red-600" to="/">Home</router-link></li>
-            <li><router-link @click="CloseMenu" class="hover:text-red-600" to="/suppliers">Suppliers</router-link></li>
-            <li><router-link @click="CloseMenu" class="hover:text-blue-600" to="/categories">Categories</router-link></li>
+            <li><router-link @click="CloseMenu" :class="isRouteActive('Home')" to="/">Home</router-link></li>
+            <li><router-link @click="CloseMenu" :class="isRouteActive('Suppliers')" to="/suppliers">Suppliers</router-link></li>
+            <li><router-link @click="CloseMenu" :class="isRouteActive('Categories')" to="/categories">Categories</router-link></li>
           </ul>
         </nav>
-        <div class="left-block flex gap-5">
-          <div class="user-box">
-            <a class="hidden" href="#">Login</a>
-            <a href="#">Register</a>
+        <div class="left-block flex items-center gap-5">
+          <div class="user-box flex items-center gap-3">
+            <router-link to="/login"><Button>Login</Button></router-link>
+            <router-link to="/register"><Button>Register</Button></router-link>
           </div>
           <div @click="toggleMenu" class="menu-burger md:hidden" :class='{ "active" : menuActive}'>
             <span class=""></span>
