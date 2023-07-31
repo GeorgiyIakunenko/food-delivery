@@ -1,10 +1,7 @@
 <script setup>
-import {ref, watch} from 'vue'
+import {ref} from 'vue'
   import router from "@/router/router";
   import Button from "@/components/Button.vue";
-
-
-
 
   const menuActive = ref(false)
 
@@ -15,15 +12,20 @@ import {ref, watch} from 'vue'
     menuActive.value = false
   }
 
-  const isRouteActive = (routeName) => {
+  const isRouteActive = (routeName, isButton = false) => {
     const currentRoute = router.currentRoute.value.name
 
     //console.log(currentRoute, routeName)
 
     if(currentRoute === routeName) {
-      return 'font-bold'
+      return 'font-bold '
     }
-    return 'hover:text-blue-75 transition-all '
+
+    if(isButton) {
+      return ''
+    }
+
+    return 'hover:text-blue-75 transition-all'
   }
 
 </script>
@@ -59,15 +61,15 @@ import {ref, watch} from 'vue'
         </div>
         <nav class="menu max-[768px]:bg-neutral-200 rounded-e-xl shadow-2xl " :class='{ "active" : menuActive}'>
           <ul class="mt-12 md:mt-0 flex gap-3 text-neutral-0 md:gap-5 :gap-1">
-            <li><router-link @click="CloseMenu" :class="isRouteActive('Home')" to="/">Home</router-link></li>
-            <li><router-link @click="CloseMenu" :class="isRouteActive('Suppliers')" to="/suppliers">Suppliers</router-link></li>
-            <li><router-link @click="CloseMenu" :class="isRouteActive('Categories')" to="/categories">Categories</router-link></li>
+            <li><router-link @click="CloseMenu"  :class="isRouteActive('Home')" to="/">Home</router-link></li>
+            <li><router-link @click="CloseMenu"  :class="isRouteActive('Suppliers')" to="/suppliers">Suppliers</router-link></li>
+            <li><router-link @click="CloseMenu"  :class="isRouteActive('Categories')" to="/categories">Categories</router-link></li>
           </ul>
         </nav>
         <div class="left-block flex items-center gap-5">
           <div class="user-box flex items-center gap-3">
-            <router-link to="/login"><Button>Login</Button></router-link>
-            <router-link to="/register"><Button>Register</Button></router-link>
+            <router-link to="/login"><Button :class="isRouteActive('Login',true)" type="standard" >Login</Button></router-link>
+            <router-link to="/register"><Button :class="isRouteActive('Register',true)" type="standard" >Register</Button></router-link>
           </div>
           <div @click="toggleMenu" class="menu-burger md:hidden" :class='{ "active" : menuActive}'>
             <span class=""></span>

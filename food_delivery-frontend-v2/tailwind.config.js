@@ -10,6 +10,7 @@ module.exports = {
                 'sans': ['DM Sans','sans-serif']
             },
             colors: {
+                'secondary-btn': 'rgba(24, 119, 242, 0.1)',
                 'card-bg': '#F4F5F7',
                 'primary': {
                     500: '#FF991F',
