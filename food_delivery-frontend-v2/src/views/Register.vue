@@ -1,15 +1,14 @@
 <script setup>
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
-import {useFormsStore} from "@/store/forms";
+import {useRegisterFormsStore} from "@/store/registerForm";
 
 
-const formsStore = useFormsStore();
+const registerFormStore = useRegisterFormsStore();
 
 const submitForm = async () => {
-  const isValid = await formsStore.registerFormValidation$.value.$validate();
-  if (isValid) {
-    alert(formsStore.registerForm.email + " " + formsStore.registerForm.password);
+  if (registerFormStore.isRegisterFormValid) {
+    alert(registerFormStore.registerForm.email + " " + registerFormStore.registerForm.password);
   } else {
     alert("Form is invalid");
   }
@@ -25,29 +24,27 @@ const submitForm = async () => {
         <router-link to="/login"><span class="text-primary-400"> Sign in</span></router-link>
       </p>
       <div class="form w-4/5 mx-auto flex flex-col gap-4">
-        <Input v-model="formsStore.registerForm.email" label="Email Address" type="text" name="email"><span
-            v-for="error in formsStore.registerFormValidation$.email.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.firstName" label="First Name" type="text" name="firstName"><span
-            v-for="error in formsStore.registerFormValidation$.firstName.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.lastName" label="Last Name" type="text" name="lastName"><span
-            v-for="error in  formsStore.registerFormValidation$.lastName.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.username" label="Username" type="text" name="username"><span
-            v-for="error in formsStore.registerFormValidation$.username.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.age" label="Age" type="number" name="age"><span v-for="error in formsStore.registerFormValidation$.age.$errors"
+        <Input v-model="registerFormStore.registerForm.email" label="Email Address" type="text" name="email"><span
+            v-for="error in registerFormStore.registerFormValidation$.email.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.firstName" label="First Name" type="text" name="firstName"><span
+            v-for="error in registerFormStore.registerFormValidation$.firstName.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.lastName" label="Last Name" type="text" name="lastName"><span
+            v-for="error in  registerFormStore.registerFormValidation$.lastName.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.username" label="Username" type="text" name="username"><span
+            v-for="error in registerFormStore.registerFormValidation$.username.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.age" label="Age" type="number" name="age"><span v-for="error in registerFormStore.registerFormValidation$.age.$errors"
                                                                                      :key="error.$uid">{{
             error.$message
           }}</span></Input>
-        <Input v-model="formsStore.registerForm.address" label="Address" type="text" name="address"><span
-            v-for="error in formsStore.registerFormValidation$.address.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.password" label="Password" type="password" name="password"><span
-            v-for="error in formsStore.registerFormValidation$.password.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
-        <Input v-model="formsStore.registerForm.confirmPassword" label="Confirm Password" type="password"
-               name="confirmPassword"><span v-for="error in formsStore.registerFormValidation$.confirmPassword.$errors"
+        <Input v-model="registerFormStore.registerForm.address" label="Address" type="text" name="address"><span
+            v-for="error in registerFormStore.registerFormValidation$.address.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.password" label="Password" type="password" name="password"><span
+            v-for="error in registerFormStore.registerFormValidation$.password.$errors" :key="error.$uid">{{ error.$message }}</span></Input>
+        <Input v-model="registerFormStore.registerForm.confirmPassword" label="Confirm Password" type="password"
+               name="confirmPassword"><span v-for="error in registerFormStore.registerFormValidation$.confirmPassword.$errors"
                                             :key="error.$uid">{{ error.$message }}</span></Input>
-        <Button @click="submitForm" :disabled="!formsStore.isRegisterFormValid" type="primary">Register</Button>
+        <Button @click="submitForm" :disabled="!registerFormStore.isRegisterFormValid" type="primary">Register</Button>
       </div>
-      <router-link to="/reset-password" class="text-primary-400 text-sm text-center block mt-5">Forgot Password?
-      </router-link>
     </div>
   </main>
 </template>
