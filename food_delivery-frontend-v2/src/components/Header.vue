@@ -68,8 +68,8 @@ import {ref} from 'vue'
         </nav>
         <div class="left-block flex items-center gap-5">
           <div class="user-box flex items-center gap-3">
-            <router-link to="/login"><Button :class="isRouteActive('Login',true)" type="standard" >Login</Button></router-link>
-            <router-link to="/register"><Button :class="isRouteActive('Register',true)" type="standard" >Register</Button></router-link>
+            <router-link to="/login"><Button class="z-20 relative" :class="isRouteActive('Login',true)" type="standard" >Login</Button></router-link>
+            <router-link to="/register"><Button class="z-20 relative" :class="isRouteActive('Register',true)" type="standard" >Register</Button></router-link>
           </div>
           <div @click="toggleMenu" class="menu-burger md:hidden" :class='{ "active" : menuActive}'>
             <span class=""></span>

@@ -20,7 +20,7 @@
       case 'primary':
         return !props.disabled
             ? 'bg-primary-400 border-neutral-0 border-2 h-12 hover:bg-blue-75 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white'
-            : 'bg-primary-disabled border-neutral-0 border-2 h-12 hover:bg-blue-75 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white'
+            : 'bg-primary-disabled border-neutral-0 border-2 h-12 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white'
       case 'secondary':
         return 'bg-secondary-btn hover:bg-blue-75 hover:text-black active:transform-cpu transition duration-300 ease-in-out'
       default:

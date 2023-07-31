@@ -48,7 +48,9 @@
         </g>
       </svg>
     </div>
-
+    <div class="ml-3 text-red-400">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
