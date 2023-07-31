@@ -1,10 +1,11 @@
 <script setup>
 import Input from "@/components/Input.vue";
 import {ref} from "vue";
+import Button from "@/components/Button.vue";
 
 const loginForm = ref({
   email: "goshan@gmail.com",
-  password: ""
+  password: "some password"
 });
 
 
@@ -20,6 +21,7 @@ const loginForm = ref({
       <div class="form w-4/5 mx-auto flex flex-col gap-7">
         <Input v-model="loginForm.email"  label="Email Address" type="text" name="email" ></Input>
         <Input v-model="loginForm.password"  label="Password" type="password" name="password" ></Input>
+        <Button :disabled="true" type="primary">Login</Button>
       </div>
 
     </div>

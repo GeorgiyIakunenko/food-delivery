@@ -13,6 +13,7 @@ module.exports = {
                 'secondary-btn': 'rgba(24, 119, 242, 0.1)',
                 'card-bg': '#F4F5F7',
                 'primary': {
+                    disabled: 'rgba(239, 159, 39, 0.5)',
                     500: '#FF991F',
                     400: '#FF991F',
                     300: '#FFAB00',
