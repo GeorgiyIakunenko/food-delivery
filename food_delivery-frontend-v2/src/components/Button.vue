@@ -11,7 +11,7 @@ const props = defineProps({
   },
   disabled: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 
@@ -20,7 +20,7 @@ const buttonClass = computed(() => {
     case "primary":
       return !props.disabled
         ? "bg-primary-400 border-neutral-0 border-2 h-12 hover:bg-blue-75 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white"
-        : "bg-primary-disabled border-neutral-0 border-2 h-12 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white";
+        : "bg-primary-disabled disabled border-neutral-0 border-2 h-12 hover:text-black active:transform-cpu font-medium transition duration-300 ease-in-out text-white";
     case "secondary":
       return "bg-secondary-btn hover:bg-blue-75 hover:text-black active:transform-cpu transition duration-300 ease-in-out";
     default:
@@ -30,8 +30,9 @@ const buttonClass = computed(() => {
 </script>
 <template>
   <button
-    class="px-3.5 py-1.5 font-sans rounded-xl flex items-center justify-center"
+    class="flex items-center justify-center rounded-xl px-3.5 py-1.5 font-sans"
     :class="buttonClass"
+    :disabled="props.disabled"
   >
     <slot></slot>
   </button>
