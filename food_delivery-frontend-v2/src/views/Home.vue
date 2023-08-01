@@ -2,6 +2,7 @@
 import { useUserStore } from "@/store/user";
 import Modal from "@/components/Modal.vue";
 import { ref } from "vue";
+import Filter from "@/components/Filter.vue";
 
 const userStore = useUserStore();
 
@@ -26,9 +27,14 @@ const closeModal = (value) => {
       Home
 
       <button @click="openModal">Open modal</button>
-      <Modal :type="modalType" @modalClose="closeModal" v-bind:open="modalOpen"
-        >Error</Modal
+      <Modal
+        :type="modalType"
+        title="Failed to register"
+        @modalClose="closeModal"
+        v-bind:open="modalOpen"
+        >Password is not correct</Modal
       >
+      <Filter></Filter>
     </div>
   </main>
 </template>

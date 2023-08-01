@@ -42,7 +42,7 @@ const submitForm = async () => {
         Write your email address and we will send you a code to reset your
         password
       </p>
-      <div class="form mx-auto mt-10 flex w-4/5 flex-col gap-7">
+      <div class="form mx-auto mt-10 flex w-4/5 flex-col gap-7 md:w-2/5">
         <Input
           v-if="!isRequestForCodeSent"
           v-model="resetFormStore.resetForm.email"

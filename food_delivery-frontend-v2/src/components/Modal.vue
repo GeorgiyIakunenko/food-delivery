@@ -12,7 +12,7 @@ import {
   CheckCircleIcon,
 } from "@heroicons/vue/24/outline";
 
-const { type, open } = defineProps({
+const { type, open, title } = defineProps({
   open: {
     type: Boolean,
     default: false,
@@ -23,6 +23,10 @@ const { type, open } = defineProps({
       return ["warning", "success", "error"].includes(value);
     },
     default: "warning",
+  },
+  title: {
+    type: String,
+    default: "Error",
   },
 });
 
@@ -92,7 +96,7 @@ const closeModal = (value) => {
                     <DialogTitle
                       as="h3"
                       class="text-base font-semibold leading-6 text-gray-900"
-                      >Deactivate account</DialogTitle
+                      >{{ title }}</DialogTitle
                     >
                     <div class="mt-2">
                       <p class="text-sm text-gray-500">
