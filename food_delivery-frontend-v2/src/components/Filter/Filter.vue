@@ -61,14 +61,13 @@ const isFilterOpen = ref(false);
           </Button>
         </div>
       </div>
-
+      <div class="mt-4 h-0.5 w-full bg-card-bg"></div>
       <!-- tabs -->
       <div class="overflow-hidden">
         <div
           class="flex h-100 flex-col transition-all duration-300"
           :class="{ '-translate-y-104': !isFilterOpen }"
         >
-          <div class="mt-4 h-0.5 w-full bg-card-bg"></div>
           <div
             class="flex justify-between border-b px-2 pb-4 text-sm font-medium"
           >
@@ -76,7 +75,7 @@ const isFilterOpen = ref(false);
               @click="setActiveFilterType('category')"
               class="px-2 py-4"
               :class="{
-                'border-b-2 border-b-primary-400':
+                'border-b-2 border-b-primary-400 font-bold':
                   activeFilterType === 'category',
               }"
             >
@@ -85,7 +84,7 @@ const isFilterOpen = ref(false);
             <div
               @click="setActiveFilterType('sort-by')"
               :class="{
-                'border-b-2 border-b-primary-400':
+                'border-b-2 border-b-primary-400 font-bold':
                   activeFilterType === 'sort-by',
               }"
               class="px-0.5 py-4"
@@ -96,7 +95,8 @@ const isFilterOpen = ref(false);
               @click="setActiveFilterType('price')"
               class="px-0.5 py-4"
               :class="{
-                'border-b-2 border-b-primary-400': activeFilterType === 'price',
+                'border-b-2 border-b-primary-400 font-bold':
+                  activeFilterType === 'price',
               }"
             >
               Price

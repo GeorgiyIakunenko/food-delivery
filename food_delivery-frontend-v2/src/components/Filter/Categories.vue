@@ -1,6 +1,4 @@
-<script setup>
-import { defineProps, defineEmits } from "vue";
-</script>
+<script setup></script>
 
 <template>
   <div class="flex flex-col items-start py-6">

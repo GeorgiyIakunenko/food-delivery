@@ -1,6 +1,5 @@
 <script setup>
 import { useUserStore } from "@/store/user";
-import Modal from "@/components/Modal.vue";
 import { ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
 
@@ -22,9 +21,9 @@ const closeModal = (value) => {
 </script>
 
 <template>
-  <main>
+  <main class="pt-24">
     <div class="container">
-      Home
+      <!--      Home
 
       <button @click="openModal">Open modal</button>
       <Modal
@@ -33,7 +32,7 @@ const closeModal = (value) => {
         @modalClose="closeModal"
         v-bind:open="modalOpen"
         >Password is not correct</Modal
-      >
+      >-->
       <Filter></Filter>
     </div>
   </main>
