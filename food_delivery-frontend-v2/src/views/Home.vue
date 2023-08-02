@@ -2,7 +2,7 @@
 import { useUserStore } from "@/store/user";
 import Modal from "@/components/Modal.vue";
 import { ref } from "vue";
-import Filter from "@/components/Filter.vue";
+import Filter from "@/components/Filter/Filter.vue";
 
 const userStore = useUserStore();
 

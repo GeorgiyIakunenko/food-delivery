@@ -7,8 +7,17 @@ import {
   AdjustmentsVerticalIcon,
 } from "@heroicons/vue/24/outline";
 import Button from "@/components/Button.vue";
+import Categories from "@/components/Filter/Categories.vue";
+import SortBy from "@/components/Filter/SortBy.vue";
+import DoublePriceSlider from "@/components/Filter/DoublePriceSlider.vue";
 
 const searchInput = ref("");
+
+const activeFilterType = ref("category");
+
+const setActiveFilterType = (type) => {
+  activeFilterType.value = type;
+};
 
 const isFilterOpen = ref(false);
 </script>
@@ -56,18 +65,57 @@ const isFilterOpen = ref(false);
       <!-- tabs -->
       <div class="overflow-hidden">
         <div
-          class="transition-all duration-300"
-          :class="{ '-translate-y-52': !isFilterOpen }"
+          class="flex h-100 flex-col transition-all duration-300"
+          :class="{ '-translate-y-104': !isFilterOpen }"
         >
           <div class="mt-4 h-0.5 w-full bg-card-bg"></div>
           <div
             class="flex justify-between border-b px-2 pb-4 text-sm font-medium"
           >
-            <div class="border-b-2 border-b-primary-400 px-2 py-4">
+            <div
+              @click="setActiveFilterType('category')"
+              class="px-2 py-4"
+              :class="{
+                'border-b-2 border-b-primary-400':
+                  activeFilterType === 'category',
+              }"
+            >
               Category
             </div>
-            <div class="px-0.5 py-4">Sort By</div>
-            <div class="px-0.5 py-4">Price</div>
+            <div
+              @click="setActiveFilterType('sort-by')"
+              :class="{
+                'border-b-2 border-b-primary-400':
+                  activeFilterType === 'sort-by',
+              }"
+              class="px-0.5 py-4"
+            >
+              Sort By
+            </div>
+            <div
+              @click="setActiveFilterType('price')"
+              class="px-0.5 py-4"
+              :class="{
+                'border-b-2 border-b-primary-400': activeFilterType === 'price',
+              }"
+            >
+              Price
+            </div>
+          </div>
+          <div class="">
+            <Categories v-if="activeFilterType === 'category'"></Categories>
+            <SortBy v-if="activeFilterType === 'sort-by'"></SortBy>
+            <DoublePriceSlider
+              v-if="activeFilterType === 'price'"
+            ></DoublePriceSlider>
+          </div>
+          <div class="mt-auto flex justify-center">
+            <Button
+              @click="isFilterOpen = !isFilterOpen"
+              class="w-4/5"
+              type="primary"
+              >Complete</Button
+            >
           </div>
         </div>
       </div>

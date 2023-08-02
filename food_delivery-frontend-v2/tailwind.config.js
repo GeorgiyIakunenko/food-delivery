@@ -75,6 +75,12 @@ module.exports = {
           50: "#DEEBFF",
         },
       },
+      height: {
+        100: "25rem",
+      },
+      translate: {
+        "-104": "-26rem",
+      },
     },
   },
   variants: {
