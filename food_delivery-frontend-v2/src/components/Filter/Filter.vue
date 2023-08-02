@@ -65,8 +65,11 @@ const isFilterOpen = ref(false);
       <!-- tabs -->
       <div class="overflow-hidden">
         <div
-          class="flex h-100 flex-col transition-all duration-300"
-          :class="{ '-translate-y-104': !isFilterOpen }"
+          class="flex flex-col transition-all duration-300"
+          :class="{
+            'h-0 -translate-y-104': !isFilterOpen,
+            'h-100': isFilterOpen,
+          }"
         >
           <div
             class="flex justify-between border-b px-2 pb-4 text-sm font-medium"

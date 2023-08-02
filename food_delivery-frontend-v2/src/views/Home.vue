@@ -34,6 +34,7 @@ const closeModal = (value) => {
         >Password is not correct</Modal
       >-->
       <Filter></Filter>
+      <div class="">Content</div>
     </div>
   </main>
 </template>
