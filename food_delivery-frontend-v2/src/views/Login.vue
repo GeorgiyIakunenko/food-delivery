@@ -2,18 +2,17 @@
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import { useLoginFormStore } from "@/store/loginForm";
+import { login } from "@/api/api";
 
 const loginFormStore = useLoginFormStore();
 
 const submitForm = async () => {
-  console.log(loginFormStore.isLoginFormValid);
-  if (loginFormStore.isLoginFormValid) {
-    alert(
-      loginFormStore.loginForm.email + " " + loginFormStore.loginForm.password,
-    );
-  } else {
-    alert("Form is invalid");
-  }
+  const res = await login(
+    loginFormStore.loginForm.email,
+    loginFormStore.loginForm.password,
+  );
+  alert(`${res.access_token} ${res.refresh_token}`);
+  console.log(res);
 };
 </script>
 

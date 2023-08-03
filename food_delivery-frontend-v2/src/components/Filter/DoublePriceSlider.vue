@@ -37,8 +37,9 @@ const setBarStyles = (event) => {
         HUF
         <input
           v-model="minInput"
-          class="w-12 bg-card-bg"
-          name="minPrice"
+          class="w-14 bg-card-bg"
+          disabled
+          name="minInput"
           label="MinPrice"
           type="number"
         />
@@ -48,8 +49,9 @@ const setBarStyles = (event) => {
         HUF
         <input
           v-model="maxInput"
-          class="-mr-2 w-12 bg-card-bg"
-          name="maxPrice"
+          class="-mr-2 w-14 bg-card-bg"
+          name="maxInput"
+          disabled
           label="MaxPrice"
           type="number"
         />

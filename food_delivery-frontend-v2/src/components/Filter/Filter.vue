@@ -76,7 +76,7 @@ const isFilterOpen = ref(false);
           >
             <div
               @click="setActiveFilterType('category')"
-              class="px-2 py-4"
+              class="cursor-pointer px-2 py-4"
               :class="{
                 'border-b-2 border-b-primary-400 font-bold':
                   activeFilterType === 'category',
@@ -90,13 +90,13 @@ const isFilterOpen = ref(false);
                 'border-b-2 border-b-primary-400 font-bold':
                   activeFilterType === 'sort-by',
               }"
-              class="px-0.5 py-4"
+              class="cursor-pointer px-0.5 py-4"
             >
               Sort By
             </div>
             <div
               @click="setActiveFilterType('price')"
-              class="px-0.5 py-4"
+              class="cursor-pointer px-0.5 py-4"
               :class="{
                 'border-b-2 border-b-primary-400 font-bold':
                   activeFilterType === 'price',

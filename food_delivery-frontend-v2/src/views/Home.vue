@@ -1,21 +1,22 @@
 <script setup>
 import { useUserStore } from "@/store/user";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
+import { getProducts } from "@/api/api";
+
+onMounted(() => {
+  getProducts();
+});
 
 const userStore = useUserStore();
 
 const modalOpen = ref(false);
-
 const modalType = ref("error");
-
 const openModal = () => {
   modalOpen.value = true;
 };
-
 const closeModal = (value) => {
   modalOpen.value = false;
-
   alert(value);
 };
 </script>
