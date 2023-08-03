@@ -28,8 +28,8 @@ type AuthServiceI interface {
 	GetResetCodeByUserEmail(email string) (string, error)
 	InitiatePasswordReset(req request.PasswordResetEmailRequest) error
 	SubmitResetCode(req request.PasswordResetRequest) error
-	StoreTokensByUserID(userID int, tokens *response.TokenResponse) error
-	GetTokensByUserID(userID int) (*response.TokenResponse, error)
+	StoreTokensByUserID(userID int, tokens *TokenMapping) error
+	GetTokensByUserID(userID int) (*TokenMapping, error)
 	DeleteTokensByUserID(userID int) error
 	Logout(userID int) error
 	ChangePassword(req request.ChangePasswordRequest, cfg *config.Config, userID int) (*response.TokenResponse, error)
@@ -53,12 +53,12 @@ func (h *AuthService) Login(req request.LoginRequest) (*response.TokenResponse, 
 		return nil, err
 	}
 
-	accessString, err := GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
+	accessString, accessUid, err := GenerateToken(int(user.ID), h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshString, err := GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
+	refreshString, refreshUid, err := GenerateToken(int(user.ID), h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
 	if err != nil {
 		return nil, err
 	}
@@ -68,8 +68,13 @@ func (h *AuthService) Login(req request.LoginRequest) (*response.TokenResponse, 
 		RefreshToken: refreshString,
 	}
 
+	tokenMapping := TokenMapping{
+		AccessUid:  accessUid,
+		RefreshUid: refreshUid,
+	}
+
 	// Store the tokens in Redis
-	err = h.StoreTokensByUserID(int(user.ID), &tokens)
+	err = h.StoreTokensByUserID(int(user.ID), &tokenMapping)
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +100,12 @@ func (h *AuthService) GetTokenPair(userID int) (*response.TokenResponse, error) 
 		return nil, err
 	}
 
-	accessToken, err := GenerateToken(userID, h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
+	accessToken, accessUid, err := GenerateToken(userID, h.cfg.AccessLifetimeMinutes, h.cfg.AccessSecret)
 	if err != nil {
 		return nil, err
 	}
 
-	refreshToken, err := GenerateToken(userID, h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
+	refreshToken, refreshUid, err := GenerateToken(userID, h.cfg.RefreshLifetimeMinutes, h.cfg.RefreshSecret)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +115,12 @@ func (h *AuthService) GetTokenPair(userID int) (*response.TokenResponse, error) 
 		RefreshToken: refreshToken,
 	}
 
-	err = h.StoreTokensByUserID(userID, &tokens)
+	tokenMapping := TokenMapping{
+		AccessUid:  accessUid,
+		RefreshUid: refreshUid,
+	}
+
+	err = h.StoreTokensByUserID(userID, &tokenMapping)
 	if err != nil {
 		return nil, err
 	}
@@ -194,18 +204,18 @@ func (h *AuthService) SubmitResetCode(req request.PasswordResetRequest) error {
 	return nil
 }
 
-func (h *AuthService) StoreTokensByUserID(userID int, tokens *response.TokenResponse) error {
-	accessTokenKey := fmt.Sprintf("access_token:%d", userID)
-	refreshTokenKey := fmt.Sprintf("refresh_token:%d", userID)
+func (h *AuthService) StoreTokensByUserID(userID int, tokens *TokenMapping) error {
+	accessTokenKey := fmt.Sprintf("access-%d", userID)
+	refreshTokenKey := fmt.Sprintf("refresh-%d", userID)
 
 	ctx := context.Background()
 
-	err := h.redisClient.Set(ctx, accessTokenKey, tokens.AccessToken, time.Duration(h.cfg.AccessLifetimeMinutes)*time.Minute).Err()
+	err := h.redisClient.Set(ctx, accessTokenKey, tokens.AccessUid, time.Duration(h.cfg.AccessLifetimeMinutes)*time.Minute).Err()
 	if err != nil {
 		return err
 	}
 
-	err = h.redisClient.Set(ctx, refreshTokenKey, tokens.RefreshToken, time.Duration(h.cfg.RefreshLifetimeMinutes)*time.Minute).Err()
+	err = h.redisClient.Set(ctx, refreshTokenKey, tokens.RefreshUid, time.Duration(h.cfg.RefreshLifetimeMinutes)*time.Minute).Err()
 	if err != nil {
 		return err
 	}
@@ -213,33 +223,33 @@ func (h *AuthService) StoreTokensByUserID(userID int, tokens *response.TokenResp
 	return nil
 }
 
-func (h *AuthService) GetTokensByUserID(userID int) (*response.TokenResponse, error) {
-	accessTokenKey := fmt.Sprintf("access_token:%d", userID)
-	refreshTokenKey := fmt.Sprintf("refresh_token:%d", userID)
+func (h *AuthService) GetTokensByUserID(userID int) (*TokenMapping, error) {
+	accessTokenKey := fmt.Sprintf("access-%d", userID)
+	refreshTokenKey := fmt.Sprintf("refresh-%d", userID)
 
 	ctx := context.Background()
 
-	accessToken, err := h.redisClient.Get(ctx, accessTokenKey).Result()
+	accessUid, err := h.redisClient.Get(ctx, accessTokenKey).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	refreshToken, err := h.redisClient.Get(ctx, refreshTokenKey).Result()
+	refreshUid, err := h.redisClient.Get(ctx, refreshTokenKey).Result()
 	if err != nil {
 		return nil, err
 	}
 
-	resp := response.TokenResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
+	resp := TokenMapping{
+		AccessUid:  accessUid,
+		RefreshUid: refreshUid,
 	}
 
 	return &resp, nil
 }
 
 func (h *AuthService) DeleteTokensByUserID(userID int) error {
-	accessTokenKey := fmt.Sprintf("access_token:%d", userID)
-	refreshTokenKey := fmt.Sprintf("refresh_token:%d", userID)
+	accessTokenKey := fmt.Sprintf("access-%d", userID)
+	refreshTokenKey := fmt.Sprintf("refresh-%d", userID)
 
 	ctx := context.Background()
 
@@ -279,12 +289,12 @@ func (h *AuthService) ChangePassword(req request.ChangePasswordRequest, cfg *con
 		return nil, errors.New("failed to update password")
 	}
 
-	accessString, err := GenerateToken(int(user.ID), cfg.AccessLifetimeMinutes, cfg.AccessSecret)
+	accessString, accessUid, err := GenerateToken(int(user.ID), cfg.AccessLifetimeMinutes, cfg.AccessSecret)
 	if err != nil {
 		return nil, errors.New("failed to generate access token")
 	}
 
-	refreshString, err := GenerateToken(int(user.ID), cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
+	refreshString, refreshUid, err := GenerateToken(int(user.ID), cfg.RefreshLifetimeMinutes, cfg.RefreshSecret)
 	if err != nil {
 		return nil, errors.New("failed to generate refresh token")
 	}
@@ -292,6 +302,11 @@ func (h *AuthService) ChangePassword(req request.ChangePasswordRequest, cfg *con
 	tokens := response.TokenResponse{
 		AccessToken:  accessString,
 		RefreshToken: refreshString,
+	}
+
+	tokenMapping := TokenMapping{
+		AccessUid:  accessUid,
+		RefreshUid: refreshUid,
 	}
 
 	// Delete the existing token pair
@@ -302,7 +317,7 @@ func (h *AuthService) ChangePassword(req request.ChangePasswordRequest, cfg *con
 	}
 
 	// Store the new token pair
-	err = h.StoreTokensByUserID(int(user.ID), &tokens)
+	err = h.StoreTokensByUserID(int(user.ID), &tokenMapping)
 	if err != nil {
 		return nil, errors.New("failed to store token pair")
 	}

@@ -40,15 +40,17 @@ func (am *AuthMiddleware) ValidateAccessToken(next http.Handler) http.Handler {
 		}
 
 		userID := claims.ID
-		accessTokenKey := fmt.Sprintf("access_token:%d", userID)
+		accessTokenKey := fmt.Sprintf("access-%d", userID)
 		ctx := context.Background()
-		storedToken, err := am.RedisClient.Get(ctx, accessTokenKey).Result()
+		storedUid, err := am.RedisClient.Get(ctx, accessTokenKey).Result()
 		if err != nil {
 			response.SendInvalidCredentials(w)
 			return
 		}
 
-		if token != storedToken {
+		// change to uid
+
+		if claims.UID != storedUid {
 			response.SendInvalidCredentials(w)
 			return
 		}
@@ -77,15 +79,15 @@ func (am *AuthMiddleware) ValidateRefreshToken(next http.Handler) http.Handler {
 			return
 		}
 
-		refreshTokenKey := fmt.Sprintf("refresh_token:%d", claims.ID)
+		refreshTokenKey := fmt.Sprintf("refresh-%d", claims.ID)
 		ctx := context.Background()
-		storedToken, err := am.RedisClient.Get(ctx, refreshTokenKey).Result()
+		storedUid, err := am.RedisClient.Get(ctx, refreshTokenKey).Result()
 		if err != nil {
 			response.SendInvalidCredentials(w)
 			return
 		}
 
-		if token != storedToken {
+		if claims.UID != storedUid {
 			response.SendInvalidCredentials(w)
 			return
 		}
