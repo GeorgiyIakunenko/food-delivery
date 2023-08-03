@@ -29,12 +29,17 @@ func (am *AuthMiddleware) ValidateAccessToken(next http.Handler) http.Handler {
 
 		claims, err := service.ValidateToken(token, am.cfg.AccessSecret)
 		if err != nil {
-			response.SendTokenExpired(w)
+
+			if err.Error() == "token has invalid claims: token is expired" {
+				response.SendTokenExpired(w)
+				return
+			}
+
+			response.SendInvalidCredentials(w)
 			return
 		}
 
 		userID := claims.ID
-
 		accessTokenKey := fmt.Sprintf("access_token:%d", userID)
 		ctx := context.Background()
 		storedToken, err := am.RedisClient.Get(ctx, accessTokenKey).Result()
@@ -62,7 +67,13 @@ func (am *AuthMiddleware) ValidateRefreshToken(next http.Handler) http.Handler {
 
 		claims, err := service.ValidateToken(token, am.cfg.RefreshSecret)
 		if err != nil {
-			response.SendTokenExpired(w)
+
+			if err.Error() == "token has invalid claims: token is expired" {
+				response.SendTokenExpired(w)
+				return
+			}
+
+			response.SendInvalidCredentials(w)
 			return
 		}
 

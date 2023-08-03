@@ -1,11 +1,15 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"strings"
 	"time"
 )
+
+type JwtCustomClaims2 struct {
+	ID int `json:"id"`
+}
 
 type JwtCustomClaims struct {
 	ID int `json:"id"`
@@ -29,12 +33,18 @@ func ValidateToken(tokenString, secret string) (*JwtCustomClaims, error) {
 		return []byte(secret), nil
 	})
 	if err != nil {
+
+		fmt.Println("token, err", err)
+
 		return nil, err
 	}
 
 	claims, ok := token.Claims.(*JwtCustomClaims)
 	if !ok || !token.Valid {
-		return nil, errors.New("failed to parse token claims")
+
+		fmt.Println("claim, ok", err)
+
+		return nil, err
 	}
 
 	return claims, nil
