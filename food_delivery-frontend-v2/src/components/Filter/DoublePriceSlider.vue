@@ -43,6 +43,7 @@ const setBarStyles = (event) => {
           type="number"
         />
       </div>
+      -
       <div class="px-5">
         HUF
         <input
