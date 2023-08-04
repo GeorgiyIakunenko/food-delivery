@@ -5,8 +5,10 @@ import { useLoginFormStore } from "@/store/loginForm";
 import { login } from "@/api/api";
 import Modal from "@/components/Modal.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const loginFormStore = useLoginFormStore();
+const router = useRouter();
 
 let modalTitle = "Failed to login";
 let modalMessage = "Email or password is not correct";
@@ -20,6 +22,7 @@ const submitForm = async () => {
   );
   if (res.success === true) {
     console.log(res.data);
+    await router.push("/");
   } else {
     modalOpen.value = true;
     alert(res.data);
