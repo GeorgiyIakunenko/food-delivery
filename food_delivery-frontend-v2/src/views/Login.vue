@@ -3,16 +3,27 @@ import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import { useLoginFormStore } from "@/store/loginForm";
 import { login } from "@/api/api";
+import Modal from "@/components/Modal.vue";
+import { ref } from "vue";
 
 const loginFormStore = useLoginFormStore();
+
+let modalTitle = "Failed to login";
+let modalMessage = "Email or password is not correct";
+let modalType = "error";
+let modalOpen = ref(false);
 
 const submitForm = async () => {
   const res = await login(
     loginFormStore.loginForm.email,
     loginFormStore.loginForm.password,
   );
-  alert(`${res.access_token} ${res.refresh_token}`);
-  console.log(res);
+  if (res.success === true) {
+    console.log(res.data);
+  } else {
+    modalOpen.value = true;
+    alert(res.data);
+  }
 };
 </script>
 
@@ -65,6 +76,13 @@ const submitForm = async () => {
         >Forgot Password?</router-link
       >
     </div>
+    <Modal
+      :type="modalType"
+      :title="modalTitle"
+      @modalClose="modalOpen = false"
+      v-bind:open="modalOpen"
+      >{{ modalMessage }}</Modal
+    >
   </main>
 </template>
 

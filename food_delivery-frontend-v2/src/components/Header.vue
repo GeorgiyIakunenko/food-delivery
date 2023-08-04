@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import router from "@/router/router";
 import Button from "@/components/Button.vue";
+import { useUserStore } from "@/store/user";
+import { UserIcon } from "@heroicons/vue/24/outline";
 
 const menuActive = ref(false);
 
@@ -166,7 +168,7 @@ const isRouteActive = (routeName, isButton = false) => {
         </nav>
         <div class="left-block flex items-center gap-5">
           <div class="user-box flex items-center gap-3">
-            <router-link to="/login">
+            <router-link to="/login" v-if="useUserStore().accessToken === ''">
               <Button
                 class="relative z-20"
                 :class="isRouteActive('Login', true)"
@@ -174,13 +176,12 @@ const isRouteActive = (routeName, isButton = false) => {
                 >Login
               </Button>
             </router-link>
-            <router-link to="/register">
-              <Button
-                class="relative z-20"
-                :class="isRouteActive('Register', true)"
-                type="standard"
-                >Register
-              </Button>
+            <router-link
+              to="/profile"
+              class="rounded-xl bg-neutral-30 p-2"
+              v-else
+            >
+              <UserIcon class="h-5 w-5" />
             </router-link>
           </div>
           <div

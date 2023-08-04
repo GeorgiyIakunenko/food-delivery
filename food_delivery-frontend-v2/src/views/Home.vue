@@ -2,11 +2,6 @@
 import { useUserStore } from "@/store/user";
 import { onMounted, ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
-import { getProducts } from "@/api/api";
-
-onMounted(() => {
-  getProducts();
-});
 
 const userStore = useUserStore();
 
