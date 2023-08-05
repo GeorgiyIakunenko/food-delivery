@@ -24,10 +24,11 @@ const closeModal = (value) => {
 const logoutUser = async () => {
   const result = await logout();
   if (result.success === true) {
-    console.log(result.data);
+    console.log(result);
     await router.push("/login");
   } else {
-    alert(result.data);
+    console.log(result);
+    alert("Failed to logout");
   }
 };
 </script>
