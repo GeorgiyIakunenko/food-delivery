@@ -30,8 +30,13 @@ onMounted(async () => {
 
 <template>
   <main class="pt-24">
-    <div class="container">
-      <!--      Home
+    <div class="">
+      <div class="container">
+        <Filter></Filter>
+      </div>
+    </div>
+
+    <!--      Home
 
       <button @click="openModal">Open modal</button>
       <Modal
@@ -41,10 +46,14 @@ onMounted(async () => {
         v-bind:open="modalOpen"
         >Password is not correct</Modal
       >-->
-      <Filter></Filter>
-      <div class="">
-        <div v-for="supplier in suppliers" class="">
-          <SupplierCard :supplier="supplier"></SupplierCard>
+    <div class="">
+      <div class="container">
+        <div
+          class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
+        >
+          <div v-for="supplier in suppliers" class="">
+            <SupplierCard :supplier="supplier"></SupplierCard>
+          </div>
         </div>
       </div>
     </div>

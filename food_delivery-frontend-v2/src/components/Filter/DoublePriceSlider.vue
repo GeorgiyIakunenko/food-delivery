@@ -27,19 +27,7 @@ const setBarStyles = (event) => {
     const left = (minInput.value / max) * 100;
 
     barStyle = `left: ${left}%; right: ${right}%;`;
-    console.log("barStyle: " + barStyle);
   }
-
-  console.log(
-    "range slider ::----" +
-      event.target.name +
-      "minPrice: " +
-      minInput.value +
-      "maxPrice: " +
-      maxInput.value +
-      "priceGap: " +
-      priceGap,
-  );
 };
 </script>
 

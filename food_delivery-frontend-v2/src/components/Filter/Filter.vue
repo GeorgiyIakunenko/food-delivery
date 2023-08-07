@@ -39,7 +39,7 @@ const isFilterOpen = ref(false);
           <PaperAirplaneIcon
             class="h-6 w-6 -rotate-12 text-neutral-500"
           ></PaperAirplaneIcon>
-          <div class="div flex flex-col gap-1">
+          <!--          <div class="div flex flex-col gap-1">
             <div class="font-medium text-primary-400">Delivery to</div>
             <div class="flex items-center gap-2">
               <div class="">Address</div>
@@ -47,7 +47,7 @@ const isFilterOpen = ref(false);
                 class="h-4 w-4 text-primary-400"
               ></ChevronDownIcon>
             </div>
-          </div>
+          </div>-->
         </div>
         <div class="">
           <Button
