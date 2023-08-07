@@ -1,6 +1,6 @@
 <script setup>
 import Input from "@/components/Input.vue";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import {
   PaperAirplaneIcon,
   ChevronDownIcon,
@@ -10,6 +10,7 @@ import Button from "@/components/Button.vue";
 import Categories from "@/components/Filter/Categories.vue";
 import SortBy from "@/components/Filter/SortBy.vue";
 import DoublePriceSlider from "@/components/Filter/DoublePriceSlider.vue";
+import { getAllCategories } from "@/api/category";
 
 const searchInput = ref("");
 

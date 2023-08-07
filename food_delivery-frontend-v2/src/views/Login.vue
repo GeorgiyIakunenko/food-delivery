@@ -2,7 +2,7 @@
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import { useLoginFormStore } from "@/store/loginForm";
-import { login } from "@/api/api";
+import { login } from "@/api/user";
 import Modal from "@/components/Modal.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";

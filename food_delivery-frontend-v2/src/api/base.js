@@ -2,11 +2,11 @@ import axios from "axios";
 import { useUserStore } from "@/store/user";
 import router from "@/router/router";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-const protectedApi = axios.create({
+export const protectedApi = axios.create({
   baseURL: "http://localhost:8080",
 });
 
@@ -60,7 +60,7 @@ protectedApi.interceptors.response.use(
   },
 );
 
-export const refresh = async () => {
+const refresh = async () => {
   try {
     console.log("refresh token", useUserStore().refreshToken);
     const response = await api.post(
@@ -84,53 +84,6 @@ export const refresh = async () => {
     };
   } catch (error) {
     console.log("error", error.response.data);
-    return {
-      success: false,
-      data: error.response.data,
-    };
-  }
-};
-
-export const login = async (email, password) => {
-  try {
-    const response = await api.post("auth/login", {
-      email: email,
-      password: password,
-    });
-
-    // set the access token and refresh token
-
-    ({
-      access_token: useUserStore().accessToken,
-      refresh_token: useUserStore().refreshToken,
-    } = response.data);
-
-    return {
-      success: true,
-      data: response.data,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      data: error.response.data,
-    };
-  }
-};
-
-export const logout = async () => {
-  try {
-    const response = await protectedApi.post("auth/logout");
-
-    // clear the access token and refresh token
-
-    useUserStore().accessToken = "";
-    useUserStore().refreshToken = "";
-
-    return {
-      success: true,
-      data: response.data,
-    };
-  } catch (error) {
     return {
       success: false,
       data: error.response.data,

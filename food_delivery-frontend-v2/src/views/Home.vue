@@ -2,6 +2,8 @@
 import { useUserStore } from "@/store/user";
 import { onMounted, ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
+import { getAllSuppliers } from "@/api/supplier";
+import SupplierCard from "@/components/SupplierCard.vue";
 
 const userStore = useUserStore();
 
@@ -14,6 +16,16 @@ const closeModal = (value) => {
   modalOpen.value = false;
   alert(value);
 };
+
+const suppliers = ref([]);
+
+onMounted(async () => {
+  const res = await getAllSuppliers();
+  console.log(res);
+  if (res.success === true) {
+    suppliers.value = res.data;
+  }
+});
 </script>
 
 <template>
@@ -30,7 +42,11 @@ const closeModal = (value) => {
         >Password is not correct</Modal
       >-->
       <Filter></Filter>
-      <div class="">Content</div>
+      <div class="">
+        <div v-for="supplier in suppliers" class="">
+          <SupplierCard :supplier="supplier"></SupplierCard>
+        </div>
+      </div>
     </div>
   </main>
 </template>
