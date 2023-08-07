@@ -15,17 +15,31 @@ let barStyle = `left: ${(minInput.value / max) * 100}%; right: ${
 }%;`;
 const setBarStyles = (event) => {
   if (maxInput.value - minInput.value < priceGap) {
-    if (event.target.name === "minInput")
-      minInput.value = maxInput.value - priceGap;
-    else {
-      maxInput.value = minInput.value + priceGap;
+    if (event.target.name === "minInput") {
+      minInput.value = +maxInput.value - priceGap;
+    }
+    if (event.target.name === "maxInput") {
+      maxInput.value = +minInput.value + 1000;
     }
   } else {
     // setting the bar styles
-    barStyle = `left: ${(minInput.value / max) * 100}%; right: ${
-      100 - (maxInput.value / max) * 100
-    }%;`;
+    const right = 100 - (maxInput.value / max) * 100;
+    const left = (minInput.value / max) * 100;
+
+    barStyle = `left: ${left}%; right: ${right}%;`;
+    console.log("barStyle: " + barStyle);
   }
+
+  console.log(
+    "range slider ::----" +
+      event.target.name +
+      "minPrice: " +
+      minInput.value +
+      "maxPrice: " +
+      maxInput.value +
+      "priceGap: " +
+      priceGap,
+  );
 };
 </script>
 
@@ -33,29 +47,9 @@ const setBarStyles = (event) => {
   <div class="mt-5 px-5 font-bold">Products price:</div>
   <div class="mt-5 rounded-xl bg-card-bg px-5 py-4">
     <div class="flex justify-between">
-      <div class="px-5">
-        HUF
-        <input
-          v-model="minInput"
-          class="w-14 bg-card-bg"
-          disabled
-          name="minInput"
-          label="MinPrice"
-          type="number"
-        />
-      </div>
-      -
-      <div class="px-5">
-        HUF
-        <input
-          v-model="maxInput"
-          class="-mr-2 w-14 bg-card-bg"
-          name="maxInput"
-          disabled
-          label="MaxPrice"
-          type="number"
-        />
-      </div>
+      <div class="w-32 px-5">HUF {{ minInput }}</div>
+      <div>-</div>
+      <div class="w-32 px-5">HUF {{ maxInput }}</div>
     </div>
     <div class="relative mb-3 mt-7">
       <div class="h-2 rounded bg-neutral-40">
