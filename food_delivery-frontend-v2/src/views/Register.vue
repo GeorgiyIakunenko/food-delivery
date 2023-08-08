@@ -2,16 +2,65 @@
 import Input from "@/components/Input.vue";
 import Button from "@/components/Button.vue";
 import { useRegisterFormsStore } from "@/store/registerForm";
+import { register } from "@/api/user";
+import { ref } from "vue";
+import Modal from "@/components/Modal.vue";
+import { useRouter } from "vue-router";
 
 const registerFormStore = useRegisterFormsStore();
 
+let modalTitle = "success";
+let modalMessage = "You have successfully registered";
+let modalType = "success";
+let modalOpen = ref(false);
+
+const closeModal = () => {
+  modalOpen.value = false;
+
+  if (modalType === "success") {
+    router.push("/login");
+  }
+};
+
+const router = useRouter();
+
 const submitForm = async () => {
+  const {
+    firstName,
+    lastName,
+    username,
+    age,
+    email,
+    phone,
+    password,
+    address,
+  } = registerFormStore.registerForm;
+
   if (registerFormStore.isRegisterFormValid) {
-    alert(
-      registerFormStore.registerForm.email +
-        " " +
-        registerFormStore.registerForm.password,
+    const response = await register(
+      firstName,
+      lastName,
+      username,
+      age,
+      email,
+      phone,
+      password,
+      address,
     );
+
+    console.log(response);
+
+    if (response.success === true) {
+      modalTitle = "Success";
+      modalMessage = "You have successfully registered";
+      modalType = "success";
+      modalOpen.value = true;
+    } else {
+      modalTitle = "Error";
+      modalMessage = "Failed to register";
+      modalType = "error";
+      modalOpen.value = true;
+    }
   } else {
     alert("Form is invalid");
   }
@@ -80,6 +129,18 @@ const submitForm = async () => {
           ></Input
         >
         <Input
+          v-model="registerFormStore.registerForm.phone"
+          label="Phone"
+          type="text"
+          name="phone"
+          ><span
+            v-for="error in registerFormStore.registerFormValidation$.phone
+              .$errors"
+            :key="error.$uid"
+            >{{ error.$message }}</span
+          ></Input
+        >
+        <Input
           v-model="registerFormStore.registerForm.age"
           label="Age"
           type="number"
@@ -136,6 +197,13 @@ const submitForm = async () => {
         >
       </div>
     </div>
+    <Modal
+      :type="modalType"
+      :title="modalTitle"
+      @modalClose="closeModal"
+      v-bind:open="modalOpen"
+      >{{ modalMessage }}</Modal
+    >
   </main>
 </template>
 

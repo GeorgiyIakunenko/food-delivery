@@ -1,9 +1,49 @@
 import { useUserStore } from "@/store/user";
 import { api, protectedApi } from "@/api/base";
 
+export const register = async (
+  firstName,
+  lastName,
+  userName,
+  age,
+  email,
+  phone,
+  password,
+  address,
+) => {
+  try {
+    const res = await api.post("auth/register", {
+      first_name: firstName,
+      last_name: lastName,
+      username: userName,
+      age: +age,
+      email: email,
+      phone: phone,
+      password: password,
+      address: address,
+    });
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
 export const login = async (email, password) => {
   try {
-    const response = await api.post("auth/login", {
+    const res = await api.post("auth/login", {
       email: email,
       password: password,
     });
@@ -13,11 +53,11 @@ export const login = async (email, password) => {
     ({
       access_token: useUserStore().accessToken,
       refresh_token: useUserStore().refreshToken,
-    } = response.data);
+    } = res.data);
 
     return {
       success: true,
-      data: response.data,
+      data: res.data,
     };
   } catch (error) {
     return {
@@ -29,7 +69,7 @@ export const login = async (email, password) => {
 
 export const logout = async () => {
   try {
-    const response = await protectedApi.post("auth/logout");
+    const res = await protectedApi.post("auth/logout");
 
     // clear the access token and refresh token
 
@@ -38,7 +78,7 @@ export const logout = async () => {
 
     return {
       success: true,
-      data: response.data,
+      data: res.data,
     };
   } catch (error) {
     return {

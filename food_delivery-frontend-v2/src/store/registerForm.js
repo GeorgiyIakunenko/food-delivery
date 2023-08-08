@@ -14,14 +14,15 @@ export const useRegisterFormsStore = defineStore("registerFormsStore", {
     // register form
 
     const registerForm = reactive({
+      firstName: "firstName",
+      lastName: "lastName",
       email: "test@gmail.com",
-      firstName: "",
-      lastName: "",
-      username: "",
-      age: "",
-      address: "",
+      username: "SomeUsername",
+      phone: "+374895464",
+      age: "19",
+      address: "Vaci ut 56",
       password: "123456",
-      confirmPassword: "",
+      confirmPassword: "123456",
     });
 
     const registerFormRules = computed(() => {
@@ -38,6 +39,9 @@ export const useRegisterFormsStore = defineStore("registerFormsStore", {
         },
         username: {
           required: helpers.withMessage("Username is required", required),
+        },
+        phone: {
+          required: helpers.withMessage("Phone is required", required),
         },
         age: {
           required: helpers.withMessage("Age is required", required),
