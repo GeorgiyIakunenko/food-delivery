@@ -4,7 +4,11 @@ import { getProfile, logout } from "@/api/user";
 import { useRouter } from "vue-router";
 import Modal from "@/components/Modal.vue";
 import { onMounted, ref } from "vue";
-import { UserCircleIcon } from "@heroicons/vue/24/outline";
+import {
+  UserCircleIcon,
+  ChevronRightIcon,
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/vue/24/outline";
 import { useUserStore } from "@/store/user";
 
 const router = useRouter();
@@ -15,13 +19,23 @@ let modalMessage = "You will be redirected to the login page.";
 let modalType = "warning";
 let modalOpen = ref(false);
 
+let pressedButton = "";
+
 const closeModal = (value) => {
   console.log("close modal", value);
   modalOpen.value = false;
 
-  if (value === true) {
+  if (value === true && pressedButton === "logout") {
     logoutUser();
   }
+};
+
+const logoutButton = () => {
+  modalTitle = "Are you sure you want to logout?";
+  modalMessage = "You will be redirected to the login page.";
+  modalType = "warning";
+  modalOpen.value = true;
+  pressedButton = "logout";
 };
 
 const logoutUser = async () => {
@@ -30,8 +44,7 @@ const logoutUser = async () => {
     console.log(result);
     await router.push("/login");
   } else {
-    console.log(result);
-    alert("Failed to logout");
+    console.log("failed to logout");
   }
 };
 
@@ -42,7 +55,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main>
+  <main class="bg-card-bg">
     <div class="container font-sans">
       <div class="mb-4 text-center text-xl font-medium text-neutral-800">
         Profile
@@ -55,7 +68,33 @@ onMounted(() => {
           {{ userStore.user.FirstName }} {{ userStore.user.LastName }}
         </div>
       </div>
-      <Button @click="modalOpen = true">Logout</Button>
+      <div class="mt-10 flex flex-col gap-5">
+        <button
+          @click="$router.push('/profile-info')"
+          class="mx-auto flex w-4/5 items-center rounded-xl bg-neutral-0 px-5 py-3 transition-all hover:bg-neutral-30"
+        >
+          <ArrowRightOnRectangleIcon
+            class="mr-3 h-5 w-5 text-neutral-200"
+          ></ArrowRightOnRectangleIcon>
+          <span>Profile Info</span>
+          <ChevronRightIcon
+            class="ml-auto h-5 w-5 text-neutral-200"
+          ></ChevronRightIcon>
+        </button>
+        <button
+          @click="logoutButton"
+          class="mx-auto flex w-4/5 items-center rounded-xl bg-neutral-0 px-5 py-3 transition-all hover:bg-neutral-30"
+        >
+          <ArrowRightOnRectangleIcon
+            class="mr-3 h-5 w-5 text-neutral-200"
+          ></ArrowRightOnRectangleIcon>
+          <span>Log Out</span>
+
+          <ChevronRightIcon
+            class="ml-auto h-5 w-5 text-neutral-200"
+          ></ChevronRightIcon>
+        </button>
+      </div>
     </div>
     <Modal
       :type="modalType"

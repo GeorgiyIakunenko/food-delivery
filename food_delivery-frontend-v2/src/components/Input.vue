@@ -19,6 +19,10 @@ const props = defineProps({
     default: "",
     required: true,
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // new feature from vue 3.3 version
@@ -27,17 +31,20 @@ const modelValue = defineModel();
 const isPasswordHidden = ref(true);
 </script>
 <template>
-  <div class="gap-2 flex-col items-start flex">
+  <div class="flex flex-col items-start gap-2">
     <label
       :for="props.name"
-      class="text-neutral-50 ml-3 font-sans font-medium capitalize"
+      class="ml-3 font-sans font-medium capitalize text-neutral-50"
+      :class="{ 'text-neutral-500': !props.disabled }"
       >{{ props.label }}
     </label>
     <div
-      class="flex items-center justify-between bg-card-bg rounded-xl border-0 px-3 w-full h-12"
+      class="flex h-12 w-full items-center justify-between rounded-xl border-0 bg-card-bg px-3"
     >
       <input
-        class="bg-transparent px-2 border-none outline-none w-full"
+        class="w-full border-none bg-transparent px-2 outline-none"
+        :class="{ 'text-neutral-500': props.disabled }"
+        :disabled="props.disabled"
         :placeholder="props.placeholder"
         :label="props.label"
         v-model="modelValue"
@@ -47,7 +54,7 @@ const isPasswordHidden = ref(true);
       />
       <svg
         v-if="props.type === 'password'"
-        class="cursor-pointer hover:-translate-y-0.5 transition-all"
+        class="cursor-pointer transition-all hover:-translate-y-0.5"
         @click="isPasswordHidden = !isPasswordHidden"
         xmlns="http://www.w3.org/2000/svg"
         width="20"
