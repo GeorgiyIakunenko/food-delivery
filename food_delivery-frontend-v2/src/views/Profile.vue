@@ -70,6 +70,19 @@ onMounted(() => {
       </div>
       <div class="mt-10 flex flex-col gap-5">
         <button
+          @click="$router.push('/profile/orders')"
+          class="mx-auto flex w-4/5 items-center rounded-xl bg-neutral-0 px-5 py-3 transition-all hover:bg-neutral-30"
+        >
+          <ArrowRightOnRectangleIcon
+            class="mr-3 h-5 w-5 text-neutral-200"
+          ></ArrowRightOnRectangleIcon>
+          <span>Orders</span>
+
+          <ChevronRightIcon
+            class="ml-auto h-5 w-5 text-neutral-200"
+          ></ChevronRightIcon>
+        </button>
+        <button
           @click="$router.push('/profile-info')"
           class="mx-auto flex w-4/5 items-center rounded-xl bg-neutral-0 px-5 py-3 transition-all hover:bg-neutral-30"
         >
@@ -77,6 +90,19 @@ onMounted(() => {
             class="mr-3 h-5 w-5 text-neutral-200"
           ></ArrowRightOnRectangleIcon>
           <span>Profile Info</span>
+          <ChevronRightIcon
+            class="ml-auto h-5 w-5 text-neutral-200"
+          ></ChevronRightIcon>
+        </button>
+        <button
+          @click="$router.push('/profile-password')"
+          class="mx-auto flex w-4/5 items-center rounded-xl bg-neutral-0 px-5 py-3 transition-all hover:bg-neutral-30"
+        >
+          <ArrowRightOnRectangleIcon
+            class="mr-3 h-5 w-5 text-neutral-200"
+          ></ArrowRightOnRectangleIcon>
+          <span>Change Password</span>
+
           <ChevronRightIcon
             class="ml-auto h-5 w-5 text-neutral-200"
           ></ChevronRightIcon>
