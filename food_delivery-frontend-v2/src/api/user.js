@@ -94,6 +94,32 @@ export const resetPassword = async (email, code, password) => {
   }
 };
 
+export const changePassword = async (oldPassword, newPassword) => {
+  try {
+    const res = await protectedApi.post("user/profile/password", {
+      old_password: oldPassword,
+      new_password: newPassword,
+    });
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
+
 export const login = async (email, password) => {
   try {
     const res = await api.post("auth/login", {

@@ -40,7 +40,11 @@ protectedApi.interceptors.response.use(
         if (res.data.status !== 200) {
           useUserStore().accessToken = "";
           useUserStore().refreshToken = "";
-          await router.push("/login");
+
+          // todo redirect to login is not working
+
+          await router.push("/");
+          console.log("push to login");
           return Promise.reject(error);
         }
         ({
@@ -53,15 +57,9 @@ protectedApi.interceptors.response.use(
         }`;
         return protectedApi(originalRequest);
       } catch (error) {
-        useUserStore().accessToken = "";
-        useUserStore().refreshToken = "";
-        await router.push("/login");
         return Promise.reject(error);
       }
     }
-    useUserStore().accessToken = "";
-    useUserStore().refreshToken = "";
-    await router.push("/login");
     return Promise.reject(error);
   },
 );
