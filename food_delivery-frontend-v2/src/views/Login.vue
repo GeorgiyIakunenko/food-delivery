@@ -21,11 +21,9 @@ const submitForm = async () => {
     loginFormStore.loginForm.password,
   );
   if (res.success === true) {
-    console.log(res.data);
     await router.push("/");
   } else {
     modalOpen.value = true;
-    alert(res.data);
   }
 };
 </script>

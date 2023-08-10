@@ -53,9 +53,15 @@ protectedApi.interceptors.response.use(
         }`;
         return protectedApi(originalRequest);
       } catch (error) {
+        useUserStore().accessToken = "";
+        useUserStore().refreshToken = "";
+        await router.push("/login");
         return Promise.reject(error);
       }
     }
+    useUserStore().accessToken = "";
+    useUserStore().refreshToken = "";
+    await router.push("/login");
     return Promise.reject(error);
   },
 );

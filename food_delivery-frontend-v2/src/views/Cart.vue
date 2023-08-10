@@ -8,9 +8,7 @@ import { BanknotesIcon } from "@heroicons/vue/24/outline";
     <div class="container">
       <div class="flex flex-col gap-5">
         <div class="flex flex-col gap-3">
-          <div
-            class="rounded-xl bg-neutral-0 p-4 font-sans text-neutral-800 md:w-fit"
-          >
+          <div class="rounded-xl bg-neutral-0 p-4 font-sans text-neutral-800">
             <div class="pb-3 text-lg font-bold">Delivery to:</div>
             <div class="flex gap-4">
               <img src="@/assets/images/map.svg" alt="map" />
@@ -18,7 +16,7 @@ import { BanknotesIcon } from "@heroicons/vue/24/outline";
             </div>
           </div>
           <div
-            class="rounded-xl bg-neutral-0 p-4 font-sans font-medium text-neutral-800 md:w-fit"
+            class="rounded-xl bg-neutral-0 p-4 font-sans font-medium text-neutral-800"
           >
             <div class="pb-3 text-lg font-bold">Order products:</div>
             <div class="flex gap-4"></div>
@@ -41,7 +39,7 @@ import { BanknotesIcon } from "@heroicons/vue/24/outline";
           </div>
         </div>
         <div
-          class="mt-auto flex flex-col gap-3 rounded-xl bg-neutral-0 p-4 font-sans font-medium text-neutral-800 md:w-fit"
+          class="mt-auto flex flex-col gap-3 rounded-xl bg-neutral-0 p-4 font-sans font-medium text-neutral-800"
         >
           <div class="">
             <div class="">

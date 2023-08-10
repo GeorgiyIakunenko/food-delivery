@@ -41,6 +41,59 @@ export const register = async (
     };
   }
 };
+
+export const resetPasswordRequest = async (email) => {
+  try {
+    const res = await api.post("auth/reset-password", {
+      email: email,
+    });
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
+
+export const resetPassword = async (email, code, password) => {
+  try {
+    const res = await api.post("auth/submit-code", {
+      email: email,
+      reset_code: code,
+      new_password: password,
+    });
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
+
 export const login = async (email, password) => {
   try {
     const res = await api.post("auth/login", {

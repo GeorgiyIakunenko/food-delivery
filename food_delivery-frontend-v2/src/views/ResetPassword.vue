@@ -4,6 +4,22 @@ import Button from "@/components/Button.vue";
 
 import { useResetFormStore } from "@/store/resetForm";
 import { ref } from "vue";
+import { resetPassword, resetPasswordRequest } from "@/api/user";
+import Modal from "@/components/Modal.vue";
+import router from "@/router/router";
+
+let modalTitle = "success";
+let modalMessage = "We send the code to your email address ";
+let modalType = "success";
+let modalOpen = ref(false);
+
+const closeModal = () => {
+  modalOpen.value = false;
+
+  if (modalMessage === "Your password has been reset") {
+    router.push("/login");
+  }
+};
 
 const resetFormStore = useResetFormStore();
 
@@ -12,19 +28,45 @@ const isRequestForCodeSent = ref(false);
 const submitResetRequestForm = async () => {
   console.log(resetFormStore.isResetEmailValid);
   if (resetFormStore.isResetEmailValid) {
-    isRequestForCodeSent.value = true;
-  } else {
-    alert("Form is invalid");
+    const res = await resetPasswordRequest(resetFormStore.resetForm.email);
+    if (res.success === true) {
+      modalTitle = "success";
+      modalMessage =
+        "We send the code to your email address " +
+        "\n" +
+        "It is valid for 10 minutes";
+      modalType = "success";
+      isRequestForCodeSent.value = true;
+      modalOpen.value = true;
+    } else {
+      modalTitle = "Error";
+      modalMessage = "Failed to send reset code";
+      modalType = "error";
+      modalOpen.value = true;
+    }
   }
 };
 const submitForm = async () => {
   console.log(resetFormStore.isResetFormValid);
   if (resetFormStore.isResetFormValid) {
-    alert(
-      resetFormStore.resetForm.email + " " + resetFormStore.resetForm.password,
+    const res = await resetPassword(
+      resetFormStore.resetForm.email,
+      resetFormStore.resetForm.code,
+      resetFormStore.resetForm.password,
     );
+
+    if (res.success === true) {
+      modalTitle = "success";
+      modalMessage = "Your password has been reset";
+      modalType = "success";
+      modalOpen.value = true;
+    } else {
+      modalTitle = "Error";
+      modalMessage = "Code is invalid";
+      modalType = "error";
+      modalOpen.value = true;
+    }
   } else {
-    alert("Form is invalid");
   }
 };
 </script>
@@ -115,6 +157,13 @@ const submitForm = async () => {
         >Back</router-link
       >
     </div>
+    <Modal
+      :type="modalType"
+      :title="modalTitle"
+      @modalClose="closeModal"
+      v-bind:open="modalOpen"
+      >{{ modalMessage }}</Modal
+    >
   </main>
 </template>
 
