@@ -2,12 +2,14 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"food_delivery/server/response"
 	"food_delivery/service"
 	"food_delivery/utils"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type ProductHandler struct {
@@ -103,9 +105,23 @@ func (h *ProductHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
-	supplierType := queryParams.Get("supplier_type")
+	orderBy := queryParams.Get("order_by")
 	openNowStr := queryParams.Get("open_now")
-	categoryID, _ := utils.ParseCategoryID(queryParams.Get("category_id"))
+	sortDirection := queryParams.Get("sort_direction")
+
+	categoryIDsStr, _ := queryParams["category_ids"]
+	var categoryIDs = strings.Split(categoryIDsStr[0], ",")
+	var categoryIDsInt []int
+
+	for _, idStr := range categoryIDs {
+		idStr = strings.TrimSpace(idStr)
+		idInt, err := strconv.Atoi(idStr)
+		if err != nil {
+			fmt.Printf("Error converting %s to int: %v\n", idStr, err)
+			continue
+		}
+		categoryIDsInt = append(categoryIDsInt, idInt)
+	}
 
 	openNow, err := strconv.ParseBool(openNowStr)
 	if err != nil {
@@ -113,7 +129,7 @@ func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	products, err := h.ProductServiceI.GetFilteredProducts(supplierType, openNow, categoryID)
+	products, err := h.ProductServiceI.GetFilteredProducts(orderBy, sortDirection, openNow, categoryIDsInt)
 	if err != nil {
 		response.SendServerError(w, err)
 		return

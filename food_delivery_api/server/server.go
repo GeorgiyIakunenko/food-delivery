@@ -75,7 +75,7 @@ func Start(cfg *config.Config) {
 	r.HandleFunc("/suppliers", SupplierHandler.GetAllSuppliers).Methods(http.MethodGet)
 	r.HandleFunc("/supplier/{id}", SupplierHandler.GetSupplierByID).Methods(http.MethodGet)
 	r.HandleFunc("/suppliers/{type}", SupplierHandler.GetSupplierByType).Methods(http.MethodGet)
-	r.HandleFunc("/suppliers/category/{id}", SupplierHandler.GetSuppliersByCategoryID).Methods(http.MethodGet)
+	r.HandleFunc("/category/{id}/suppliers", SupplierHandler.GetSuppliersByCategoryID).Methods(http.MethodGet)
 
 	// category handler
 	CategoryRepository := repository.NewCategoryRepository(postgresClient)
@@ -93,9 +93,10 @@ func Start(cfg *config.Config) {
 	ProductService := service.NewProductService(ProductRepository)
 	ProductHandler := handler.NewProductHandler(ProductService)
 	r.HandleFunc("/products/filter", ProductHandler.GetFilteredProducts).Queries(
-		"supplier_type", "{supplier_type}",
+		"order_by", "{order_by}",
+		"sort_direction", "{sort_direction}",
 		"open_now", "{open_now}",
-		"category_id", "{category_id}",
+		"category_ids", "{category_ids}",
 	).Methods(http.MethodGet)
 
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)

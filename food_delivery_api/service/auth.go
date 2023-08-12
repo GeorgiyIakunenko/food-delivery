@@ -46,7 +46,7 @@ func NewAuthService(UserServiceI UserServiceI, redisClient *redis.Client, cfg *c
 func (h *AuthService) Login(req request.LoginRequest) (*response.TokenResponse, error) {
 	user, err := h.UserServiceI.GetUserByEmail(req.Email)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("user with this email not found")
 	}
 
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {

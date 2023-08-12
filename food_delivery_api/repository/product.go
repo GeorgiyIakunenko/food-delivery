@@ -17,7 +17,7 @@ type ProductRepositoryI interface {
 	GetBySupplierID(ID int64) ([]*models.Product, error)
 	GetByCategoryID(ID int64) ([]*models.Product, error)
 	GetByID(ID int64) (*models.Product, error)
-	GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error)
+	GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error)
 }
 
 func NewProductRepository(db *sql.DB) *ProductRepository {
@@ -438,7 +438,7 @@ func (r *ProductRepository) GetByID(ID int64) (*models.Product, error) {
 	return product, nil
 }
 
-func (r *ProductRepository) GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error) {
+func (r *ProductRepository) GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error) {
 	query := `
 		SELECT
 			p.id,
@@ -466,23 +466,31 @@ func (r *ProductRepository) GetFilteredProducts(supplierType string, IsOpenNow b
 	`
 	var params []interface{}
 
-	if supplierType != "" {
-		query += " AND s.type = $1"
-		params = append(params, supplierType)
+	if len(categoryIDs) > 0 {
+		query += " AND p.category_id IN ("
+		for i := range categoryIDs {
+			params = append(params, categoryIDs[i])
+			query += "$" + strconv.Itoa(len(params))
+			if i < len(categoryIDs)-1 {
+				query += ","
+			}
+		}
+		query += ")"
 	}
 
 	if IsOpenNow {
 		currentTime := time.Now().Format("15:05")
-		query += " AND s.open_time <= $" + strconv.Itoa(len(params)+1)
-		query += " AND s.close_time >= $" + strconv.Itoa(len(params)+2)
 		params = append(params, currentTime, currentTime)
+		query += " AND s.open_time <= $" + strconv.Itoa(len(params)-1)
+		query += " AND s.close_time >= $" + strconv.Itoa(len(params))
 	}
 
-	if categoryID > 0 {
-		query += " AND p.category_id = $"
-		query += strconv.Itoa(len(params) + 1)
-		params = append(params, categoryID)
+	orderByClause := ""
+	if orderBy == "price" && (sortDirection == "asc" || sortDirection == "desc") {
+		orderByClause = " ORDER BY p.price " + sortDirection
 	}
+
+	query += orderByClause
 
 	stmt, err := r.db.Prepare(query)
 	if err != nil {

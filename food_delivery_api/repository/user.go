@@ -13,7 +13,6 @@ type UserRepository struct {
 }
 
 type UserRepositoryI interface {
-	// is User exist is local function IsUserExists(user request.RegisterRequest) (bool, error)
 	GetAll() ([]*models.User, error)
 	RegisterUser(u request.RegisterRequest) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
@@ -27,29 +26,6 @@ func NewUserRepository(db *sql.DB) UserRepositoryI {
 		db: db,
 	}
 }
-
-/*func (r *UserRepository) IsUserExists(user request.RegisterRequest) (bool, error) {
-	query := "SELECT id FROM customer WHERE email = $1 OR username = $2 OR phone = $3"
-
-	stmt, err := r.db.Prepare(query)
-	if err != nil {
-		return false, err
-	}
-	defer stmt.Close()
-
-	row := stmt.QueryRow(user.Email, user.Username, user.Phone)
-
-	var id int64
-	err = row.Scan(&id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return false, nil
-		}
-		return false, err
-	}
-
-	return true, nil
-}*/
 
 func (r *UserRepository) IsUsernameExists(username string) (bool, error) {
 	query := "SELECT id FROM customer WHERE username = $1"
