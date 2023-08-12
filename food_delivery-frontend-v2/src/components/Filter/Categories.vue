@@ -2,6 +2,21 @@
 import { onMounted, ref } from "vue";
 import { getAllCategories } from "@/api/category";
 import { getImageUrl } from "@/utils/url";
+import { useFilterStore } from "@/store/filter";
+
+const filterCategories = useFilterStore().filter.categories;
+
+const isCategoryActive = (id) => {
+  return filterCategories.includes(id);
+};
+
+const toggleCategory = (id) => {
+  if (isCategoryActive(id)) {
+    filterCategories.splice(filterCategories.indexOf(id), 1);
+  } else {
+    filterCategories.push(id);
+  }
+};
 
 const categories = ref([]);
 
@@ -18,7 +33,12 @@ onMounted(async () => {
     <div class="flex gap-4">
       <div
         v-for="category in categories"
-        class="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full bg-primary-50 transition-all duration-300 hover:bg-primary-75"
+        @click="toggleCategory(category.id)"
+        class="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full bg-primary-50 transition-all duration-200"
+        :class="{
+          'bg-primary-100 hover:bg-primary-75': isCategoryActive(category.id),
+          'hover:bg-primary-75': !isCategoryActive(category.id),
+        }"
       >
         <img class="h-16 w-16" :src="getImageUrl(category.image)" alt="Pizza" />
       </div>

@@ -11,8 +11,10 @@ import Categories from "@/components/Filter/Categories.vue";
 import SortBy from "@/components/Filter/SortBy.vue";
 import DoublePriceSlider from "@/components/Filter/DoublePriceSlider.vue";
 import { getAllCategories } from "@/api/category";
+import { useFilterStore } from "@/store/filter";
 
 const searchInput = ref("");
+const filterStore = useFilterStore();
 
 const activeFilterType = ref("category");
 
@@ -27,7 +29,7 @@ const isFilterOpen = ref(false);
   <div class="relative bg-neutral-0 px-4 font-sans">
     <Input
       label=""
-      v-model="searchInput"
+      v-model="filterStore.filter.search"
       name="search"
       placeholder="Search"
       class="mb-4"
