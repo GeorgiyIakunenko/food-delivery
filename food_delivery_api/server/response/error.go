@@ -16,16 +16,16 @@ func SendBadRequestError(w http.ResponseWriter, err error) {
 	})
 }
 
-func SendInvalidCredentials(w http.ResponseWriter) {
-	SendJson(w, http.StatusUnauthorized, Basic{
-		Status:  http.StatusUnauthorized,
-		Message: "Invalid credentials",
-	})
-}
-
 func SendTokenExpired(w http.ResponseWriter) {
 	SendJson(w, http.StatusUnauthorized, Basic{
 		Status:  http.StatusUnauthorized,
 		Message: "Token is expired",
+	})
+}
+
+func SendInvalidCredentials(w http.ResponseWriter) {
+	SendJson(w, http.StatusUnauthorized, Basic{
+		Status:  http.StatusUnauthorized,
+		Message: "Invalid credentials",
 	})
 }

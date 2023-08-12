@@ -16,7 +16,7 @@ type ProductServiceI interface {
 	GetProductsBySupplierID(ID int64) ([]*response.Product, error)
 	GetProductsByCategoryID(ID int64) ([]*response.Product, error)
 	GetProductByID(ID int64) (*response.Product, error)
-	GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error)
+	GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error)
 }
 
 func NewProductService(ProductRepositoryI repository.ProductRepositoryI) ProductServiceI {
@@ -219,9 +219,9 @@ func (s *ProductService) GetProductByID(ID int64) (*response.Product, error) {
 	return responseProduct, nil
 }
 
-func (s *ProductService) GetFilteredProducts(supplierType string, IsOpenNow bool, categoryID int64) ([]*models.Product, error) {
+func (s *ProductService) GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error) {
 
-	products, err := s.ProductRepositoryI.GetFilteredProducts(supplierType, IsOpenNow, categoryID)
+	products, err := s.ProductRepositoryI.GetFilteredProducts(orderBy, sortDirection, IsOpenNow, categoryIDs)
 	if err != nil {
 		return nil, err
 	}
