@@ -1,8 +1,8 @@
 import { api } from "@/api/base";
 
-export const getAllSuppliers = async () => {
+export const getAllProducts = async () => {
   try {
-    const res = await api.get("suppliers");
+    const res = await api.get("products");
 
     if (res.status !== 200) {
       return {
@@ -23,9 +23,14 @@ export const getAllSuppliers = async () => {
   }
 };
 
-export const getSupplierById = async (id) => {
+export const getProductsByCategoryAndSupplierIDs = async (
+  categoryId,
+  supplierId,
+) => {
   try {
-    const res = await api.get(`supplier/${id}`);
+    const res = await api.get(
+      `categories/${categoryId}/suppliers/${supplierId}/products`,
+    );
 
     if (res.status !== 200) {
       return {

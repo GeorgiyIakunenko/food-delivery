@@ -37,14 +37,13 @@ protectedApi.interceptors.response.use(
       try {
         const res = await refresh();
         console.log("interceptor response", res.data);
-        if (res.data.status !== 200) {
+        if (!res.success) {
           useUserStore().accessToken = "";
           useUserStore().refreshToken = "";
 
-          // todo redirect to login is not working
-
-          await router.push("/");
+          await router.push("/login");
           console.log("push to login");
+
           return Promise.reject(error);
         }
         ({

@@ -4,6 +4,8 @@ import { onMounted, ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
 import { getAllSuppliers } from "@/api/supplier";
 import SupplierCard from "@/components/SupplierCard.vue";
+import { getAllProducts } from "@/api/products";
+import ProductCard from "@/components/ProductCard.vue";
 
 const userStore = useUserStore();
 
@@ -17,13 +19,13 @@ const closeModal = (value) => {
   alert(value);
 };
 
-const suppliers = ref([]);
+const products = ref([]);
 
 onMounted(async () => {
-  const res = await getAllSuppliers();
+  const res = await getAllProducts();
   console.log(res);
   if (res.success === true) {
-    suppliers.value = res.data;
+    products.value = res.data;
   }
 });
 </script>
@@ -51,8 +53,8 @@ onMounted(async () => {
         <div
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
-          <div v-for="supplier in suppliers" class="">
-            <SupplierCard :supplier="supplier"></SupplierCard>
+          <div v-for="product in products" class="">
+            <ProductCard :product="product"></ProductCard>
           </div>
         </div>
       </div>

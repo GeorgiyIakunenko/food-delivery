@@ -21,7 +21,11 @@ const isOpen = () => {
   <div
     class="cursor-pointer rounded-xl bg-neutral-0 p-3 shadow-md transition-all duration-300 hover:scale-105"
   >
-    <img class="mb-2 w-36 md:w-52" :src="getImageUrl(supplier.image)" alt="" />
+    <img
+      class="mb-2 w-36 md:w-52"
+      :src="getImageUrl(supplier.image)"
+      :alt="supplier.name"
+    />
     <div class="px-1">
       <div class="flex items-center gap-3">
         <div class="font-sans text-lg font-medium">
