@@ -1,11 +1,19 @@
 <script setup>
 import { getImageUrl } from "@/utils/url";
+import { useCartStore } from "@/store/cart";
+import { computed } from "vue";
 
 const props = defineProps({
   product: {
     type: Object,
     required: true,
   },
+});
+
+const cartStore = useCartStore();
+
+const isInCart = computed(() => {
+  return cartStore.cart.products.some((p) => p.id === props.product.id);
 });
 
 const isOpen = () => {
@@ -44,8 +52,22 @@ const isOpen = () => {
             <div class="lg:text-lg">{{ product.name }}</div>
             <div class="text-sm text-primary-500">HUF {{ product.price }}</div>
           </div>
-          <div class="ml-auto cursor-pointer">
-            <img class="h-7 w-7" src="@/assets/images/plus.svg" alt="" />
+          <div
+            @click="useCartStore().addProduct(product)"
+            class="ml-auto cursor-pointer"
+          >
+            <img
+              v-if="!isInCart"
+              class="h-7 w-7"
+              src="@/assets/images/plus.svg"
+              alt="plus"
+            />
+            <img
+              v-else
+              class="h-7 w-7"
+              src="@/assets/images/check.svg"
+              alt="check"
+            />
           </div>
         </div>
       </div>
