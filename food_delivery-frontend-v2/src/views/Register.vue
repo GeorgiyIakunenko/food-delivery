@@ -42,7 +42,7 @@ const submitForm = async () => {
       lastName,
       username,
       age,
-      email,
+      email.toLowerCase(),
       phone,
       password,
       address,

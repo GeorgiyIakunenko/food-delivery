@@ -17,7 +17,7 @@ let modalOpen = ref(false);
 
 const submitForm = async () => {
   const res = await login(
-    loginFormStore.loginForm.email,
+    loginFormStore.loginForm.email.toLowerCase(),
     loginFormStore.loginForm.password,
   );
   if (res.success === true) {
