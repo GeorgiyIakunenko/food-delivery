@@ -1,12 +1,13 @@
 <script setup>
 import { useUserStore } from "@/store/user";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRefs, watch } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
 import { getAllSuppliers } from "@/api/supplier";
 import SupplierCard from "@/components/SupplierCard.vue";
 import { getAllProducts, getFilteredProducts } from "@/api/products";
 import ProductCard from "@/components/ProductCard.vue";
 import { useFilterStore } from "@/store/filter";
+import debounce from "lodash.debounce";
 
 const userStore = useUserStore();
 
@@ -29,6 +30,13 @@ onMounted(async () => {
     products.value = res.data;
   }
 });
+
+watch(
+  useFilterStore().filter,
+  debounce(() => {
+    filterProducts();
+  }, 400),
+);
 
 const filterProducts = async () => {
   const res = await getFilteredProducts(useFilterStore().filter);
