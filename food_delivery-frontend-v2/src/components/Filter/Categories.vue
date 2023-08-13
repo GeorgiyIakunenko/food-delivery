@@ -7,6 +7,7 @@ import { useFilterStore } from "@/store/filter";
 const filterCategories = useFilterStore().filter.categories;
 
 const isCategoryActive = (id) => {
+  console.log(filterCategories.includes(id), id);
   return filterCategories.includes(id);
 };
 
@@ -34,10 +35,10 @@ onMounted(async () => {
       <div
         v-for="category in categories"
         @click="toggleCategory(category.id)"
-        class="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full bg-primary-50 transition-all duration-200"
+        class="flex h-24 w-24 cursor-pointer items-center justify-center rounded-full bg-card-bg transition-all duration-200"
         :class="{
-          'bg-primary-100 hover:bg-primary-75': isCategoryActive(category.id),
-          'hover:bg-primary-75': !isCategoryActive(category.id),
+          'bg-primary-100 hover:bg-primary-100': isCategoryActive(category.id),
+          'bg-primary-50 hover:bg-primary-75': !isCategoryActive(category.id),
         }"
       >
         <img class="h-16 w-16" :src="getImageUrl(category.image)" alt="Pizza" />
