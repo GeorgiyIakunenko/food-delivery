@@ -108,6 +108,20 @@ func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Requ
 	orderBy := queryParams.Get("order_by")
 	openNowStr := queryParams.Get("open_now")
 	sortDirection := queryParams.Get("sort_direction")
+	search := queryParams.Get("search")
+	minPriceStr := queryParams.Get("min_price")
+	maxPriceStr := queryParams.Get("max_price")
+	minPrice, err := strconv.ParseInt(minPriceStr, 10, 64)
+	if err != nil {
+		response.SendBadRequestError(w, errors.New("invalid int value for 'min_price'"))
+		return
+	}
+
+	maxPrice, err := strconv.ParseInt(maxPriceStr, 10, 64)
+	if err != nil {
+		response.SendBadRequestError(w, errors.New("invalid int value for 'max_price'"))
+		return
+	}
 
 	categoryIDsStr, _ := queryParams["category_ids"]
 	var categoryIDs = strings.Split(categoryIDsStr[0], ",")
@@ -129,7 +143,7 @@ func (h *ProductHandler) GetFilteredProducts(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	products, err := h.ProductServiceI.GetFilteredProducts(orderBy, sortDirection, openNow, categoryIDsInt)
+	products, err := h.ProductServiceI.GetFilteredProducts(search, orderBy, sortDirection, openNow, categoryIDsInt, int(minPrice), int(maxPrice))
 	if err != nil {
 		response.SendServerError(w, err)
 		return

@@ -17,7 +17,7 @@ type ProductRepositoryI interface {
 	GetBySupplierID(ID int64) ([]*models.Product, error)
 	GetByCategoryID(ID int64) ([]*models.Product, error)
 	GetByID(ID int64) (*models.Product, error)
-	GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error)
+	GetFilteredProducts(searchLine string, orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int, minPrice int, maxPrice int) ([]*models.Product, error)
 }
 
 func NewProductRepository(db *sql.DB) *ProductRepository {
@@ -438,7 +438,7 @@ func (r *ProductRepository) GetByID(ID int64) (*models.Product, error) {
 	return product, nil
 }
 
-func (r *ProductRepository) GetFilteredProducts(orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int) ([]*models.Product, error) {
+func (r *ProductRepository) GetFilteredProducts(searchLine string, orderBy string, sortDirection string, IsOpenNow bool, categoryIDs []int, minPrice int, maxPrice int) ([]*models.Product, error) {
 	query := `
 		SELECT
 			p.id,
@@ -483,6 +483,21 @@ func (r *ProductRepository) GetFilteredProducts(orderBy string, sortDirection st
 		params = append(params, currentTime, currentTime)
 		query += " AND s.open_time <= $" + strconv.Itoa(len(params)-1)
 		query += " AND s.close_time >= $" + strconv.Itoa(len(params))
+	}
+
+	if searchLine != "" {
+		params = append(params, "%"+searchLine+"%")
+		query += " AND p.name ILIKE $" + strconv.Itoa(len(params))
+	}
+
+	if minPrice > 0 {
+		params = append(params, minPrice)
+		query += " AND p.price >= $" + strconv.Itoa(len(params))
+	}
+
+	if maxPrice > 0 {
+		params = append(params, maxPrice)
+		query += " AND p.price <= $" + strconv.Itoa(len(params))
 	}
 
 	orderByClause := ""

@@ -93,10 +93,13 @@ func Start(cfg *config.Config) {
 	ProductService := service.NewProductService(ProductRepository)
 	ProductHandler := handler.NewProductHandler(ProductService)
 	r.HandleFunc("/products/filter", ProductHandler.GetFilteredProducts).Queries(
+		"search", "{search}",
 		"order_by", "{order_by}",
 		"sort_direction", "{sort_direction}",
 		"open_now", "{open_now}",
 		"category_ids", "{category_ids}",
+		"min_price", "{min_price}",
+		"max_price", "{max_price}",
 	).Methods(http.MethodGet)
 
 	r.HandleFunc("/products", ProductHandler.GetAll).Methods(http.MethodGet)
