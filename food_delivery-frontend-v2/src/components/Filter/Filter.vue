@@ -23,6 +23,14 @@ const setActiveFilterType = (type) => {
 };
 
 const isFilterOpen = ref(false);
+
+const emits = defineEmits(["filterChange"]);
+
+const submitFilter = () => {
+  console.log("filter has been submitted");
+  isFilterOpen.value = false;
+  emits("filterChange");
+};
 </script>
 
 <template>
@@ -116,10 +124,7 @@ const isFilterOpen = ref(false);
             ></DoublePriceSlider>
           </div>
           <div class="mt-auto flex justify-center">
-            <Button
-              @click="isFilterOpen = !isFilterOpen"
-              class="w-4/5"
-              type="primary"
+            <Button @click="submitFilter" class="w-4/5" type="primary"
               >Complete</Button
             >
           </div>

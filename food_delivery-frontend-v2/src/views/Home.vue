@@ -4,8 +4,9 @@ import { onMounted, ref } from "vue";
 import Filter from "@/components/Filter/Filter.vue";
 import { getAllSuppliers } from "@/api/supplier";
 import SupplierCard from "@/components/SupplierCard.vue";
-import { getAllProducts } from "@/api/products";
+import { getAllProducts, getFilteredProducts } from "@/api/products";
 import ProductCard from "@/components/ProductCard.vue";
+import { useFilterStore } from "@/store/filter";
 
 const userStore = useUserStore();
 
@@ -22,19 +23,27 @@ const closeModal = (value) => {
 const products = ref([]);
 
 onMounted(async () => {
-  const res = await getAllProducts();
+  const res = await getFilteredProducts(useFilterStore().filter);
   console.log(res);
   if (res.success === true) {
     products.value = res.data;
   }
 });
+
+const filterProducts = async () => {
+  const res = await getFilteredProducts(useFilterStore().filter);
+  console.log(res);
+  if (res.success === true) {
+    products.value = res.data;
+  }
+};
 </script>
 
 <template>
   <main class="pt-24">
     <div class="">
       <div class="container">
-        <Filter></Filter>
+        <Filter @filter-change="filterProducts"></Filter>
       </div>
     </div>
 

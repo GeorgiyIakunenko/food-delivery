@@ -19,7 +19,7 @@ const setBarStyles = (event) => {
       filterStore.filter.minPrice = +filterStore.filter.maxPrice - priceGap;
     }
     if (event.target.name === "maxInput") {
-      filterStore.filter.maxPrice = +filterStore.filter.minPrice + 1000;
+      filterStore.filter.maxPrice = +filterStore.filter.minPrice + priceGap;
     }
   } else {
     // setting the bar styles

@@ -5,8 +5,8 @@ export const useFilterStore = defineStore("filterStore", {
     const filter = {
       search: "",
       categories: [],
-      minPrice: 500,
-      maxPrice: 2000,
+      minPrice: +0,
+      maxPrice: +5000,
       sortBy: "price",
       sortDirection: "",
       openNow: false,
