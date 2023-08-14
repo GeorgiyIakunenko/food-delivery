@@ -182,7 +182,9 @@ const userAddress = userStore.user.Address;
       v-bind:open="modalOpen"
       >{{ modalMessage }}
       <router-link v-if="modalType === 'success'" to="/profile/orders">
-        <Button class="mb-1 mt-3" type="primary">Go to orders</Button>
+        <Button class="mx-auto mb-1 mt-3 md:mx-0" type="primary"
+          >Go to orders</Button
+        >
       </router-link>
     </Modal>
   </main>
