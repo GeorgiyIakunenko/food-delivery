@@ -45,3 +45,25 @@ export const getSupplierById = async (id) => {
     };
   }
 };
+
+export const getSupplierCategoriesById = async (id) => {
+  try {
+    const res = await api.get(`/supplier/${id}/categories`);
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};

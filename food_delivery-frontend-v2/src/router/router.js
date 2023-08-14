@@ -12,9 +12,19 @@ const routes = [
     component: () => import("@/views/Suppliers.vue"),
   },
   {
+    path: "/supplier/:supplierId/categories",
+    name: "SupplierCategories",
+    component: () => import("@/views/SupplierCategories.vue"),
+  },
+  {
     path: "/categories",
     name: "Categories",
     component: () => import("@/views/Categories.vue"),
+  },
+  {
+    path: "/category/:categoryId/suppliers",
+    name: "CategorySuppliers",
+    component: () => import("@/views/CategorySuppliers.vue"),
   },
   {
     path: "/register",

@@ -1,14 +1,18 @@
 <script setup>
-import SupplierCard from "@/components/SupplierCard.vue";
+import router from "@/router/router";
 import { onMounted, ref } from "vue";
-import { getAllSuppliers } from "@/api/supplier";
+import { getCategorySuppliersById } from "@/api/category";
+import SupplierCard from "@/components/SupplierCard.vue";
+
+const categoryId = router.currentRoute.value.params.categoryId;
 
 const suppliers = ref([]);
 
 onMounted(async () => {
-  const res = await getAllSuppliers();
+  const res = await getCategorySuppliersById(categoryId);
   console.log(res);
   if (res.success === true) {
+    console.log(res.data);
     suppliers.value = res.data;
   }
 });
@@ -22,10 +26,7 @@ onMounted(async () => {
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
           <div v-for="supplier in suppliers" class="">
-            <SupplierCard
-              @click="$router.push('/supplier/' + supplier.id + '/categories')"
-              :supplier="supplier"
-            ></SupplierCard>
+            <SupplierCard :supplier="supplier"></SupplierCard>
           </div>
         </div>
       </div>

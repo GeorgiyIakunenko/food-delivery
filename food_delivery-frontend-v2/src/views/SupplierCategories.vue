@@ -1,15 +1,18 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { getAllCategories } from "@/api/category";
 import CategoryCard from "@/components/CategoryCard.vue";
 import router from "@/router/router";
+import { onMounted, ref } from "vue";
+import { getSupplierCategoriesById } from "@/api/supplier";
+
+const supplierId = router.currentRoute.value.params.supplierId;
 
 const categories = ref([]);
 
 onMounted(async () => {
-  const res = await getAllCategories();
+  const res = await getSupplierCategoriesById(supplierId);
   console.log(res);
   if (res.success === true) {
+    console.log(res.data);
     categories.value = res.data;
   }
 });
@@ -23,7 +26,6 @@ onMounted(async () => {
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
           <CategoryCard
-            @click="router.push('/category/' + category.id + '/suppliers')"
             v-for="category in categories"
             :category="category"
           ></CategoryCard>
