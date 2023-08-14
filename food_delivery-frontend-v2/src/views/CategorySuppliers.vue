@@ -25,9 +25,19 @@ onMounted(async () => {
         <div
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
-          <div v-for="supplier in suppliers" class="">
-            <SupplierCard :supplier="supplier"></SupplierCard>
-          </div>
+          <SupplierCard
+            @click="
+              router.push(
+                '/category/' +
+                  categoryId +
+                  '/supplier/' +
+                  supplier.id +
+                  '/products',
+              )
+            "
+            v-for="supplier in suppliers"
+            :supplier="supplier"
+          ></SupplierCard>
         </div>
       </div>
     </div>

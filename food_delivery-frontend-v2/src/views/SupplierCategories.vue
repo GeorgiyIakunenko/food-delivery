@@ -26,6 +26,15 @@ onMounted(async () => {
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
           <CategoryCard
+            @click="
+              router.push(
+                '/supplier/' +
+                  supplierId +
+                  '/category/' +
+                  category.id +
+                  '/products',
+              )
+            "
             v-for="category in categories"
             :category="category"
           ></CategoryCard>

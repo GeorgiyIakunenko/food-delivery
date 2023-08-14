@@ -66,6 +66,16 @@ const routes = [
     name: "Orders",
     component: () => import("@/views/Orders.vue"),
   },
+  {
+    path: "/category/:categoryId/supplier/:supplierId/products",
+    name: "CategoryAndSupplierProducts",
+    component: () => import("@/views/CategoryAndSupplierProducts.vue"),
+  },
+  {
+    path: "/supplier/:supplierId/category/:categoryId/products",
+    name: "SupplierAndCategoryProducts",
+    component: () => import("@/views/SupplierAndCategoryProducts.vue"),
+  },
 ];
 
 const router = createRouter({
