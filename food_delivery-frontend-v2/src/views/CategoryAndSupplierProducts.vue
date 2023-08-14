@@ -3,6 +3,7 @@ import { onMounted, ref } from "vue";
 import router from "@/router/router";
 import { getProductsByCategoryAndSupplierIDs } from "@/api/products";
 import ProductCard from "@/components/ProductCard.vue";
+import Breadcrumb from "@/components/Breadcrumb.vue";
 
 const products = ref([]);
 
@@ -23,6 +24,12 @@ onMounted(async () => {
   <main>
     <div class="">
       <div class="container">
+        <Breadcrumb
+          :category-id="+categoryId"
+          :supplier-id="+supplierId"
+          :is-category="true"
+          class=""
+        ></Breadcrumb>
         <div
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >

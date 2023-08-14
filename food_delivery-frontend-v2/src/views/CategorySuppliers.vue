@@ -3,6 +3,7 @@ import router from "@/router/router";
 import { onMounted, ref } from "vue";
 import { getCategorySuppliersById } from "@/api/category";
 import SupplierCard from "@/components/SupplierCard.vue";
+import Breadcrumb from "@/components/Breadcrumb.vue";
 
 const categoryId = router.currentRoute.value.params.categoryId;
 
@@ -22,6 +23,7 @@ onMounted(async () => {
   <main>
     <div class="">
       <div class="container">
+        <Breadcrumb :category-id="+categoryId" :is-category="true"></Breadcrumb>
         <div
           class="mx-auto mt-7 grid max-w-fit grid-cols-2 gap-4 md:grid-cols-3 md:gap-7 xl:grid-cols-4"
         >
