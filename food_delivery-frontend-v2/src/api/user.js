@@ -170,39 +170,15 @@ export const logout = async () => {
 export const getProfile = async () => {
   try {
     const response = await protectedApi.get("user/profile");
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        data: response.data,
+      };
+    }
+
     useUserStore().setUser(response.data);
-    return {
-      success: true,
-      data: response.data,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      data: error.response.data,
-    };
-  }
-};
-
-// orders
-
-export const createOrder = async (order) => {
-  try {
-    const response = await protectedApi.post("/order", order);
-    return {
-      success: true,
-      data: response.data,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      data: error.response.data,
-    };
-  }
-};
-
-export const getOrders = async () => {
-  try {
-    const response = await protectedApi.get("/order");
     return {
       success: true,
       data: response.data,

@@ -5,7 +5,7 @@ export const useCartStore = defineStore("cartStore", {
   state: () => {
     const cart = reactive({
       total_price: 0,
-      payment_method: 0,
+      payment_method: "Cart",
       address: "",
       products: [],
     });
@@ -58,6 +58,11 @@ export const useCartStore = defineStore("cartStore", {
       return cart.products.splice(existingProductIndex, 1);
     };
 
+    const clearCart = () => {
+      cart.products = [];
+      cart.total_price = 0;
+    };
+
     return {
       cart,
       setCart,
@@ -65,6 +70,7 @@ export const useCartStore = defineStore("cartStore", {
       decreaseProduct,
       updateTotalPrice,
       removeProduct,
+      clearCart,
     };
   },
 
