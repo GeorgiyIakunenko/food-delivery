@@ -16,6 +16,14 @@ const isInCart = computed(() => {
   return cartStore.cart.products.some((p) => p.id === props.product.id);
 });
 
+const toggleProductInCart = () => {
+  if (isInCart.value) {
+    cartStore.removeProduct(props.product);
+  } else {
+    cartStore.addProduct(props.product);
+  }
+};
+
 const isOpen = () => {
   const currentTime = new Date();
   const currentTimeFormated = `${currentTime.getHours()}:${currentTime.getMinutes()}`;
@@ -52,10 +60,7 @@ const isOpen = () => {
             <div class="lg:text-lg">{{ product.name }}</div>
             <div class="text-sm text-primary-500">HUF {{ product.price }}</div>
           </div>
-          <div
-            @click="useCartStore().addProduct(product)"
-            class="ml-auto cursor-pointer"
-          >
+          <div @click="toggleProductInCart" class="ml-auto cursor-pointer">
             <img
               v-if="!isInCart"
               class="h-7 w-7"

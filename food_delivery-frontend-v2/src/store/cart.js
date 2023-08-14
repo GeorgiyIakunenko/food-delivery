@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 
 export const useCartStore = defineStore("cartStore", {
   state: () => {
@@ -53,12 +53,18 @@ export const useCartStore = defineStore("cartStore", {
       }, 0);
     };
 
+    const removeProduct = (product) => {
+      const existingProductIndex = cart.products.indexOf(product.id);
+      return cart.products.splice(existingProductIndex, 1);
+    };
+
     return {
       cart,
       setCart,
       addProduct,
       decreaseProduct,
       updateTotalPrice,
+      removeProduct,
     };
   },
 
