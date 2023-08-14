@@ -4,9 +4,10 @@ import { BanknotesIcon } from "@heroicons/vue/24/outline";
 import { useCartStore } from "@/store/cart";
 import CartProductCard from "@/components/CartProductCard.vue";
 import { useUserStore } from "@/store/user";
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { getProfile } from "@/api/user";
 import { createOrder } from "@/api/order";
+import Modal from "@/components/Modal.vue";
 
 const cartStore = useCartStore();
 const userStore = useUserStore();
@@ -17,7 +18,29 @@ const totalCost = computed(() => {
   return cartStore.cart.total_price + deliveryCost;
 });
 
-const submitOrder = async () => {
+let modalTitle = "Submit order? ";
+let modalMessage = "After submitting you can't change your order products";
+let modalType = "warning";
+let modalOpen = ref(false);
+
+const openModalWarning = () => {
+  modalTitle = "Submit order?";
+  modalMessage = "After submitting you can't change your order products";
+  modalType = "warning";
+  modalOpen.value = true;
+};
+
+const submitOrder = async (isSubmit) => {
+  if (isSubmit === false) {
+    modalOpen.value = false;
+    return;
+  }
+
+  if (modalType === "success") {
+    modalOpen.value = false;
+    return;
+  }
+
   const order = {
     total_price: totalCost.value,
     payment_method: cartStore.cart.payment_method,
@@ -33,13 +56,18 @@ const submitOrder = async () => {
   const res = await createOrder(order);
   console.log(res);
   if (res.success === true) {
+    modalTitle = "Order submitted";
+    modalMessage = "Your can check your order in your orders page";
+    modalType = "success";
+    modalOpen.value = true;
     cartStore.clearCart();
-    alert("Order created successfully");
   }
 };
 
 onMounted(async () => {
-  await getProfile();
+  if (userStore.accessToken) {
+    await getProfile();
+  }
 });
 
 const userAddress = userStore.user.Address;
@@ -133,7 +161,7 @@ const userAddress = userStore.user.Address;
           </div>
 
           <Button
-            @click="submitOrder"
+            @click="openModalWarning"
             v-if="userStore.accessToken"
             type="primary"
             class="mx-auto w-full"
@@ -147,6 +175,16 @@ const userAddress = userStore.user.Address;
         </div>
       </div>
     </div>
+    <Modal
+      :type="modalType"
+      :title="modalTitle"
+      @modalClose="submitOrder"
+      v-bind:open="modalOpen"
+      >{{ modalMessage }}
+      <router-link v-if="modalType === 'success'" to="/profile/orders">
+        <Button class="mb-1 mt-3" type="primary">Go to orders</Button>
+      </router-link>
+    </Modal>
   </main>
 </template>
 
