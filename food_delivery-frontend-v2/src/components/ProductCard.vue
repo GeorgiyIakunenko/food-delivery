@@ -35,7 +35,7 @@ const isOpen = () => {
 </script>
 
 <template>
-  <div class="font-sans">
+  <div class="font-sans transition-all duration-300 hover:scale-105">
     <div class="">
       <div class="rounded-xl bg-neutral-0 p-2 font-roboto shadow-md">
         <div

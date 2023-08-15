@@ -5,7 +5,7 @@ export const useCartStore = defineStore("cartStore", {
   state: () => {
     const cart = reactive({
       total_price: 0,
-      payment_method: "Cart",
+      payment_method: "Cash",
       address: "",
       products: [],
     });
