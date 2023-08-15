@@ -1,5 +1,9 @@
 <script setup>
 import Button from "@/components/Button.vue";
+import Modal from "@/components/Modal.vue";
+import { ref } from "vue";
+import { isCancel } from "axios";
+import { cancelOrder } from "@/api/order";
 
 const props = defineProps({
   order: {
@@ -7,6 +11,41 @@ const props = defineProps({
     required: true,
   },
 });
+
+let modalTitle = "Cancel order?";
+let modalMessage = "After cancelling you can't change your order products";
+let modalType = "warning";
+let modalOpen = ref(false);
+
+const openModalWarning = () => {
+  modalTitle = "Cancel order?";
+  modalMessage = "You won't be able to change mind after cancelling";
+  modalType = "warning";
+  modalOpen.value = true;
+};
+
+const emits = defineEmits(["orderCancelled"]);
+
+const submitCancelOrder = async (isCancel) => {
+  if (isCancel === false || modalType === "success") {
+    modalOpen.value = false;
+    return;
+  }
+  modalOpen.value = false;
+  const res = await cancelOrder(props.order.id);
+  if (res.success === true) {
+    modalTitle = "Order cancelled";
+    modalMessage = "";
+    modalType = "success";
+    modalOpen.value = true;
+    emits("orderCancelled");
+  } else {
+    modalTitle = "Something went wrong";
+    modalMessage = "Please try again later";
+    modalType = "error";
+    modalOpen.value = true;
+  }
+};
 
 const date = new Date(props.order.created_at);
 
@@ -43,13 +82,34 @@ const formattedDateTime = date.toLocaleString("en-US", {
       </div>
 
       <div class="mt-4 flex h-10 items-center justify-between">
-        <div class="">
-          {{ order.order_status }}
+        <div
+          :class="{
+            'text-red-500': order.order_status.toLowerCase() === 'cancelled',
+            'text-green-500': order.order_status.toLowerCase() === 'pending',
+          }"
+        >
+          {{ order.order_status.toUpperCase() }}
         </div>
-        <Button class="h-12 w-1/2" type="primary"> Cancel </Button>
+        <Button
+          v-if="order.order_status.toLowerCase() !== 'cancelled'"
+          @click="openModalWarning"
+          class="h-12 w-1/2"
+          type="primary"
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   </div>
+  <Modal
+    :type="modalType"
+    :title="modalTitle"
+    @modalClose="submitCancelOrder"
+    v-bind:open="modalOpen"
+    >{{ modalMessage }}
+    <router-link v-if="modalType === 'success'" to="/profile/orders">
+    </router-link>
+  </Modal>
 </template>
 
 <style scoped></style>

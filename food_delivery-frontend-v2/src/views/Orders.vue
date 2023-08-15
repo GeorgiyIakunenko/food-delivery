@@ -6,11 +6,15 @@ import Button from "@/components/Button.vue";
 
 const orders = ref([]);
 
-onMounted(async () => {
+const getOrdersFunc = async () => {
   const res = await getOrders();
   if (res.success === true) {
     orders.value = res.data;
   }
+};
+
+onMounted(async () => {
+  await getOrdersFunc();
 });
 </script>
 
@@ -33,9 +37,9 @@ onMounted(async () => {
           class="mx-auto mt-10 grid max-w-fit grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-7"
         >
           <OrderCard
+            @order-cancelled="getOrdersFunc"
             v-for="orderItem in orders"
             :order="orderItem"
-            class=""
           ></OrderCard>
         </div>
       </div>

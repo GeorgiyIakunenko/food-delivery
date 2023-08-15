@@ -44,3 +44,26 @@ export const getOrders = async () => {
     };
   }
 };
+
+export const cancelOrder = async (id) => {
+  try {
+    const response = await protectedApi.put(`/order/${id}/cancel`);
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        data: response.data,
+      };
+    }
+
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
