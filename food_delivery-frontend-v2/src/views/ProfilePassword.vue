@@ -1,26 +1,11 @@
 <script setup>
 import Button from "@/components/Button.vue";
 import Input from "@/components/Input.vue";
-import { useUserStore } from "@/store/user";
 import { computed, reactive, ref, watch } from "vue";
 import useValidate from "@vuelidate/core";
 import { helpers, minLength, required, sameAs } from "@vuelidate/validators";
 import { changePassword } from "@/api/user";
 import Modal from "@/components/Modal.vue";
-import router from "@/router/router";
-
-let modalTitle = "success";
-let modalMessage = "We send the code to your email address ";
-let modalType = "success";
-let modalOpen = ref(false);
-
-const closeModal = () => {
-  modalOpen.value = false;
-
-  if (modalMessage === "success") {
-    router.push("/profile");
-  }
-};
 
 const changePasswordForm = reactive({
   currentPassword: "",
@@ -61,9 +46,28 @@ watch(changePasswordForm, async () => {
     await changePasswordFormValidation$.value.$validate();
 });
 
-const submitForm = () => {
+let modalTitle = "success";
+let modalMessage = "We send the code to your email address ";
+let modalType = "success";
+let modalOpen = ref(false);
+
+const openModal = () => {
+  modalTitle = "Warning";
+  modalMessage = "Are you sure you want to change your password?";
+  modalType = "warning";
+  modalOpen.value = true;
+};
+
+const submitForm = async (isChange) => {
+  if (isChange === false || modalType === "success" || modalType === "error") {
+    modalOpen.value = false;
+    return;
+  }
+
+  modalOpen.value = false;
+
   if (isChangePasswordFormValid.value) {
-    const res = changePassword(
+    const res = await changePassword(
       changePasswordForm.currentPassword,
       changePasswordForm.newPassword,
     );
@@ -74,7 +78,7 @@ const submitForm = () => {
       modalOpen.value = true;
     } else {
       modalTitle = "Error";
-      modalMessage = "Failed to change password";
+      modalMessage = "You entered the wrong password";
       modalType = "error";
       modalOpen.value = true;
     }
@@ -126,7 +130,7 @@ const submitForm = () => {
               class="w-full"
               type="primary"
               :disabled="!isChangePasswordFormValid"
-              @click="submitForm"
+              @click="openModal"
               >Change</Button
             >
             <Button
@@ -142,7 +146,7 @@ const submitForm = () => {
     <Modal
       :type="modalType"
       :title="modalTitle"
-      @modalClose="closeModal"
+      @modalClose="submitForm"
       v-bind:open="modalOpen"
       >{{ modalMessage }}</Modal
     >

@@ -7,7 +7,6 @@ import { useFilterStore } from "@/store/filter";
 const filterCategories = useFilterStore().filter.categories;
 
 const isCategoryActive = (id) => {
-  console.log(filterCategories.includes(id), id);
   return filterCategories.includes(id);
 };
 

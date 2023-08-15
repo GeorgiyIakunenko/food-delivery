@@ -7,15 +7,13 @@ const props = defineProps({
     required: true,
   },
 });
-
-console.log(props);
 </script>
 <template>
   <div
     class="flex cursor-pointer flex-col items-center justify-center rounded-xl bg-amber-50 p-3 shadow-md transition-all duration-300 hover:scale-105"
   >
     <img
-      class="mb-2 h-36 w-36 md:h-52 md:w-52"
+      class="mb-2 h-32 w-32 md:h-48 md:w-48"
       :src="getImageUrl(category.image)"
       :alt="category.name"
     />

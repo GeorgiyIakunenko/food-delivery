@@ -40,7 +40,7 @@ const isRouteActive = (routeName, isButton = false) => {
         <div
           class="z-20 cursor-pointer rounded-xl bg-neutral-30 p-1 transition-all duration-300 hover:bg-neutral-0"
         >
-          <router-link to="/">
+          <router-link @click="CloseMenu" to="/">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="40"

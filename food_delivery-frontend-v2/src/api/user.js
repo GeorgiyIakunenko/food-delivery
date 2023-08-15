@@ -108,6 +108,11 @@ export const changePassword = async (oldPassword, newPassword) => {
       };
     }
 
+    ({
+      access_token: useUserStore().accessToken,
+      refresh_token: useUserStore().refreshToken,
+    } = res.data);
+
     return {
       success: true,
       data: res.data,
