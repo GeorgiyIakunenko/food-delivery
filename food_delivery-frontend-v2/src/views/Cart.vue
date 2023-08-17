@@ -44,7 +44,7 @@ const submitOrder = async (isSubmit) => {
   const order = {
     total_price: totalCost.value,
     payment_method: cartStore.cart.payment_method,
-    address: userAddress,
+    address: userAddress.value,
     product: cartStore.cart.products.map((product) => {
       return {
         product_id: product.id,
@@ -70,7 +70,7 @@ onMounted(async () => {
   }
 });
 
-const userAddress = userStore.user.Address;
+const userAddress = ref(userStore.user.Address);
 </script>
 
 <template>
