@@ -1,31 +1,35 @@
 <script setup>
-import { onMounted, ref } from "vue";
-import { getAllCategories } from "@/api/category";
+import { computed } from "vue";
 import { getImageUrl } from "@/utils/url";
 import { useFilterStore } from "@/store/filter";
 
-const filterCategories = useFilterStore().filter.categories;
+const props = defineProps({
+  categories: {
+    type: Array,
+    required: true,
+  },
+});
+
+const filterStore = useFilterStore();
+
+const filterCategories = computed({
+  get: () => filterStore.filter.categories,
+  set: (value) => {
+    filterStore.filter.categories = value;
+  },
+});
 
 const isCategoryActive = (id) => {
-  return filterCategories.includes(id);
+  return filterCategories.value.includes(id);
 };
 
 const toggleCategory = (id) => {
   if (isCategoryActive(id)) {
-    filterCategories.splice(filterCategories.indexOf(id), 1);
+    filterCategories.value.splice(filterCategories.value.indexOf(id), 1);
   } else {
-    filterCategories.push(id);
+    filterCategories.value.push(id);
   }
 };
-
-const categories = ref([]);
-
-onMounted(async () => {
-  const res = await getAllCategories();
-  if (res.success === true) {
-    categories.value = res.data;
-  }
-});
 </script>
 
 <template>

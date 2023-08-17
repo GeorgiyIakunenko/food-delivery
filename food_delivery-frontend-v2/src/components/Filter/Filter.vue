@@ -1,17 +1,18 @@
 <script setup>
 import Input from "@/components/Input.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import {
   PaperAirplaneIcon,
-  ChevronDownIcon,
+  CheckCircleIcon,
   AdjustmentsVerticalIcon,
+  XCircleIcon,
 } from "@heroicons/vue/24/outline";
 import Button from "@/components/Button.vue";
-import Categories from "@/components/Filter/Categories.vue";
 import SortBy from "@/components/Filter/SortBy.vue";
 import DoublePriceSlider from "@/components/Filter/DoublePriceSlider.vue";
 import { getAllCategories } from "@/api/category";
 import { useFilterStore } from "@/store/filter";
+import { getImageUrl } from "@/utils/url";
 
 const searchInput = ref("");
 const filterStore = useFilterStore();
@@ -31,6 +32,26 @@ const submitFilter = () => {
   isFilterOpen.value = false;
   emits("filterChange");
 };
+
+const categories = ref([]);
+
+const filterCategories = computed({
+  get: () => filterStore.filter.categories,
+  set: (value) => {
+    filterStore.filter.categories = value;
+  },
+});
+
+const isCategoryActive = (id) => {
+  return filterCategories.value.includes(id);
+};
+
+onMounted(async () => {
+  const res = await getAllCategories();
+  if (res.success === true) {
+    categories.value = res.data;
+  }
+});
 </script>
 
 <template>
@@ -49,15 +70,99 @@ const submitFilter = () => {
           <PaperAirplaneIcon
             class="h-6 w-6 -rotate-12 text-neutral-500"
           ></PaperAirplaneIcon>
-          <!--          <div class="div flex flex-col gap-1">
-            <div class="font-medium text-primary-400">Delivery to</div>
-            <div class="flex items-center gap-2">
-              <div class="">Address</div>
-              <ChevronDownIcon
-                class="h-4 w-4 text-primary-400"
-              ></ChevronDownIcon>
+          <div class="flex items-center gap-2">
+            <Button
+              v-if="filterStore.isFiltered()"
+              @click="filterStore.resetFilter()"
+              class="items-center gap-2"
+              >Reset all filters
+              <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
+            </Button>
+            <div class="hidden flex-wrap items-center gap-2 lg:flex">
+              <Button
+                @click="filterStore.resetCategoryFilter()"
+                v-if="filterStore.isCategoryFiltered()"
+                class="gap-2"
+                >Categories:
+                <div class="flex gap-1">
+                  <img
+                    v-for="category in categories"
+                    class="h-5 w-5"
+                    :class="{ hidden: !isCategoryActive(category.id) }"
+                    :alt="category.name"
+                    :src="getImageUrl(category.image)"
+                  />
+                </div>
+                <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
+              </Button>
+              <Button
+                v-else
+                class="items-center gap-2 bg-card-bg"
+                :disabled="true"
+                >All categories
+                <CheckCircleIcon
+                  class="h-5 w-5 text-green-500"
+                ></CheckCircleIcon>
+              </Button>
+              <Button
+                @click="filterStore.resetPriceFilter()"
+                v-if="filterStore.isPriceFiltered()"
+                class="gap-2"
+                >Price range: {{ filterStore.filter.minPrice }} -
+                {{ filterStore.filter.maxPrice }}
+                <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
+              </Button>
+              <Button
+                v-else
+                class="items-center gap-2 bg-card-bg"
+                :disabled="true"
+                >All prices
+                <CheckCircleIcon
+                  class="h-5 w-5 text-green-500"
+                ></CheckCircleIcon>
+              </Button>
+              <Button
+                @click="filterStore.resetSortFilter()"
+                v-if="filterStore.isSortFiltered()"
+                class="gap-2"
+                >Sort by price :
+                {{
+                  filterStore.filter.sortDirection === "asc"
+                    ? "low to high"
+                    : "high to low"
+                }}
+                <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
+              </Button>
+              <Button
+                v-else
+                class="items-center gap-2 bg-card-bg"
+                :disabled="true"
+              >
+                Default sort
+                <CheckCircleIcon
+                  class="h-5 w-5 text-green-500"
+                ></CheckCircleIcon>
+              </Button>
+              <Button
+                @click="filterStore.resetOpenNowFilter()"
+                v-if="filterStore.isOpenNowFiltered()"
+                class="gap-2"
+              >
+                Available now
+                <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
+              </Button>
+              <Button
+                v-else
+                class="items-center gap-2 bg-card-bg"
+                :disabled="true"
+              >
+                Working hours : All
+                <CheckCircleIcon
+                  class="h-5 w-5 text-green-500"
+                ></CheckCircleIcon>
+              </Button>
             </div>
-          </div>-->
+          </div>
         </div>
         <div class="">
           <Button
@@ -117,7 +222,10 @@ const submitFilter = () => {
             </div>
           </div>
           <div class="">
-            <Categories v-if="activeFilterType === 'category'"></Categories>
+            <Categories
+              v-if="activeFilterType === 'category'"
+              :categories="categories"
+            ></Categories>
             <SortBy v-if="activeFilterType === 'sort-by'"></SortBy>
             <DoublePriceSlider
               v-if="activeFilterType === 'price'"

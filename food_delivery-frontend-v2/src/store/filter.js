@@ -14,18 +14,67 @@ export const useFilterStore = defineStore("filterStore", {
     });
 
     const resetFilter = () => {
-      filter.search = "";
+      resetCategoryFilter();
+      resetPriceFilter();
+      resetSortFilter();
+      resetOpenNowFilter();
+    };
+
+    const isCategoryFiltered = () => {
+      return filter.categories.length > 0;
+    };
+
+    const resetCategoryFilter = () => {
       filter.categories = [];
+    };
+
+    const isPriceFiltered = () => {
+      return filter.minPrice > 0 || filter.maxPrice < 5000;
+    };
+
+    const resetPriceFilter = () => {
       filter.minPrice = +0;
       filter.maxPrice = +5000;
+    };
+
+    const isSortFiltered = () => {
+      return filter.sortBy !== "price" || filter.sortDirection !== "";
+    };
+
+    const resetSortFilter = () => {
       filter.sortBy = "price";
       filter.sortDirection = "";
+    };
+
+    const isOpenNowFiltered = () => {
+      return filter.openNow;
+    };
+
+    const resetOpenNowFilter = () => {
       filter.openNow = false;
+    };
+
+    const isFiltered = () => {
+      return (
+        isSortFiltered() ||
+        isCategoryFiltered() ||
+        isPriceFiltered() ||
+        isOpenNowFiltered()
+      );
     };
 
     return {
       filter,
       resetFilter,
+      isCategoryFiltered,
+      isPriceFiltered,
+      isSortFiltered,
+      isOpenNowFiltered,
+      isFiltered,
+      resetCategoryFilter,
+      resetPriceFilter,
+      resetSortFilter,
+      resetOpenNowFilter,
     };
   },
   persist: true,
