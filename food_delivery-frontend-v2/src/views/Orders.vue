@@ -42,6 +42,12 @@ onMounted(async () => {
             :order="orderItem"
           ></OrderCard>
         </div>
+        <Button
+          class="mx-auto mt-10 w-3/5"
+          type="secondary"
+          @click="$router.push('/profile')"
+          >Back</Button
+        >
       </div>
     </div>
   </main>

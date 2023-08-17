@@ -125,6 +125,38 @@ export const changePassword = async (oldPassword, newPassword) => {
   }
 };
 
+export const updateProfile = async (changeForm) => {
+  try {
+    const res = await protectedApi.put("user/profile", {
+      first_name: changeForm.firstName,
+      last_name: changeForm.lastName,
+      username: changeForm.username,
+      age: +changeForm.age,
+      phone: changeForm.phone,
+      address: changeForm.address,
+    });
+
+    if (res.status !== 200) {
+      return {
+        success: false,
+        data: res.data,
+      };
+    }
+
+    useUserStore().setUser(res.data);
+
+    return {
+      success: true,
+      data: res.data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: error.response.data,
+    };
+  }
+};
+
 export const login = async (email, password) => {
   try {
     const res = await api.post("auth/login", {
