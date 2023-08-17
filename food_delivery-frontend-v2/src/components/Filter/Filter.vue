@@ -75,7 +75,7 @@ onMounted(async () => {
             <Button
               v-if="filterStore.isFiltered()"
               @click="filterStore.resetFilter()"
-              class="items-center gap-2"
+              class="items-center gap-2 bg-neutral-50"
               >Reset all filters
               <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
             </Button>
@@ -83,7 +83,7 @@ onMounted(async () => {
               <Button
                 @click="filterStore.resetCategoryFilter()"
                 v-if="filterStore.isCategoryFiltered()"
-                class="gap-2"
+                class="gap-2 bg-neutral-50"
                 >Categories:
                 <div class="flex gap-1">
                   <img
@@ -108,7 +108,7 @@ onMounted(async () => {
               <Button
                 @click="filterStore.resetPriceFilter()"
                 v-if="filterStore.isPriceFiltered()"
-                class="gap-2"
+                class="gap-2 bg-neutral-50"
                 >Price range: {{ filterStore.filter.minPrice }} -
                 {{ filterStore.filter.maxPrice }}
                 <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
@@ -125,7 +125,7 @@ onMounted(async () => {
               <Button
                 @click="filterStore.resetSortFilter()"
                 v-if="filterStore.isSortFiltered()"
-                class="gap-2"
+                class="gap-2 bg-neutral-50"
                 >Sort by price :
                 {{
                   filterStore.filter.sortDirection === "asc"
@@ -147,7 +147,7 @@ onMounted(async () => {
               <Button
                 @click="filterStore.resetOpenNowFilter()"
                 v-if="filterStore.isOpenNowFiltered()"
-                class="gap-2"
+                class="gap-2 bg-neutral-50"
               >
                 Available now
                 <XCircleIcon class="h-5 w-5 text-red-500"></XCircleIcon>
