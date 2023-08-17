@@ -4,6 +4,7 @@ import router from "@/router/router";
 import Button from "@/components/Button.vue";
 import { useUserStore } from "@/store/user";
 import { UserIcon, ShoppingCartIcon } from "@heroicons/vue/24/outline";
+import { useCartStore } from "@/store/cart";
 
 const menuActive = ref(false);
 
@@ -168,10 +169,15 @@ const isRouteActive = (routeName, isButton = false) => {
         </nav>
         <div class="left-block flex items-center gap-5">
           <div class="user-box flex items-center gap-5">
-            <router-link to="/cart">
+            <router-link class="relative" to="/cart">
               <ShoppingCartIcon
                 class="h-7 w-7 text-neutral-0"
               ></ShoppingCartIcon>
+              <div
+                class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-neutral-0 font-sans text-xs"
+              >
+                {{ useCartStore().cart.products.length }}
+              </div>
             </router-link>
             <router-link to="/login" v-if="useUserStore().accessToken === ''">
               <Button
