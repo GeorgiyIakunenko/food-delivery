@@ -8,6 +8,7 @@ import {
   XCircleIcon,
 } from "@heroicons/vue/24/outline";
 import Button from "@/components/Button.vue";
+import Categories from "@/components/Filter/Categories.vue";
 import SortBy from "@/components/Filter/SortBy.vue";
 import DoublePriceSlider from "@/components/Filter/DoublePriceSlider.vue";
 import { getAllCategories } from "@/api/category";
@@ -33,7 +34,7 @@ const submitFilter = () => {
   emits("filterChange");
 };
 
-const categories = ref([]);
+const categoriesItems = ref([]);
 
 const filterCategories = computed({
   get: () => filterStore.filter.categories,
@@ -49,7 +50,7 @@ const isCategoryActive = (id) => {
 onMounted(async () => {
   const res = await getAllCategories();
   if (res.success === true) {
-    categories.value = res.data;
+    categoriesItems.value = res.data;
   }
 });
 </script>
@@ -86,7 +87,7 @@ onMounted(async () => {
                 >Categories:
                 <div class="flex gap-1">
                   <img
-                    v-for="category in categories"
+                    v-for="category in categoriesItems"
                     class="h-5 w-5"
                     :class="{ hidden: !isCategoryActive(category.id) }"
                     :alt="category.name"
@@ -224,7 +225,7 @@ onMounted(async () => {
           <div class="">
             <Categories
               v-if="activeFilterType === 'category'"
-              :categories="categories"
+              :categories="categoriesItems"
             ></Categories>
             <SortBy v-if="activeFilterType === 'sort-by'"></SortBy>
             <DoublePriceSlider
