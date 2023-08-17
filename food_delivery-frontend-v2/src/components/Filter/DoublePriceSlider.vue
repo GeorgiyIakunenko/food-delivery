@@ -1,6 +1,6 @@
 <script setup>
 import Input from "@/components/Input.vue";
-import { ref } from "vue";
+import { watch } from "vue";
 import { useFilterStore } from "@/store/filter";
 
 const min = 0;
@@ -10,9 +10,14 @@ const priceGap = 500;
 
 const filterStore = useFilterStore();
 
+watch(filterStore.filter, () => {
+  setBarStyles();
+});
+
 let barStyle = `left: ${(filterStore.filter.minPrice / max) * 100}%; right: ${
   100 - (filterStore.filter.maxPrice / max) * 100
 }%;`;
+
 const setBarStyles = (event) => {
   if (filterStore.filter.maxPrice - filterStore.filter.minPrice < priceGap) {
     if (event.target.name === "minInput") {
