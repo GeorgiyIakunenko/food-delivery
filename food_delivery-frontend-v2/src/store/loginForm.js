@@ -7,8 +7,8 @@ export const useLoginFormStore = defineStore("loginFormStore", {
   state: () => {
     // login form
     const loginForm = reactive({
-      email: "goshan3097@gmail.co",
-      password: "123456",
+      email: "testAdmin@gmail.com",
+      password: "12345678",
     });
 
     const loginFormRules = computed(() => {
