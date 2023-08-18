@@ -6,4 +6,3 @@ npm install
 
 # Start the app
 npm run build && npm run preview
-```
