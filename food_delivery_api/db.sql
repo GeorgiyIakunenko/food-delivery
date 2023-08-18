@@ -123,19 +123,19 @@ VALUES
 
 
 -- Insert sample data into the customer table
-INSERT INTO customer (first_name, last_name, username, age, email, phone, password, customer_address, created_at)
+/*INSERT INTO customer (first_name, last_name, username, age, email, phone, password, customer_address, created_at)
 VALUES
     ('Georgiy', 'Iakunenko', 'Goshan3097', 30, 'test@gmail.com', '+43534252535', '', 'Budapest, Main Street 1, Hungary', current_timestamp);
-
+*/
 
 -- Insert sample data into the order table
-INSERT INTO "order" (customer_id, total_price, order_status, payment_method, created_at, customer_address)
+/*INSERT INTO "order" (customer_id, total_price, order_status, payment_method, created_at, customer_address)
 VALUES
     (1, 600, 'DONE', 'Cash', current_timestamp, 'Budapest, Main Street 1, Hungary');
 
-
--- Insert sample data into the order_product table
+*/
+/*-- Insert sample data into the order_product table
 INSERT INTO order_product (order_id, product_id, quantity)
 VALUES
     (1, 1, 2),
-    (1, 3, 1);
+    (1, 3, 1);*/
