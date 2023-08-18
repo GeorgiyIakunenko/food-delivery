@@ -1,4 +1,4 @@
-drop table order_product;
+/*drop table order_product;
 
 drop table product;
 
@@ -8,7 +8,7 @@ drop table supplier;
 
 drop table "order";
 
-drop table customer;
+drop table customer;*/
 
 CREATE TABLE IF NOT EXISTS category (
                                         id SERIAL PRIMARY KEY,
@@ -105,11 +105,11 @@ VALUES
     ('Cheeseburger', 4, 2, 700, 'products/cheeseburger.png', 'Classic cheeseburger with juicy beef patty.'),
     ('Tuna Salad', 3, 6, 520, 'products/tunasalad.png', 'Fresh and tangy tuna salad with greens.'),
     ('Burrito', 5, 4, 800, 'products/burrito.png', 'A satisfying and flavorful burrito creation.'),
+    ('BigMac', 4, 2, 750, 'products/bigmac.png', 'Basic mc burger'),
     ('Cola 0.5L', 4, 3, 220, 'products/cola05.png', 'Refreshing cola in a convenient 0.5L bottle.'),
     ('Fanta 0.5L', 6, 3, 220, 'products/fanta.png', 'Zesty Fanta in a 0.5L bottle for a burst of flavor.'),
-    ('Small Bucket', 3, 6, 1100, 'products/kfcsmallbucket.png', 'A small bucket filled with KFC goodness.'),
     ('Cheesecake', 2, 5, 450, 'products/cheesecake.png', 'Rich and creamy cheesecake dessert.'),
-    ('Extra Bucket', 4, 6, 1150, 'products/extrabucket.png', 'An extra-large bucket of fried delights.'),
+    ('Chicken burger', 1, 2, 750, 'products/chickenburger.png', 'Chicken burger'),
     ('Ice Cream', 2, 5, 350, 'products/icecream.png', 'Chilled and tasty ice cream for your cravings.'),
     ('Margarita', 6, 1, 780, 'products/margarita.png', 'Savor the classic Margarita pizza.'),
     ('Orange Juice', 3, 3, 250, 'products/orangejuice.png', 'Refreshing and pure orange juice.'),

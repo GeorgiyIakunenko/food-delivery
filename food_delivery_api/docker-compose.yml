@@ -10,6 +10,20 @@ services:
     networks:
       - echo-demo-stack
 
+  echo_postgres:
+    image: postgres:14.8-alpine
+    container_name: my-postgres-container
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=fooddelivery
+      - POSTGRES_USER=fooddelivery
+      - POSTGRES_PASSWORD=123456
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql  # Mount the db.sql file
+    networks:
+      - echo-demo-stack
+
 networks:
   echo-demo-stack:
-  # Add any network-specific configuration if needed

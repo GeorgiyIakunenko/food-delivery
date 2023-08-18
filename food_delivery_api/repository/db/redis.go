@@ -15,11 +15,10 @@ func NewRedisClient(cfg *config.Config) (*redis.Client, error) {
 
 	// Test the connection
 	ctx := context.Background()
-	pong, err := client.Ping(ctx).Result()
+	_, err := client.Ping(ctx).Result()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(pong)
 
 	return client, nil
 }
