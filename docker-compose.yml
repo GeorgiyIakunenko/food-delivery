@@ -11,43 +11,30 @@ services:
       - echo-demo-stack
 
   echo_postgres:
-    image: postgres:14.8-alpine
-    container_name: my-postgres-container
+    image: georgiyiakunenko/fooddelivery-postgres
+    container_name: my-fooddelivery-postgres-container
     restart: unless-stopped
     ports:
       - "5432:5432"
-    environment:
-      - POSTGRES_DB=fooddelivery
-      - POSTGRES_USER=fooddelivery
-      - POSTGRES_PASSWORD=123456
-    volumes:
-      - ./food_delivery_api/db.sql:/docker-entrypoint-initdb.d/db.sql # Mount the db.sql file
     networks:
       - echo-demo-stack
 
   echo_goapp:
-    build:
-      context: ./food_delivery_api
-      dockerfile: Dockerfile
-    container_name: my-go-app-container
+    image: georgiyiakunenko/fooddelivery-golang
+    container_name: fooddelivery-golang-container
     restart: unless-stopped
     ports:
       - "8080:8080"
     networks:
       - echo-demo-stack
 
-  frontendvue3:
-    image: node:18-alpine
-    container_name: frontendvue3
-    entrypoint: /srv/app/entrypoint.sh
+  echo_frontend:
+    image: fooddelivery-frontend
+    container_name: fooddelivery-frontend-container
+    restart: unless-stopped
     ports:
       - "8000:8000"
-    working_dir: /srv/app
-    volumes:
-      - type: bind
-        source: ./food_delivery-frontend-v2
-        target: /srv/app
-    tty: true
+
 
 networks:
   echo-demo-stack:

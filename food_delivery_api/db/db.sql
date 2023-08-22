@@ -101,24 +101,24 @@ VALUES
 -- Insert sample data into product table for additional items
 INSERT INTO product (name, supplier_id, category_id, price, image, description)
 VALUES
-    ('BBQ Bliss', 1, 6, 660, 'products/barbecuemenu.png', 'Delicious assortment of grilled favorites.'),
+    ('BBQ Bliss', 1, 6, 4660, 'products/barbecuemenu.png', 'Delicious assortment of grilled favorites.'),
     ('Cheeseburger', 4, 2, 700, 'products/cheeseburger.png', 'Classic cheeseburger with juicy beef patty.'),
-    ('Tuna Salad', 3, 6, 520, 'products/tunasalad.png', 'Fresh and tangy tuna salad with greens.'),
-    ('Burrito', 5, 4, 800, 'products/burrito.png', 'A satisfying and flavorful burrito creation.'),
+    ('Tuna Salad', 3, 6, 3520, 'products/tunasalad.png', 'Fresh and tangy tuna salad with greens.'),
+    ('Burrito', 5, 4, 2000, 'products/burrito.png', 'A satisfying and flavorful burrito creation.'),
     ('BigMac', 4, 2, 750, 'products/bigmac.png', 'Basic mc burger'),
-    ('Cola 0.5L', 4, 3, 220, 'products/cola05.png', 'Refreshing cola in a convenient 0.5L bottle.'),
-    ('Fanta 0.5L', 6, 3, 220, 'products/fanta.png', 'Zesty Fanta in a 0.5L bottle for a burst of flavor.'),
+    ('Cola 0.5L', 4, 3, 500, 'products/cola05.png', 'Refreshing cola in a convenient 0.5L bottle.'),
+    ('Fanta 0.5L', 6, 3, 350, 'products/fanta.png', 'Zesty Fanta in a 0.5L bottle for a burst of flavor.'),
     ('Cheesecake', 2, 5, 450, 'products/cheesecake.png', 'Rich and creamy cheesecake dessert.'),
     ('Chicken burger', 1, 2, 750, 'products/chickenburger.png', 'Chicken burger'),
-    ('Ice Cream', 2, 5, 350, 'products/icecream.png', 'Chilled and tasty ice cream for your cravings.'),
-    ('Margarita', 6, 1, 780, 'products/margarita.png', 'Savor the classic Margarita pizza.'),
-    ('Orange Juice', 3, 3, 250, 'products/orangejuice.png', 'Refreshing and pure orange juice.'),
-    ('Pepsi 0.33L', 1, 3, 180, 'products/pepsi033.png', 'Enjoy a fizzy Pepsi in a compact size.'),
-    ('Mac Menu', 4, 2, 800, 'products/macmenu.png', 'A satisfying meal with a Mac twist.'),
-    ('Frappuccino', 2, 3, 380, 'products/milkfrappuccino.png', 'Creamy milk frappuccino for a delightful treat.'),
-    ('Pepperoni', 6, 1, 820, 'products/pepperoni.png', 'Savory pepperoni pizza loaded with flavor.'),
-    ('Red Bull', 5, 3, 280, 'products/redbull.png', 'Energy-boosting Red Bull drink for your day.'),
-    ('Tacos', 3, 4, 700, 'products/tacos.png', 'A delicious and filling taco meal.');
+    ('Ice Cream', 2, 5, 550, 'products/icecream.png', 'Chilled and tasty ice cream for your cravings.'),
+    ('Margarita', 6, 1, 2780, 'products/margarita.png', 'Savor the classic Margarita pizza.'),
+    ('Orange Juice', 3, 3, 450, 'products/orangejuice.png', 'Refreshing and pure orange juice.'),
+    ('Pepsi 0.33L', 1, 3, 350, 'products/pepsi033.png', 'Enjoy a fizzy Pepsi in a compact size.'),
+    ('Mac Menu', 4, 2, 2300, 'products/macmenu.png', 'A satisfying meal with a Mac twist.'),
+    ('Frappuccino', 2, 3, 1380, 'products/milkfrappuccino.png', 'Creamy milk frappuccino for a delightful treat.'),
+    ('Pepperoni', 6, 1, 1820, 'products/pepperoni.png', 'Savory pepperoni pizza loaded with flavor.'),
+    ('Red Bull', 5, 3, 680, 'products/redbull.png', 'Energy-boosting Red Bull drink for your day.'),
+    ('Tacos', 3, 4, 1700, 'products/tacos.png', 'A delicious and filling taco meal.');
 
 
 

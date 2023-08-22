@@ -123,7 +123,7 @@ func Start(cfg *config.Config) {
 	orderRouter.HandleFunc("/{id}/cancel", OrderHandler.CancelOrderByID).Methods(http.MethodPut)
 
 	corsMiddleware := handlers.CORS(
-		handlers.AllowedOrigins([]string{"http://localhost:8000"}),
+		handlers.AllowedOrigins([]string{"https://georgiyiakunenko-fooddelivery.azurewebsites.net"}),
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)
