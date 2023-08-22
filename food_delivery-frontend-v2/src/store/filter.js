@@ -18,6 +18,7 @@ export const useFilterStore = defineStore("filterStore", {
       resetPriceFilter();
       resetSortFilter();
       resetOpenNowFilter();
+        resetSearchFilter();
     };
 
     const isCategoryFiltered = () => {
@@ -54,12 +55,20 @@ export const useFilterStore = defineStore("filterStore", {
       filter.openNow = false;
     };
 
+    const isSearchFiltered = () => {
+        return filter.search !== "";
+    }
+
+    const resetSearchFilter = () => {
+        filter.search = "";
+    }
+
     const isFiltered = () => {
       return (
         isSortFiltered() ||
         isCategoryFiltered() ||
         isPriceFiltered() ||
-        isOpenNowFiltered()
+        isOpenNowFiltered() || isSearchFiltered()
       );
     };
 

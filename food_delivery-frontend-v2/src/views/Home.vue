@@ -44,6 +44,15 @@ const filterProducts = async () => {
       </div>
     </div>
     <div
+        class="mx-auto mt-14 flex w-56 grow flex-col items-center justify-center gap-5 px-2 md:w-fit"
+        v-if="products < 1 && !useFilterStore().isFiltered()"
+    >
+      <div class="text-center font-sans text-xl font-medium">
+        Loading...
+      </div>
+
+    </div>
+    <div
       class="mx-auto mt-14 flex w-56 grow flex-col items-center justify-center gap-5 px-2 md:w-fit"
       v-if="products < 1 && useFilterStore().isFiltered()"
     >
