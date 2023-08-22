@@ -21,10 +21,10 @@ onMounted(async () => {
 <template>
   <main>
     <div class="">
-      <h1 class="text-center font-sans text-xl font-bold">Your orders:</h1>
+      <h1 v-if="orders" class="text-center font-sans text-xl font-bold">Your orders:</h1>
       <div class="container">
         <div
-          v-if="orders.value.length === 0"
+          v-if="!orders"
           class="mt-14 flex flex-col items-center gap-7 text-center font-sans text-xl font-bold"
         >
           You don't have orders yet!
